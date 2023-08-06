@@ -1,0 +1,7 @@
+{
+  "name": "@avalabs/tsconfig",
+  "version": "1.0.0",
+  "files": [
+    "base.jsonc"
+  ]
+}

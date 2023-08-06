@@ -11,11 +11,13 @@
     "release": "turbo build --filter=docs^... && changeset publish"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.22.0",
-    "eslint": "^7.32.0",
-    "eslint-config-acme": "workspace:*",
-    "prettier": "^2.5.1",
-    "turbo": "latest"
+    "@avalabs/eslint": "workspace:*",
+    "@avalabs/tsconfig": "workspace:*",
+    "@changesets/cli": "2.26.2",
+    "eslint": "8.46.0",
+    "prettier": "3.0.1",
+    "turbo": "1.10.12",
+    "typescript": "5.1.6"
   },
   "packageManager": "pnpm@8.6.10"
 }
