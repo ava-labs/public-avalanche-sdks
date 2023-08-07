@@ -1,5 +1,5 @@
 {
-  "extends": "@avalabs/tsconfig/base.json",
+  "extends": "@avalabs/tsconfig/tsconfig.base.json",
   "compilerOptions": {
     "paths": {
       "@/*": ["./src/*"]
