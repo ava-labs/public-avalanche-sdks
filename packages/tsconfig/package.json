@@ -1,7 +1,11 @@
 {
   "name": "@avalabs/tsconfig",
   "version": "1.0.0",
+  "private": true,
   "files": [
     "base.jsonc"
-  ]
+  ],
+  "devDependencies": {
+    "typescript": "5.1.6"
+  }
 }
