@@ -4,7 +4,8 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prettier": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore --write \"src/**/*.ts*\""
   },
   "dependencies": {
     "lodash-es": "4.17.21"

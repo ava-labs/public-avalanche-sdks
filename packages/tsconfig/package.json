@@ -2,6 +2,9 @@
   "name": "@avalabs/tsconfig",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "prettier": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore --write \"src/**/*.ts*\""
+  },
   "files": [
     "tsconfig.base.json"
   ]
