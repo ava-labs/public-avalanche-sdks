@@ -2,6 +2,7 @@
   "name": "@avalabs/eslint",
   "version": "1.0.0",
   "private": true,
+  "main": "index.js",
   "dependencies": {
     "eslint": "latest",
     "eslint-config-next": "latest",
