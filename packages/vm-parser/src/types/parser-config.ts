@@ -1,4 +1,4 @@
-import type { MaybeArray } from './type-utils.js';
+import type { MaybeArray } from './type-utils';
 
 export type CreateParserConfig<T extends PageFetchers> = (rpcUrl: string) => ParserConfig<T>;
 
@@ -13,7 +13,7 @@ export type ParserConfig<T extends PageFetchers> = {
   [K in keyof T]?: T[K] extends DataFetcherFunc ? PageConfig<T[K]> : never;
 };
 
-type PageConfig<TDataFetcherFunc extends DataFetcherFunc> = {
+export type PageConfig<TDataFetcherFunc extends DataFetcherFunc> = {
   getPageData: TDataFetcherFunc;
   displayFormat: (data: Awaited<ReturnType<TDataFetcherFunc>>) => PageSection[];
 };

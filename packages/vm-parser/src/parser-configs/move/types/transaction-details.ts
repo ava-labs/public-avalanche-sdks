@@ -1,4 +1,4 @@
-import type { HexString } from '@/types/type-utils.js';
+import type { HexString } from '@/types/type-utils';
 
 enum MoveTxStatus {
   SUCCESS = 'Executed successfully',
