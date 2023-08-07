@@ -33,26 +33,39 @@ export type Field = {
   // The value to be displayed in the explorer.
   displayValue: MaybeArray<string | number | boolean>;
 
-  // The value that will be used to link to another page in the explorer
-  uriValue: string | number;
+  // The format in which displayValue will be displayed.
+  displayFormat: DataDisplayFormat;
 
-  // The page that the link will point to. If not provided, the value won't link anywhere.
-  uriDestination: UriDestination;
+  // The value that will be used to link to another page in the explorer
+  uriValue?: string | number;
+
+  // The route or external link that the value will route to when clicked.
+  uriDestination?: UriDestination;
 };
 
+/**
+ * Various locations which a uriValue will route to.
+ */
 export enum UriDestination {
-  ADDRESS = 'address',
-  BLOCK_HASH = 'block-hash',
-  BLOCK_NUMBER = 'block-number',
-  TRANSACTION_HASH = 'transaction-hash',
+  ADDRESS = '/address/:address',
+  BLOCK_HASH = '/block/:blockHash',
+  BLOCK_NUMBER = '/block/:blockNumber',
+  TRANSACTION_HASH = '/tx/:txHash',
+  TOKEN_ADDRESS = 'token/:tokenAddress',
+  EXTERNAL_LINK = 'EXTERNAL_LINK', // This is a special case that will open the link at an external domain.
 }
 
-export enum DataDisplayType {
-  HASH = 'hash',
-  NUMBER = 'number',
-  STRING = 'string',
-  BOOLEAN = 'boolean',
-  SUCCESS_FAILURE = 'success-failure',
-  DATETIME = 'datetime',
-  RELATIVE_DATETIME = 'relative-datetime',
+/**
+ * How the displayValue should be displayed in the UI.
+ */
+export enum DataDisplayFormat {
+  HASH = 'HASH', // Displays as a hash which truncates depending on the screen size.
+  NUMBER = 'NUMBER',
+  STRING = 'STRING',
+  BOOLEAN = 'BOOLEAN',
+  BOOLEAN_SUCCESS_FAILURE = 'BOOLEAN_SUCCESS_FAILURE',
+  DATETIME = 'DATETIME', // Displays a unix timestamp full date and time
+  RELATIVE_DATETIME = 'RELATIVE_DATETIME', // Displays a unix timestamp as a relative time from now.
+  JSON = 'JSON', // Displays a JSON object as a string.
+  STRING_CHIP = 'STRING_CHIP', // Displays the string as a chip.
 }

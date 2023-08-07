@@ -1,4 +1,4 @@
-import { UriDestination, type CreateParserConfig } from '@/types/parser-config';
+import { UriDestination, type CreateParserConfig, DataDisplayFormat } from '@/types/parser-config';
 import { fetcher } from '@/utils/fetcher';
 import type { MoveTxDetails } from './types/transaction-details';
 
@@ -40,7 +40,8 @@ export const createMoveVmConfig: CreateParserConfig<{
                 name: 'Tx Hash',
                 description: 'The hash of the transaction.',
                 displayValue: tx.data.hash,
-                uriDestination: UriDestination.ADDRESS,
+                displayFormat: DataDisplayFormat.HASH,
+                uriDestination: UriDestination.TRANSACTION_HASH,
                 uriValue: tx.data.hash,
               },
             ],
