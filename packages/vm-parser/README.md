@@ -18,12 +18,32 @@
 
 - MoveVM
 
+## Getting Started
+
+```sh
+  npm install @avalabs/vm-parser
+  # or
+  yarn add @avalabs/vm-parser
+  # or
+  pnpm add @avalabs/vm-parser
+```
+
 ## Overview
 
 ```tsx
 // 1. Import modules.
-import { createMoveVmConfig } from '@avalabs/vm-parser';
-import { Card, CardTitle, CardContent, TableContainer, Table, TableBody, TableRow, TableCell } from 'some-ui-library';
+import { createMoveVmConfig, DataDisplayFormat } from '@avalabs/vm-parser';
+import {
+  Card,
+  CardTitle,
+  CardContent,
+  Chip,
+  TableContainer,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+} from 'some-ui-library';
 import useSWR from 'swr'; // Or your preferred data fetching library
 
 const MOVE_RPC_URL =
@@ -45,10 +65,19 @@ const TransactionDetails = ({ txId }: { txId: string }) => {
             <TableContainer>
               <Table>
                 <TableBody>
-                  {fields.map((field) => (
+                  {fields.map(({ name, displayValue, displayFormat }) => (
                     <TableRow>
                       <TableCell>{field.name}</TableCell>
-                      <TableCell>{field.displayValue}</TableCell>
+                      <TableCell>
+                        /* Display the field differently depending on its display formatter */
+                        {field.displayFormat === DataDisplayFormat.CHIP ? (
+                          <Chip>{field.displayValue}</Chip>
+                        ) : field.displayFormat === DataDisplayFormat.DATETIME ? (
+                          new Date(field.displayValue).toLocaleString()
+                        ) : (
+                          fields.displayValue
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
