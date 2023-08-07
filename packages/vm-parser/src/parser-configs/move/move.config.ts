@@ -1,6 +1,6 @@
 import { UriDestination, type CreateParserConfig, DataDisplayFormat } from '@/types/parser-config';
 import { fetcher } from '@/utils/fetcher';
-import type { MoveTxDetails } from './types/transaction-details';
+import { MoveTxStatus, type MoveTxDetails } from './types/transaction-details';
 
 export const createMoveVmConfig: CreateParserConfig<{
   transactionDetails: (txId: string) => Promise<MoveTxDetails>;
@@ -41,8 +41,22 @@ export const createMoveVmConfig: CreateParserConfig<{
                 description: 'The hash of the transaction.',
                 displayValue: tx.data.hash,
                 displayFormat: DataDisplayFormat.HASH,
-                uriDestination: UriDestination.TRANSACTION_HASH,
                 uriValue: tx.data.hash,
+                uriDestination: UriDestination.TRANSACTION_HASH,
+              },
+              {
+                name: 'From',
+                description: 'The sender of the transaction.',
+                displayValue: tx.data.sender,
+                displayFormat: DataDisplayFormat.HASH,
+                uriValue: tx.data.sender,
+                uriDestination: UriDestination.ADDRESS,
+              },
+              {
+                name: 'Status',
+                description: 'Whether the transaction succeeded or failed.',
+                displayValue: tx.data.vm_status === MoveTxStatus.SUCCESS ? true : false,
+                displayFormat: DataDisplayFormat.BOOLEAN_SUCCESS_FAILURE,
               },
             ],
           },

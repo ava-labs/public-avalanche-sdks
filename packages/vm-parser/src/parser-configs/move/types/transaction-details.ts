@@ -1,6 +1,6 @@
 import type { HexString } from '@/types/type-utils';
 
-enum MoveTxStatus {
+export enum MoveTxStatus {
   SUCCESS = 'Executed successfully',
   OUT_OF_GAS = 'Out of gas',
 }
