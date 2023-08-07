@@ -2,6 +2,7 @@ import type { HexString } from '@/types/type-utils.js';
 
 enum MoveTxStatus {
   SUCCESS = 'Executed successfully',
+  OUT_OF_GAS = 'Out of gas',
 }
 
 export type MoveTxDetails = {

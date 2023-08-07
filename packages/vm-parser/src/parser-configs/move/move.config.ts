@@ -23,7 +23,7 @@ export const createMoveVmConfig: CreateParserConfig<{
   return {
     transactionDetails: {
       getPageData: async (txId) => {
-        const { result } = await moveVmClient<any>('getTransactionByHash', [
+        const { result } = await moveVmClient<{ result: MoveTxDetails }>('getTransactionByHash', [
           {
             data: txId,
           },
@@ -34,7 +34,7 @@ export const createMoveVmConfig: CreateParserConfig<{
       displayFormat: (tx) => {
         return [
           {
-            cardtitle: 'Transaction Details',
+            sectionTitle: 'Transaction Details',
             fields: [
               {
                 name: 'Tx Hash',

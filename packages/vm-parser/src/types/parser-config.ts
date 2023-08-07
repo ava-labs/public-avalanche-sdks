@@ -15,11 +15,11 @@ export type ParserConfig<T extends PageFetchers> = {
 
 type PageConfig<TDataFetcherFunc extends DataFetcherFunc> = {
   getPageData: TDataFetcherFunc;
-  displayFormat: (data: Awaited<ReturnType<TDataFetcherFunc>>) => CardSection[];
+  displayFormat: (data: Awaited<ReturnType<TDataFetcherFunc>>) => PageSection[];
 };
 
-export type CardSection = {
-  cardtitle?: string;
+export type PageSection = {
+  sectionTitle?: string;
   fields: Field[];
 };
 

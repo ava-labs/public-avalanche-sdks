@@ -8,6 +8,7 @@
     "prettier": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore --write \"src/**/*.ts*\""
   },
   "dependencies": {
+    "aptos": "1.17.0",
     "lodash-es": "4.17.21"
   }
 }
