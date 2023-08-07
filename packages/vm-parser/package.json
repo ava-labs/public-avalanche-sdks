@@ -1,5 +1,5 @@
 {
-  "name": "@avalabs/agnostic-vm-parser",
+  "name": "@avalabs/vm-parser",
   "version": "1.0.0",
   "main": "dist/index.js",
   "type": "module",
