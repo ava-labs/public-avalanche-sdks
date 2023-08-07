@@ -30,12 +30,6 @@ importers:
         specifier: 5.1.6
         version: 5.1.6
 
-  packages/agnostic-vm-parser:
-    dependencies:
-      lodash-es:
-        specifier: 4.17.21
-        version: 4.17.21
-
   packages/eslint:
     dependencies:
       eslint:
@@ -54,11 +48,13 @@ importers:
         specifier: latest
         version: 7.33.1(eslint@8.46.0)
 
-  packages/tsconfig:
-    devDependencies:
-      typescript:
-        specifier: 5.1.6
-        version: 5.1.6
+  packages/tsconfig: {}
+
+  packages/vm-parser:
+    dependencies:
+      lodash-es:
+        specifier: 4.17.21
+        version: 4.17.21
 
 packages:
 
