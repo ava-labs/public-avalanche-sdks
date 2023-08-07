@@ -1,4 +1,4 @@
-import { UriDestination, type CreateParserConfig, DataDisplayFormat } from '@/types/parser-config';
+import { UriDestination, type CreateParserConfig, DataDisplayFormat, type Field } from '@/types/parser-config';
 import { fetcher } from '@/utils/fetcher';
 import { MoveTxStatus, type MoveTxDetails } from './types/transaction-details';
 
@@ -55,7 +55,7 @@ export const createMoveVmConfig: CreateParserConfig<{
               {
                 name: 'Status',
                 description: 'Whether the transaction succeeded or failed.',
-                displayValue: tx.data.vm_status === MoveTxStatus.SUCCESS ? true : false,
+                displayValue: tx.data.vm_status === MoveTxStatus.SUCCESS,
                 displayFormat: DataDisplayFormat.BOOLEAN_SUCCESS_FAILURE,
               },
             ],
