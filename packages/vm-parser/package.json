@@ -10,5 +10,8 @@
   "dependencies": {
     "aptos": "1.17.0",
     "lodash-es": "4.17.21"
+  },
+  "devDependencies": {
+    "type-fest": "4.2.0"
   }
 }

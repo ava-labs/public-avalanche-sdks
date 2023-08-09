@@ -1,3 +1,6 @@
+import type { MaybeArray } from './type-utils';
+import { type Simplify } from 'type-fest';
+
 export type CreateParserConfig<T extends PageFetchers> = (rpcUrl: string) => ParserConfig<T>;
 
 export type PageFetchers = {
@@ -17,75 +20,110 @@ export type PageConfig<TDataFetcherFunc extends DataFetcherFunc> = {
 };
 
 export type PageSection = {
-  sectionTitle?: string;
+  title?: string;
   fields: Field[];
 };
 
-export type Field = DisplayValueAttributes & {
+export type Field = Simplify<{
   // The name of the field.
   name: string;
 
   // The tooltip description for the datum.
   description?: string;
 
-  // The value that will be used to link to another page in the explorer
-  uriValue?: string | number;
+  displayInfo: MaybeArray<FieldDisplayValue>;
+}>;
 
-  // The route or external link that the value will route to when clicked.
+type FieldDisplayInfo<TDataDisplayFormat extends keyof DataDisplayFormatMap> = {
+  value: DataDisplayFormatMap[TDataDisplayFormat];
+  displayAs: TDataDisplayFormat;
+  uriValue?: string;
   uriDestination?: UriDestination;
+  textColor?: 'text.primary' /* default */ | 'text.secondary' | 'success' | 'error' | 'warning' | 'info';
 };
 
-export type DisplayValueAttributes =
-  | {
-      displayFormat: DataDisplayFormat.BOOLEAN_SUCCESS_FAILURE;
-      displayValue: boolean;
-    }
-  | {
-      displayFormat: DataDisplayFormat.CHIP;
-      displayValue: number | string | boolean;
-    }
-  | {
-      displayFormat: DataDisplayFormat.DATETIME;
-      displayValue: string; // unix timestamp
-    }
-  | {
-      displayFormat: DataDisplayFormat.DATETIME_RELATIVE;
-      displayValue: string;
-    }
-  | {
-      displayFormat: DataDisplayFormat.HASH;
-      displayValue: string;
-    }
-  | {
-      displayFormat: DataDisplayFormat.JSON;
-      displayValue: string;
-    }
-  | {
-      displayFormat: DataDisplayFormat.TEXT;
-      displayValue: number | string | boolean;
-    };
+type FieldDisplayValue = {
+  [K in keyof DataDisplayFormatMap]: Simplify<MaybeArray<FieldDisplayInfo<K>>>;
+}[keyof DataDisplayFormatMap];
+
+/**
+ * Maps the display format to the type of the value.
+ */
+type DataDisplayFormatMap = {
+  [DataDisplayAs.AVATAR_IMAGE]: string;
+  [DataDisplayAs.CHIP]: number | string | boolean;
+  [DataDisplayAs.DATETIME]: string; // UNIX Timestamp
+  [DataDisplayAs.DATETIME_RELATIVE]: string; // UNIX Timestamp
+  [DataDisplayAs.HASH]: string;
+  [DataDisplayAs.JSON]: string;
+  [DataDisplayAs.TEXT]: number | string | boolean;
+};
+
+/**
+ * How the displayValue should be displayed in the UI.
+ */
+export enum DataDisplayAs {
+  /**
+   * Displays the value as an image in a circular avatar.
+   */
+  AVATAR_IMAGE = 'AVATAR_IMAGE',
+  /**
+   * Displays the value as a string in a chip.
+   */
+  CHIP = 'CHIP',
+  /**
+   * Displays the value as a datetime string.
+   */
+  DATETIME = 'DATETIME',
+  /**
+   * Displays the value as a unix timestamp.
+   */
+  DATETIME_RELATIVE = 'DATETIME_RELATIVE', // Displays a unix timestamp as a relative time from now.
+  /**
+   * Displays the value as a hash (we will dynamically truncate it to fit the screen size).
+   */
+  HASH = 'HASH',
+  /**
+   * Displays the string value as JSON.
+   */
+  JSON = 'JSON',
+  /**
+   * Displays the string value as plain text.
+   */
+  TEXT = 'TEXT',
+}
 
 /**
  * Various locations which a uriValue will route to.
  */
 export enum UriDestination {
-  ADDRESS = '/address/:address',
-  BLOCK_HASH = '/block/:blockHash',
-  BLOCK_NUMBER = '/block/:blockNumber',
-  TRANSACTION_HASH = '/tx/:txHash',
-  TOKEN_ADDRESS = 'token/:tokenAddress',
-  EXTERNAL_LINK = 'EXTERNAL_LINK', // This is a special case that will open the link at an external domain.
-}
+  /**
+   * Link to the Address page ('/address/:address')
+   * Value must be an address.
+   */
+  ADDRESS_PAGE = '/address/:address',
 
-/**
- * How the displayValue should be displayed in the UI.
- */
-export enum DataDisplayFormat {
-  BOOLEAN_SUCCESS_FAILURE = 'BOOLEAN_SUCCESS_FAILURE',
-  CHIP = 'CHIP', // Displays the value as a string in a chip
-  DATETIME = 'DATETIME', // Displays a unix timestamp full date and time
-  DATETIME_RELATIVE = 'DATETIME_RELATIVE', // Displays a unix timestamp as a relative time from now.
-  HASH = 'HASH', // Displays as a hash which truncates depending on the screen size.
-  JSON = 'JSON', // Displays a JSON object as a string.
-  TEXT = 'TEXT',
+  /**
+   * Link to the Block Details page ('/block/:blockId')
+   * Value must be a block ID.
+   */
+  BLOCK_PAGE = '/block/:blockId',
+
+  /**
+   * Link to the Transaction page ('/tx/:txId')
+   * Value must be a transaction ID.
+   */
+  TRANSACTION_PAGE = '/tx/:txId',
+
+  /**
+   * Link to the Token page ('token/:contractAddress')
+   * Value must be a token address.
+   */
+  TOKEN_PAGE = 'token/:contractAddress',
+
+  /**
+   * Link externally in a new tab.
+   * Value must be a full URL.
+   */
+  EXTERNAL_LINK = 'EXTERNAL_LINK', // This is a special case that will open the link at an external domain.
 }

@@ -1,4 +1,4 @@
-import { UriDestination, type CreateParserConfig, DataDisplayFormat, type Field } from '@/types/parser-config';
+import { UriDestination, type CreateParserConfig, DataDisplayAs } from '@/types/parser-config';
 import { fetcher } from '@/utils/fetcher';
 import { MoveTxStatus, type MoveTxDetails } from './types/transaction-details';
 
@@ -34,29 +34,59 @@ export const createMoveVmConfig: CreateParserConfig<{
       displayFormat: (tx) => {
         return [
           {
-            sectionTitle: 'Transaction Details',
+            title: 'Transaction Details',
             fields: [
               {
                 name: 'Tx Hash',
                 description: 'The hash of the transaction.',
-                displayValue: tx.data.hash,
-                displayFormat: DataDisplayFormat.HASH,
-                uriValue: tx.data.hash,
-                uriDestination: UriDestination.TRANSACTION_HASH,
+                displayInfo: {
+                  value: tx.data.hash,
+                  displayAs: DataDisplayAs.HASH,
+                  uriDestination: UriDestination.TRANSACTION_PAGE,
+                  uriValue: tx.data.hash,
+                  textColor: 'text.primary',
+                },
               },
               {
                 name: 'From',
                 description: 'The sender of the transaction.',
-                displayValue: tx.data.sender,
-                displayFormat: DataDisplayFormat.HASH,
-                uriValue: tx.data.sender,
-                uriDestination: UriDestination.ADDRESS,
+                displayInfo: {
+                  value: tx.data.sender,
+                  displayAs: DataDisplayAs.HASH,
+                  uriDestination: UriDestination.ADDRESS_PAGE,
+                  uriValue: tx.data.sender,
+                  textColor: 'text.primary',
+                },
               },
               {
                 name: 'Status',
                 description: 'Whether the transaction succeeded or failed.',
-                displayValue: tx.data.vm_status === MoveTxStatus.SUCCESS,
-                displayFormat: DataDisplayFormat.BOOLEAN_SUCCESS_FAILURE,
+                displayInfo: {
+                  value: tx.data.vm_status === MoveTxStatus.SUCCESS ? 'Success' : 'Failed',
+                  displayAs: DataDisplayAs.TEXT,
+                  textColor: tx.data.vm_status === MoveTxStatus.SUCCESS ? 'success' : 'error',
+                },
+              },
+              {
+                name: 'Gas Price',
+                description: 'The gas price of the transaction.',
+                // 1.234 Ⓜ️ MVMT
+                displayInfo: [
+                  {
+                    value: tx.data.gas_unit_price,
+                    displayAs: DataDisplayAs.TEXT,
+                  },
+                  {
+                    value:
+                      'https://1788754675-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/collections%2FXJdUjb2rV41DvrRCWXQu%2Ficon%2Fi79XSuKKnzB2pJQwvFR8%2Flogo.svg?alt=media',
+                    displayAs: DataDisplayAs.AVATAR_IMAGE,
+                  },
+                  {
+                    value: 'MVMT',
+                    displayAs: DataDisplayAs.TEXT,
+                    textColor: 'text.secondary',
+                  },
+                ],
               },
             ],
           },
