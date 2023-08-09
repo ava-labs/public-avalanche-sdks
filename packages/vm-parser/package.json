@@ -12,6 +12,7 @@
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
-    "type-fest": "4.2.0"
+    "type-fest": "4.2.0",
+    "@avalabs/tsup": "workspace:*"
   }
 }
