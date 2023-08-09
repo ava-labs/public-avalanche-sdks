@@ -34,7 +34,7 @@ export type Field = Simplify<{
   displayInfo: MaybeArray<FieldDisplayValue>;
 }>;
 
-type FieldDisplayInfo<TDataDisplayFormat extends keyof DataDisplayFormatMap> = {
+export type FieldDisplayInfo<TDataDisplayFormat extends keyof DataDisplayFormatMap> = {
   value: DataDisplayFormatMap[TDataDisplayFormat];
   displayAs: TDataDisplayFormat;
   uriValue?: string;
@@ -42,14 +42,14 @@ type FieldDisplayInfo<TDataDisplayFormat extends keyof DataDisplayFormatMap> = {
   textColor?: 'text.primary' /* default */ | 'text.secondary' | 'success' | 'error' | 'warning' | 'info';
 };
 
-type FieldDisplayValue = {
+export type FieldDisplayValue = {
   [K in keyof DataDisplayFormatMap]: Simplify<MaybeArray<FieldDisplayInfo<K>>>;
 }[keyof DataDisplayFormatMap];
 
 /**
  * Maps the display format to the type of the value.
  */
-type DataDisplayFormatMap = {
+export type DataDisplayFormatMap = {
   [DataDisplayAs.AVATAR_IMAGE]: string;
   [DataDisplayAs.CHIP]: number | string | boolean;
   [DataDisplayAs.DATETIME]: string; // UNIX Timestamp
