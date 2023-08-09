@@ -1,5 +1,11 @@
 # @avalabs/vm-parser
 
+## 1.5.0
+
+### Minor Changes
+
+- 85fbda2: asdf
+
 ## 1.4.0
 
 ### Minor Changes
