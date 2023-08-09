@@ -1,5 +1,11 @@
 # @avalabs/vm-parser
 
+## 1.6.0
+
+### Minor Changes
+
+- 005f40c: Fix type
+
 ## 1.5.0
 
 ### Minor Changes
