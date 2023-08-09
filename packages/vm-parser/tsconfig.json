@@ -1,10 +1,8 @@
 {
   "extends": "@avalabs/tsconfig/tsconfig.base.json",
   "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "incremental": false // Need to turn off because of tsup dts
   },
   "include": ["src"]
 }
