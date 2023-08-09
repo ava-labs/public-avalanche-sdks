@@ -1,5 +1,13 @@
 # @avalabs/vm-parser
 
+## 1.4.0
+
+### Minor Changes
+
+- 430a32a: Fix CI
+- 9bd5968: Update release CI to only publish to npm
+- b4e6d9f: Use tsup for build
+
 ## 1.3.0
 
 ### Minor Changes
