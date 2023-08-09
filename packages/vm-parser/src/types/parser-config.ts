@@ -43,7 +43,7 @@ export type FieldDisplayInfo<TDataDisplayFormat extends keyof DataDisplayFormatM
 };
 
 export type FieldDisplayValue = {
-  [K in keyof DataDisplayFormatMap]: Simplify<MaybeArray<FieldDisplayInfo<K>>>;
+  [K in keyof DataDisplayFormatMap]: FieldDisplayInfo<K>;
 }[keyof DataDisplayFormatMap];
 
 /**
