@@ -1,5 +1,5 @@
-import { UriDestination, type CreateParserConfig, DataDisplayAs } from '@/types/parser-config';
-import { fetcher } from '@/utils/fetcher';
+import { UriDestination, type CreateParserConfig, DataDisplayAs } from '../../types/parser-config';
+import { fetcher } from '../../utils/fetcher';
 import { MoveTxStatus, type MoveTxDetails } from './types/transaction-details';
 
 export const createMoveVmConfig: CreateParserConfig<{

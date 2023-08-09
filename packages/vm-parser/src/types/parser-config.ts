@@ -1,5 +1,5 @@
 import type { MaybeArray } from './type-utils';
-import { type Simplify } from 'type-fest';
+import type { Simplify } from 'type-fest';
 
 export type CreateParserConfig<T extends PageFetchers> = (rpcUrl: string) => ParserConfig<T>;
 
