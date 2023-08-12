@@ -1,8 +1,9 @@
-import { UriDestination, type CreateParserConfig, DataDisplayAs } from '../../types/parser-config';
+import { Color, DataDisplayAs, UriDestination } from '../../types/field-value';
+import { type CreateVmParse } from '../../types/parser-config';
 import { fetcher } from '../../utils/fetcher';
-import { MoveTxStatus, type MoveTxDetails } from './types/transaction-details';
+import { type MoveTxDetails } from './types/transaction-details';
 
-export const createMoveVmConfig: CreateParserConfig<{
+export const createMoveVmConfig: CreateVmParse<{
   transactionDetails: (txId: string) => Promise<MoveTxDetails>;
 }> = (rpcUrl: string) => {
   const moveVmClient = async <TResponse = unknown>(method: string, params: any[]) => {
@@ -31,63 +32,27 @@ export const createMoveVmConfig: CreateParserConfig<{
 
         return result;
       },
-      displayFormat: (tx) => {
+      getPageDisplayFormat: (tx) => {
         return [
           {
             title: 'Transaction Details',
-            fields: [
-              {
-                name: 'Tx Hash',
-                description: 'The hash of the transaction.',
-                displayInfo: {
-                  value: tx.data.hash,
+            format: 'table-vertical',
+            width: 'full-width',
+            tableRows: [
+              [
+                COMMON_FIELDS.TRANSACTION_HASH,
+                {
                   displayAs: DataDisplayAs.HASH,
-                  uriDestination: UriDestination.TRANSACTION_PAGE,
-                  uriValue: tx.data.hash,
-                  textColor: 'text.primary',
-                },
-              },
-              {
-                name: 'From',
-                description: 'The sender of the transaction.',
-                displayInfo: {
-                  value: tx.data.sender,
-                  displayAs: DataDisplayAs.HASH,
-                  uriDestination: UriDestination.ADDRESS_PAGE,
-                  uriValue: tx.data.sender,
-                  textColor: 'text.primary',
-                },
-              },
-              {
-                name: 'Status',
-                description: 'Whether the transaction succeeded or failed.',
-                displayInfo: {
-                  value: tx.data.vm_status === MoveTxStatus.SUCCESS ? 'Success' : 'Failed',
-                  displayAs: DataDisplayAs.TEXT,
-                  textColor: tx.data.vm_status === MoveTxStatus.SUCCESS ? 'success' : 'error',
-                },
-              },
-              {
-                name: 'Gas Price',
-                description: 'The gas price of the transaction.',
-                // 1.234 Ⓜ️ MVMT
-                displayInfo: [
-                  {
-                    value: tx.data.gas_unit_price,
-                    displayAs: DataDisplayAs.TEXT,
+                  options: {
+                    value: tx.data.hash,
+                    color: Color.TEXT_PRIMARY,
+                    linkOptions: {
+                      toDestination: UriDestination.TRANSACTION_PAGE,
+                      toValue: tx.data.hash,
+                    },
                   },
-                  {
-                    value:
-                      'https://1788754675-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/collections%2FXJdUjb2rV41DvrRCWXQu%2Ficon%2Fi79XSuKKnzB2pJQwvFR8%2Flogo.svg?alt=media',
-                    displayAs: DataDisplayAs.AVATAR_IMAGE,
-                  },
-                  {
-                    value: 'MVMT',
-                    displayAs: DataDisplayAs.TEXT,
-                    textColor: 'text.secondary',
-                  },
-                ],
-              },
+                },
+              ],
             ],
           },
         ];
@@ -95,3 +60,63 @@ export const createMoveVmConfig: CreateParserConfig<{
     },
   };
 };
+
+// return [
+//   {
+//     title: 'Transaction Details',
+//     fields: [
+//       {
+//         name: 'Tx Hash',
+//         description: 'The hash of the transaction.',
+//         displayInfo: {
+//           value: tx.data.hash,
+//           displayAs: DataDisplayAs.HASH,
+//           uriDestination: UriDestination.TRANSACTION_PAGE,
+//           uriValue: tx.data.hash,
+//           textColor: 'text.primary',
+//         },
+//       },
+//       {
+//         name: 'From',
+//         description: 'The sender of the transaction.',
+//         displayInfo: {
+//           value: tx.data.sender,
+//           displayAs: DataDisplayAs.HASH,
+//           uriDestination: UriDestination.ADDRESS_PAGE,
+//           uriValue: tx.data.sender,
+//           textColor: 'text.primary',
+//         },
+//       },
+//       {
+//         name: 'Status',
+//         description: 'Whether the transaction succeeded or failed.',
+//         displayInfo: {
+//           value: tx.data.vm_status === MoveTxStatus.SUCCESS ? 'Success' : 'Failed',
+//           displayAs: DataDisplayAs.TEXT,
+//           textColor: tx.data.vm_status === MoveTxStatus.SUCCESS ? 'success' : 'error',
+//         },
+//       },
+//       {
+//         name: 'Gas Price',
+//         description: 'The gas price of the transaction.',
+//         // 1.234 Ⓜ️ MVMT
+//         displayInfo: [
+//           {
+//             value: tx.data.gas_unit_price,
+//             displayAs: DataDisplayAs.TEXT,
+//           },
+//           {
+//             value:
+//               'https://1788754675-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/collections%2FXJdUjb2rV41DvrRCWXQu%2Ficon%2Fi79XSuKKnzB2pJQwvFR8%2Flogo.svg?alt=media',
+//             displayAs: DataDisplayAs.AVATAR_IMAGE,
+//           },
+//           {
+//             value: 'MVMT',
+//             displayAs: DataDisplayAs.TEXT,
+//             textColor: 'text.secondary',
+//           },
+//         ],
+//       },
+//     ],
+//   },
+// ];
