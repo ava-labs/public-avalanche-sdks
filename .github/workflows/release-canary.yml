@@ -15,6 +15,12 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
+      - name: Create .npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
+
       - name: Setup pnpm 7
         uses: pnpm/action-setup@v2
         with:
@@ -48,4 +54,4 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           pnpm changeset version --snapshot ${{ steps.extract_branch.outputs.branch }}
-          pnpm changeset publish --tag ${{ steps.extract_branch.outputs.branch }} --otp=${{ secrets.NPM_TOKEN }}
+          pnpm changeset publish --tag ${{ steps.extract_branch.outputs.branch }}
