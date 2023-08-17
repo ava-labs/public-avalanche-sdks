@@ -1,5 +1,12 @@
 # @avalabs/vm-parser
 
+## 1.8.0
+
+### Minor Changes
+
+- 588568a: Test w/ changeset
+- d7a7bdf: Set up linting and precommit hooks
+
 ## 1.7.0
 
 ### Minor Changes
