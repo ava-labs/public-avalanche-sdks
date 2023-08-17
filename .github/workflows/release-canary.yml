@@ -30,7 +30,9 @@ jobs:
 
       - name: TEST LOG BRANCH EXTRACTION OUTPUT
         run: |
-          echo ${{ steps.extract_branch2.outputs.branch }}
+          echo "test 1"
+          echo "${{ steps.extract_branch2.outputs.branch }}"
+          echo "test 2"
 
       - name: Create .npmrc
         run: |
