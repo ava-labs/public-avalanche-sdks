@@ -1,5 +1,11 @@
 # @avalabs/vm-parser
 
+## 0.0.0-canary-release-ci-2-20230817061742
+
+### Minor Changes
+
+- 588568a: Test w/ changeset
+
 ## 1.7.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@avalabs/vm-parser",
-  "version": "1.7.0",
+  "version": "0.0.0-canary-release-ci-2-20230817061742",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
