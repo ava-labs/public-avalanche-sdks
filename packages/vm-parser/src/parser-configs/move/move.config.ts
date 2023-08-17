@@ -7,7 +7,7 @@ import { type MoveTxDetails } from './types/transaction-details';
 export const createMoveVmConfig: CreateVmParse<{
   transactionDetails: (txId: string) => Promise<MoveTxDetails>;
 }> = (rpcUrl: string) => {
-  const moveVmClient = async <TResponse = unknown>(method: string, params: any[]) => {
+  const moveVmClient = async <TResponse = unknown>(method: string, params: unknown[]) => {
     return await fetcher<TResponse>(rpcUrl, {
       method: 'POST',
       headers: {

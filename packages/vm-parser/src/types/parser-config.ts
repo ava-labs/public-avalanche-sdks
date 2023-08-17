@@ -26,4 +26,4 @@ type GetPageDataFetchers = {
   addressDetails?: (address: string) => Promise<unknown>;
 };
 
-type GetPageData = (...args: any[]) => Promise<unknown>;
+type GetPageData = (...args: unknown[]) => Promise<unknown>;
