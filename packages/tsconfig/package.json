@@ -1,5 +1,5 @@
 {
-  "name": "@avalabs/tsconfig",
+  "name": "tsconfig-custom",
   "version": "1.0.0",
   "private": true,
   "scripts": {

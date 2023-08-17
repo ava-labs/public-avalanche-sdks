@@ -12,8 +12,8 @@
     "release": "turbo build && changeset publish"
   },
   "devDependencies": {
-    "@avalabs/eslint": "workspace:*",
-    "@avalabs/tsconfig": "workspace:*",
+    "eslint-config-custom": "workspace:*",
+    "tsconfig-custom": "workspace:*",
     "@changesets/cli": "2.26.2",
     "eslint": "8.46.0",
     "prettier": "3.0.1",
