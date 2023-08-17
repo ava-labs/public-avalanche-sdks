@@ -39,9 +39,12 @@ jobs:
       - name: Build, Test, & Lint
         run: pnpm ci
 
+      - id: branch-name
+        uses: tj-actions/branch-names@v7
+
       - name: Publish Canary to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          pnpm changeset version --snapshot ${{ github.base_ref }}
-          pnpm changeset publish --tag ${{ github.base_ref }}
+          pnpm changeset version --snapshot ${{ steps.branch-name.outputs.current_branch }}
+          pnpm changeset publish --tag ${{ steps.branch-name.outputs.current_branch }}
