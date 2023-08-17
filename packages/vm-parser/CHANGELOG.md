@@ -1,5 +1,12 @@
 # @avalabs/vm-parser
 
+## 1.7.0-next.0
+
+### Minor Changes
+
+- 9061405: Test canary
+- 7066ad5: New schema format
+
 ## 1.6.0
 
 ### Minor Changes
