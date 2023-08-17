@@ -2,15 +2,17 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev --no-cache --continue",
-    "lint": "turbo lint",
-    "prettier": "prettier --write ./",
-    "clean": "turbo clean && rm -rf node_modules",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
-    "version-packages": "changeset version",
+    "ci": "turbo ci",
+    "clean": "turbo clean && rm -rf node_modules",
+    "dev": "turbo dev --no-cache --continue",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "lint": "turbo lint",
+    "prepare": "husky install",
+    "prettier": "prettier --write ./",
     "release": "turbo build && changeset publish",
-    "prepare": "husky install"
+    "test": "turbo test",
+    "version-packages": "changeset version"
   },
   "devDependencies": {
     "@changesets/cli": "2.26.2",

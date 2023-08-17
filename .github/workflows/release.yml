@@ -28,8 +28,10 @@ jobs:
       - name: Install Dependencies
         run: pnpm i
 
-      - name: Build
-        run: pnpm build
+      # This will run all build, test, and lint scripts in parallel,
+      # outlined in the turbo.json file
+      - name: Build, Test, & Lint
+        run: pnpm ci
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
