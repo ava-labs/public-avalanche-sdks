@@ -1,12 +1,8 @@
-name: 'Get Canary Deploy Name'
-description: 'Gets a name used as the subject of our canary deploy.  Just the branch name with invalid characters removed.'
-inputs:
-  GITHUB_TOKEN:
-    description: 'GitHub token'
-    required: true
+name: 'Get Canary Subject'
+description: 'Gets a name used as the subject of our canary deploy (in the label and tag).  Just the branch name with invalid characters removed.'
 outputs:
-  canary-deploy-name:
+  canary-subject:
     description: 'The name used in our canary deploy.  Just the branch name with invalid characters removed.'
 runs:
   using: 'node16'
-  main: '../../dist/get-canary-deploy-name/index.js'
+  main: '../../dist/get-canary-subject/index.js'
