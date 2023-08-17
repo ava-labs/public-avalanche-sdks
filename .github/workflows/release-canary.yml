@@ -43,5 +43,5 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          pnpm changeset version --snapshot ${{ github.ref }}
-          pnpm changeset publish --tag ${{ github.ref }}
+          pnpm changeset version --snapshot ${{ github.base_ref }}
+          pnpm changeset publish --tag ${{ github.base_ref }}
