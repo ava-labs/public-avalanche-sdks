@@ -44,8 +44,8 @@ jobs:
 
       - name: Publish to npm
         if: ${{ steps.extract_branch.outputs.branch != 'INVALID_EVENT_BRANCH_UNKNOWN' }}
-        run: |
-          pnpm changeset version --snapshot ${{ steps.extract_branch.outputs.branch }}
-          pnpm changeset publish --tag ${{ steps.extract_branch.outputs.branch }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          pnpm changeset version --snapshot ${{ steps.extract_branch.outputs.branch }}
+          pnpm changeset publish --tag ${{ steps.extract_branch.outputs.branch }} --otp=${{ secrets.NPM_TOKEN }}
