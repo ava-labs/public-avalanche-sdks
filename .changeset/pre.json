@@ -1,5 +1,5 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "canary-release-ci",
   "initialVersions": {
     "@avalabs/eslint": "1.0.0",
