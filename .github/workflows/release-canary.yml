@@ -17,6 +17,21 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
+      - name: TEST BRANCH EXTRACTION
+        id: extract_branch2
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+            echo "{name}={$(echo ${GITHUB_REF##*/})}" >> $GITHUB_OUTPUT
+          elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            echo "::set-output name=branch::$(echo $GITHUB_BASE_REF)"
+          else
+            echo "::set-output name=branch::INVALID_EVENT_BRANCH_UNKNOWN"
+          fi
+
+      - name: TEST LOG BRANCH EXTRACTION OUTPUT
+        run: |
+          echo ${{ steps.extract_branch2.outputs.branch }}
+
       - name: Create .npmrc
         run: |
           echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
