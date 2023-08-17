@@ -1,5 +1,11 @@
 # @avalabs/vm-parser
 
+## 1.9.0
+
+### Minor Changes
+
+- 72bfe30: Testing changeset flow
+
 ## 1.8.0
 
 ### Minor Changes
