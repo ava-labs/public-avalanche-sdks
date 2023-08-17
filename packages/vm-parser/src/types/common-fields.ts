@@ -1,4 +1,4 @@
-const COMMON_FIELDS = {
+export const COMMON_FIELDS = {
   BLOCK_NUMBER: {
     label: 'Block Number',
     description: 'The block number of the transaction.',
