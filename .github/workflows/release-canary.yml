@@ -44,6 +44,13 @@ jobs:
         id: branch-name
         uses: tj-actions/branch-names@v7
 
+      - name: Setup Local Github Actions
+        run: pnpm run build --filter=github-actions --force
+
+      - name: Extract Canary Subject From Branch Name
+        id: get-canary-deploy-name
+        uses: ./packages/github-actions/src/get-packages-to-deploy
+
       - name: Publish Canary to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
