@@ -8,7 +8,7 @@ export type CreateVmParse<TFetchers extends GetPageDataFetchers> = (rpcUrl: stri
 
 type VmPageConfig<TGetPageData extends GetPageData> = {
   /**
-   * A function that fetches the data for the page.
+   * A function that fetches the data for the page
    */
   getPageData: TGetPageData;
 
@@ -26,4 +26,5 @@ type GetPageDataFetchers = {
   addressDetails?: (address: string) => Promise<unknown>;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type GetPageData = (...args: any[]) => Promise<unknown>;

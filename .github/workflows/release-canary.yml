@@ -34,24 +34,18 @@ jobs:
       - name: Install Dependencies
         run: pnpm i
 
-      - name: Build
-        run: pnpm build
+      # This will run all build, test, and lint scripts in parallel,
+      # outlined in the turbo.json file
+      - name: Build, Test, & Lint
+        run: pnpm ci
 
       - name: Extract Branch Name
-        id: extract_branch
-        run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-            echo "::set-output name=branch::$(echo ${GITHUB_REF##*/})"
-          elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-            echo "::set-output name=branch::$(echo $GITHUB_BASE_REF)"
-          else
-            echo "::set-output name=branch::INVALID_EVENT_BRANCH_UNKNOWN"
-          fi
+        id: branch-name
+        uses: tj-actions/branch-names@v7
 
       - name: Publish Canary to npm
-        if: ${{ steps.extract_branch.outputs.branch != 'INVALID_EVENT_BRANCH_UNKNOWN' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          pnpm changeset version --snapshot ${{ steps.extract_branch.outputs.branch }}
-          pnpm changeset publish --tag ${{ steps.extract_branch.outputs.branch }}
+          pnpm changeset version --snapshot ${{ steps.branch-name.outputs.current_branch }}
+          pnpm changeset publish --tag ${{ steps.branch-name.outputs.current_branch }}

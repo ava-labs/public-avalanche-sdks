@@ -17,7 +17,7 @@ export type MoveTxDetails = {
     success: boolean;
     vm_status: MoveTxStatus;
     accumulator_root_hash: HexString;
-    changes: any[];
+    changes: unknown[];
     sender: HexString;
     sequence_number: string;
     max_gas_amount: string;
@@ -26,7 +26,7 @@ export type MoveTxDetails = {
     payload: {
       type: string;
       function: string;
-      type_arguments: any[];
+      type_arguments: unknown[];
       arguments: string[];
     };
     signature: {

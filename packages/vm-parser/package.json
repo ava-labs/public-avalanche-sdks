@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "prettier": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore --write \"src/**/*.ts*\""
+    "prettier": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore --write \"src/**/*.ts*\"",
+    "lint": "eslint \"src/**/*.ts\""
   },
   "dependencies": {
     "aptos": "1.17.0",
     "lodash-es": "4.17.21"
   },
   "devDependencies": {
+    "eslint-config-custom": "workspace:*",
     "tsup": "7.2.0",
     "type-fest": "4.2.0"
   }
