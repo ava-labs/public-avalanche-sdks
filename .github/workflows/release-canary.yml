@@ -49,7 +49,7 @@ jobs:
 
       - name: Extract Canary Subject From Branch Name
         id: get-canary-deploy-name
-        uses: ./packages/github-actions/src/get-packages-to-deploy
+        uses: ./packages/github-actions/src/get-canary-deploy-name
 
       - name: Publish Canary to npm
         env:
