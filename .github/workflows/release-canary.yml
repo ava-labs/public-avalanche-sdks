@@ -22,7 +22,7 @@ jobs:
         run: |
           if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
             echo "{name}={$(echo ${GITHUB_REF##*/})}" >> $GITHUB_OUTPUT
-            elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+          elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
             echo "{name}={$(echo ${GITHUB_BASE_REF##*/})}" >> $GITHUB_OUTPUT
           else
             echo "::set-output name=branch::INVALID_EVENT_BRANCH_UNKNOWN"
