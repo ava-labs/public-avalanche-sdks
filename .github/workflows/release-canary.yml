@@ -40,20 +40,16 @@ jobs:
       - name: Build, Test, & Lint
         run: pnpm ci
 
-      - name: Extract Branch Name
-        id: branch-name
-        uses: tj-actions/branch-names@v7
-
       - name: Setup Local Github Actions
         run: pnpm run build --filter=github-actions --force
 
       - name: Extract Canary Subject From Branch Name
-        id: get-canary-deploy-name
-        uses: ./packages/github-actions-custom/src/get-canary-deploy-name
+        id: get-canary-subject
+        uses: ./packages/github-actions-custom/src/get-canary-subject
 
       - name: Publish Canary to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          pnpm changeset version --snapshot ${{ steps.branch-name.outputs.current_branch }}
-          pnpm changeset publish --tag ${{ steps.branch-name.outputs.current_branch }}
+          pnpm changeset version --snapshot ${{ steps.get-canary-subject.outputs.canary-subject }}
+          pnpm changeset publish --tag ${{ steps.get-canary-subject.outputs.canary-subject }}
