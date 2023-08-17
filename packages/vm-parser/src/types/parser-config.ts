@@ -26,4 +26,5 @@ type GetPageDataFetchers = {
   addressDetails?: (address: string) => Promise<unknown>;
 };
 
-type GetPageData = (...args: unknown[]) => Promise<unknown>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type GetPageData = (...args: any[]) => Promise<unknown>;
