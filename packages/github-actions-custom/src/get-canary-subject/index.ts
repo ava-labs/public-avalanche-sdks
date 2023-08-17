@@ -14,7 +14,7 @@ export function run() {
 
     // Truncate the name to a reasonable length and
     // replace all non-alphanumeric characters with a dash
-    const sanitizedBranchName = rawBranchName.slice(30).replace(/[^a-zA-Z0-9]/g, '-');
+    const sanitizedBranchName = rawBranchName.slice(0, 30).replace(/[^a-zA-Z0-9]/g, '-');
 
     console.info(
       colors.whiteBright('The subject of your canary deploy will be: '),
