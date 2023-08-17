@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "canary-release-ci",
+  "initialVersions": {
+    "@avalabs/eslint": "1.0.0",
+    "@avalabs/tsconfig": "1.0.0",
+    "@avalabs/vm-parser": "1.7.0"
+  },
+  "changesets": []
+}
