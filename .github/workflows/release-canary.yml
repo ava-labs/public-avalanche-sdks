@@ -1,4 +1,4 @@
-name: Release Canary Version to NPM
+name: Release Canary
 
 on:
   push:
@@ -48,7 +48,7 @@ jobs:
             echo "::set-output name=branch::INVALID_EVENT_BRANCH_UNKNOWN"
           fi
 
-      - name: Publish to npm
+      - name: Publish Canary to npm
         if: ${{ steps.extract_branch.outputs.branch != 'INVALID_EVENT_BRANCH_UNKNOWN' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
