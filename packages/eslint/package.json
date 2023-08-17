@@ -7,10 +7,10 @@
     "prettier": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore --write \"src/**/*.ts*\""
   },
   "dependencies": {
-    "eslint": "latest",
-    "eslint-config-next": "latest",
-    "eslint-config-prettier": "latest",
-    "eslint-plugin-react": "latest",
-    "eslint-config-turbo": "latest"
+    "eslint": "8.47.0",
+    "eslint-config-next": "13.4.16",
+    "eslint-config-prettier": "9.0.0",
+    "eslint-plugin-react": "7.33.2",
+    "eslint-config-turbo": "1.10.12"
   }
 }
