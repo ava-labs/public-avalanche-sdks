@@ -21,8 +21,10 @@ jobs:
         run: |
           echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
 
-      - name: Setup pnpm
+      - name: Setup pnpm 7
         uses: pnpm/action-setup@v2
+        with:
+          version: 7
 
       - name: Setup Node.js 18.x
         uses: actions/setup-node@v2
