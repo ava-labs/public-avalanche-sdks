@@ -39,7 +39,8 @@ jobs:
       - name: Build, Test, & Lint
         run: pnpm ci
 
-      - id: branch-name
+      - name: Extract Branch Name
+        id: branch-name
         uses: tj-actions/branch-names@v7
 
       - name: Publish Canary to npm
