@@ -17,23 +17,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: TEST BRANCH EXTRACTION
-        id: extract_branch2
-        run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-            echo "{name}={$(echo ${GITHUB_REF##*/})}" >> $GITHUB_OUTPUT
-          elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-            echo "{name}={$(echo ${GITHUB_BASE_REF##*/})}" >> $GITHUB_OUTPUT
-          else
-            echo "::set-output name=branch::INVALID_EVENT_BRANCH_UNKNOWN"
-          fi
-
-      - name: TEST LOG BRANCH EXTRACTION OUTPUT
-        run: |
-          echo "test 1"
-          echo "${{ steps.extract_branch2.outputs.branch }}"
-          echo "test 2"
-
       - name: Create .npmrc
         run: |
           echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
@@ -56,21 +39,9 @@ jobs:
       - name: Build, Test, & Lint
         run: pnpm ci
 
-      - name: Extract Branch Name
-        id: extract_branch
-        run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
-            echo "::set-output name=branch::$(echo ${GITHUB_REF##*/})"
-          elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-            echo "::set-output name=branch::$(echo $GITHUB_BASE_REF)"
-          else
-            echo "::set-output name=branch::INVALID_EVENT_BRANCH_UNKNOWN"
-          fi
-
       - name: Publish Canary to npm
-        if: ${{ steps.extract_branch.outputs.branch != 'INVALID_EVENT_BRANCH_UNKNOWN' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          pnpm changeset version --snapshot ${{ steps.extract_branch.outputs.branch }}
-          pnpm changeset publish --tag ${{ steps.extract_branch.outputs.branch }}
+          pnpm changeset version --snapshot ${{ github.ref }}
+          pnpm changeset publish --tag ${{ github.ref }}
