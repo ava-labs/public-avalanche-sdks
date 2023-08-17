@@ -43,13 +43,9 @@ jobs:
           fi
 
       - name: Publish to npm
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          version: pnpm changeset version --snapshot ${{ steps.extract_branch.outputs.branch }}
-          publish: pnpm changeset publish --tag ${{ steps.extract_branch.outputs.branch }}
-          createGithubReleases: false
+        if: ${{ steps.extract_branch.outputs.branch != 'INVALID_EVENT_BRANCH_UNKNOWN' }}
+        run: |
+          pnpm changeset version --snapshot ${{ steps.extract_branch.outputs.branch }}
+          pnpm changeset publish --tag ${{ steps.extract_branch.outputs.branch }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
