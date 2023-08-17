@@ -13,14 +13,21 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:*",
-    "tsconfig-custom": "workspace:*",
     "@changesets/cli": "2.26.2",
     "eslint": "8.46.0",
+    "eslint-config-custom": "workspace:*",
+    "husky": "^8.0.0",
+    "lint-staged": "14.0.0",
     "prettier": "3.0.1",
+    "tsconfig-custom": "workspace:*",
     "turbo": "1.10.12",
-    "typescript": "5.1.6",
-    "husky": "^8.0.0"
+    "typescript": "5.1.6"
   },
-  "packageManager": "pnpm@8.6.10"
+  "packageManager": "pnpm@8.6.10",
+  "lint-staged": {
+    "*.ts": [
+      "pnpm prettier --write",
+      "pnpm eslint -- --fix"
+    ]
+  }
 }
