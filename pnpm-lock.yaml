@@ -28,7 +28,7 @@ importers:
         version: 3.0.1
       tsconfig-custom:
         specifier: workspace:*
-        version: link:packages/tsconfig
+        version: link:packages/tsconfig-custom
       turbo:
         specifier: 1.10.12
         version: 1.10.12
@@ -60,7 +60,7 @@ importers:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.47.0)
 
-  packages/tsconfig: {}
+  packages/tsconfig-custom: {}
 
   packages/vm-parser:
     dependencies:
