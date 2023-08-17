@@ -1,3 +1,4 @@
+import { COMMON_FIELDS } from '../../types/common-fields';
 import { Color, DataDisplayAs, UriDestination } from '../../types/field-value';
 import { type CreateVmParse } from '../../types/parser-config';
 import { fetcher } from '../../utils/fetcher';
