@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "@avalabs/eslint": "1.0.0",
+    "@avalabs/tsconfig": "1.0.0",
+    "@avalabs/vm-parser": "1.6.0"
+  },
+  "changesets": []
+}
