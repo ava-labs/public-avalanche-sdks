@@ -27,7 +27,7 @@
   "lint-staged": {
     "*.ts": [
       "pnpm prettier --write",
-      "pnpm eslint -- --fix"
+      "pnpm eslint --fix"
     ]
   }
 }

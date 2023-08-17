@@ -8,7 +8,7 @@ export type CreateVmParse<TFetchers extends GetPageDataFetchers> = (rpcUrl: stri
 
 type VmPageConfig<TGetPageData extends GetPageData> = {
   /**
-   * A function that fetches the data for the page.
+   * A function that fetches the data for the page
    */
   getPageData: TGetPageData;
 
