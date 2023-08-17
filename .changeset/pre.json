@@ -6,5 +6,8 @@
     "@avalabs/tsconfig": "1.0.0",
     "@avalabs/vm-parser": "1.6.0"
   },
-  "changesets": []
+  "changesets": [
+    "five-peaches-attack",
+    "tricky-rivers-promise"
+  ]
 }
