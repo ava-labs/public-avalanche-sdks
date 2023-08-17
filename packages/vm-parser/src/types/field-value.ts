@@ -79,7 +79,7 @@ export enum DataDisplayAs {
    */
   DATETIME_RELATIVE = 'DATETIME_RELATIVE', // Displays a unix timestamp as a relative time from now.
   /**
-   * Displays the value as a hash (we will dynamically truncate it to fit the screen size).
+   * Displays the value as a hash which will be truncated in the middle, depending on the screen size.
    */
   HASH = 'HASH',
   /**
