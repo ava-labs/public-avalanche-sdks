@@ -10,7 +10,7 @@ type VmPageConfig<TGetPageData extends GetPageData> = {
   /**
    * A function that fetches the data for the page.
    */
-  getPageData: TGetPageData;
+  getPageData:   TGetPageData;
 
   /**
    * A function that formats the data for display on the page.
