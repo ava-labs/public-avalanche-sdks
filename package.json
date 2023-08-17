@@ -9,7 +9,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo build && changeset publish"
+    "release": "turbo build && changeset publish",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
@@ -18,7 +19,8 @@
     "eslint": "8.46.0",
     "prettier": "3.0.1",
     "turbo": "1.10.12",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "husky": "^8.0.0"
   },
   "packageManager": "pnpm@8.6.10"
 }
