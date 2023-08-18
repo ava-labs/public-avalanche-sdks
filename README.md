@@ -45,7 +45,7 @@ Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
 - `pnpm build` - Build all packages
 - `pnpm dev` - Develop all packages
 - `pnpm lint` - Lint all packages
-- `pnpm changeset` - Generate a changeset.  See in #versioning-and-publishing-packages
+- `pnpm changeset` - Generate a changeset. See in #versioning-and-publishing-packages
 
 ## Versioning and Publishing packages
 
