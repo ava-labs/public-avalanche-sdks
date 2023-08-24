@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/@changesets/config@2.0.0/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": true,
-  "fixed": [],
+  "fixed": [["@avalabs/bridge-unified", "@avalabs/bridge-avalanche", "@avalabs/bridge-cctp"]],
   "linked": [],
   "access": "public",
   "updateInternalDependencies": "patch",

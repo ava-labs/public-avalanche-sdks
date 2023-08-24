@@ -1,5 +1,5 @@
 {
-  "name": "tsup-config-custom",
+  "name": "@internal/tsup-config",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
-    "tsconfig-custom": "workspace:*",
+    "@internal/tsconfig": "workspace:*",
     "tsup": "7.2.0"
   }
 }

@@ -1,19 +1,20 @@
 {
-  "name": "@avalabs/unified-bridge",
-  "version": "1.0.1",
+  "name": "@avalabs/bridge-avalanche",
+  "version": "0.0.0",
   "main": "dist/index.js",
+  "private": true,
   "type": "module",
   "scripts": {
     "build": "tsup",
-    "prettier": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore --write \"src/**/*.ts*\"",
     "lint": "eslint \"src/**/*.ts\""
   },
   "dependencies": {
-    "aptos": "1.17.0",
-    "lodash-es": "4.17.21"
+    "lodash-es": "4.17.21",
+    "viem": "1.6.0"
   },
   "devDependencies": {
-    "tsup-config-custom": "workspace:*",
+    "@internal/bridge-shared": "workspace:*",
+    "@internal/tsup-config": "workspace:*",
     "eslint-config-custom": "workspace:*",
     "tsup": "7.2.0",
     "type-fest": "4.2.0"

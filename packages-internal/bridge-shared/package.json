@@ -1,0 +1,17 @@
+{
+  "name": "@internal/bridge-shared",
+  "version": "0.0.0",
+  "main": "src/index.ts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "viem": "*"
+  },
+  "devDependencies": {
+    "eslint-config-custom": "workspace:*",
+    "type-fest": "4.2.0"
+  }
+}
