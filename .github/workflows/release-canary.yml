@@ -1,0 +1,55 @@
+name: Release Canary
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - changeset-release/main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Create .npmrc
+        run: |
+          echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' >> .npmrc
+
+      - name: Setup pnpm 7
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Setup Node.js 18.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+
+      - name: Install Dependencies
+        run: pnpm i
+
+      # This will run all build, test, and lint scripts in parallel,
+      # outlined in the turbo.json file
+      - name: Build, Test, & Lint
+        run: pnpm ci
+
+      - name: Setup Local Github Actions
+        run: pnpm run build --filter=github-actions --force
+
+      - name: Extract Canary Subject From Branch Name
+        id: get-canary-subject
+        uses: ./packages-internal/github-actions/src/get-canary-subject
+
+      - name: Publish Canary to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          pnpm changeset version --snapshot ${{ steps.get-canary-subject.outputs.canary-subject }}
+          pnpm changeset publish --tag ${{ steps.get-canary-subject.outputs.canary-subject }}
