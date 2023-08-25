@@ -1,5 +1,5 @@
 import { useConnectWallet } from '@/hooks/use-connect-wallet';
-import { Button } from '@/ui/button';
+import { Button, buttonVariants } from '@/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover';
 import { MetaMaskIcon } from '@/icons/metamask';
 import { CheckCircle, WalletIcon } from 'lucide-react';
@@ -11,6 +11,9 @@ import { type Connector, useAccount } from 'wagmi';
 import { AutoAnimate } from '@/ui/auto-animate';
 import { SettingsMenu } from './settings-menu';
 import { LoadingSpinner } from '@/ui/loading-spinner';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/tooltip';
+import { cn } from '@/utils/cn';
+import { CORE_CHROME_DOWNLOAD_URL } from '@/constants';
 
 const ConnectorButton = ({
   handleConnect,
@@ -23,17 +26,30 @@ const ConnectorButton = ({
   label: string;
   icon: React.ReactNode;
 }) => {
+  const isDisabled = !connector?.ready;
   return (
-    <Button
-      variant="outline"
-      onClick={() => handleConnect(connector)}
-      disabled={!connector?.ready}
-    >
-      <span className="space-x-2 inline-flex items-center">
-        {icon}
-        <span>{label}</span>
-      </span>
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className={cn('w-full', isDisabled ? 'cursor-not-allowed' : '')}>
+          <Button
+            variant="outline"
+            onClick={() => handleConnect(connector)}
+            disabled={isDisabled}
+            className={'w-full'}
+          >
+            <span className="space-x-2 inline-flex items-center">
+              {icon}
+              <span>{label}</span>
+            </span>
+          </Button>
+        </div>
+      </TooltipTrigger>
+      {isDisabled && (
+        <TooltipContent>
+          <p>{label} not installed</p>
+        </TooltipContent>
+      )}
+    </Tooltip>
   );
 };
 
@@ -72,7 +88,7 @@ export const ConnectWalletButton = () => {
       </PopoverTrigger>
       <PopoverContent
         className="sm:max-w-[425px]"
-        align="start"
+        align="end"
       >
         <AutoAnimate>
           {!isLoading && !isConnected && (
@@ -80,13 +96,24 @@ export const ConnectWalletButton = () => {
               <p className="text-sm text-gray-200">Connect with:</p>
 
               <div className="grid gap-4 py-4">
-                <Button
-                  variant="outline"
-                  className="h-24"
-                  onClick={() => handleConnect(connectors.core)}
-                >
-                  <CoreText />
-                </Button>
+                {connectors.core?.ready ? (
+                  <Button
+                    variant="outline"
+                    className="h-24"
+                    onClick={() => handleConnect(connectors.core)}
+                  >
+                    <CoreText />
+                  </Button>
+                ) : (
+                  <a
+                    className={cn(buttonVariants({ variant: 'outline' }), 'h-24')}
+                    href={CORE_CHROME_DOWNLOAD_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <CoreText />
+                  </a>
+                )}
                 <ConnectorButton
                   handleConnect={handleConnect}
                   connector={connectors.metamask}

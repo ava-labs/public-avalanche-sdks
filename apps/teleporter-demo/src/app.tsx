@@ -3,6 +3,7 @@ import { TeleporterForm } from './components/teleporter-form';
 import { Card, CardContent, CardTitle } from './ui/card';
 import { ThemeProvider } from './ui/theme-provider';
 import { WalletProvider } from './providers/wallet-provider';
+import { TooltipProvider } from './ui/tooltip';
 
 export default function App() {
   return (
@@ -11,22 +12,24 @@ export default function App() {
         defaultTheme="dark"
         storageKey="teleporter-ui-theme"
       >
-        <WalletProvider>
-          <PageContainer>
-            <div className="flex min-w-full justify-center">
-              <Card className="flex max-w-md grow">
-                <CardContent>
-                  <CardTitle>
-                    <h1>Teleporter</h1>
-                  </CardTitle>
+        <TooltipProvider>
+          <WalletProvider>
+            <PageContainer>
+              <div className="flex min-w-full justify-center">
+                <Card className="flex max-w-md grow">
                   <CardContent>
-                    <TeleporterForm />
+                    <CardTitle>
+                      <h1>Teleporter</h1>
+                    </CardTitle>
+                    <CardContent>
+                      <TeleporterForm />
+                    </CardContent>
                   </CardContent>
-                </CardContent>
-              </Card>
-            </div>
-          </PageContainer>
-        </WalletProvider>
+                </Card>
+              </div>
+            </PageContainer>
+          </WalletProvider>
+        </TooltipProvider>
       </ThemeProvider>
     </>
   );
