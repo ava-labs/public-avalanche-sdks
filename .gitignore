@@ -10,3 +10,4 @@ server/dist
 public/dist
 .turbo
 tsconfig.tsbuildinfo
+generated

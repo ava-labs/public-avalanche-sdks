@@ -1,4 +1,4 @@
-import { AMPLIFY, BULLETIN, CHAINS } from '@/constants/chains';
+import { CHAIN, WAGMI_CHAINS } from '@/constants/chains';
 import { Button } from '@/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/ui/form';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/ui/select';
@@ -18,8 +18,8 @@ export const TeleporterForm = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fromChain: String(AMPLIFY.id),
-      toChain: String(BULLETIN.id),
+      fromChain: String(CHAIN.AMPLIFY.wagmi.id),
+      toChain: String(CHAIN.BULLETIN.wagmi.id),
       address: '',
       amount: '',
     },
@@ -52,7 +52,7 @@ export const TeleporterForm = () => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {CHAINS.map((chain) => (
+                    {WAGMI_CHAINS.map((chain) => (
                       <SelectItem
                         value={String(chain.id)}
                         key={chain.id}
@@ -85,7 +85,7 @@ export const TeleporterForm = () => {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Subnet</SelectLabel>
-                      {CHAINS.map((chain) => (
+                      {WAGMI_CHAINS.map((chain) => (
                         <SelectItem
                           value={String(chain.id)}
                           key={chain.id}

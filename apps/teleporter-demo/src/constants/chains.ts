@@ -1,6 +1,6 @@
 import type { Chain } from 'wagmi';
 
-export const AMPLIFY = {
+export const AMPLIFY_WAGMI_CONFIG = {
   id: 78430,
   name: 'Amplify Subnet',
   nativeCurrency: {
@@ -26,7 +26,7 @@ export const AMPLIFY = {
   testnet: true,
 } as const satisfies Chain;
 
-export const BULLETIN = {
+export const BULLETIN_WAGMI_CONFIG = {
   id: 78431,
   name: 'Bulletin Subnet',
   nativeCurrency: {
@@ -52,7 +52,7 @@ export const BULLETIN = {
   testnet: true,
 } as const satisfies Chain;
 
-export const CONDUIT = {
+export const CONDUIT_WAGMI_CONFIG = {
   id: 78432,
   name: 'Conduit Subnet',
   nativeCurrency: {
@@ -79,9 +79,20 @@ export const CONDUIT = {
 } as const satisfies Chain;
 
 export const CHAIN = {
-  AMPLIFY,
-  BULLETIN,
-  CONDUIT,
-};
+  AMPLIFY: {
+    wagmi: AMPLIFY_WAGMI_CONFIG,
+  },
+  BULLETIN: {
+    wagmi: BULLETIN_WAGMI_CONFIG,
+  },
+  CONDUIT: {
+    wagmi: CONDUIT_WAGMI_CONFIG,
+  },
+} as const satisfies Record<
+  string,
+  {
+    wagmi: Chain;
+  }
+>;
 
-export const CHAINS = Object.values(CHAIN);
+export const WAGMI_CHAINS = Object.values(CHAIN).map(({ wagmi }) => wagmi);

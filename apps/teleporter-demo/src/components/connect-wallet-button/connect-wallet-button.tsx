@@ -5,18 +5,40 @@ import { MetaMaskIcon } from '@/icons/metamask';
 import { CheckCircle, Loader2, WalletIcon } from 'lucide-react';
 import { CoinbaseWalletIcon } from '@/icons/coinbase';
 
-import { CoreText } from './core-text';
+import { CoreText } from '../core-text';
 import { useToast } from '@/ui/hooks/use-toast';
-import { type Connector, useAccount, useDisconnect } from 'wagmi';
+import { type Connector, useAccount } from 'wagmi';
 import { AutoAnimate } from '@/ui/auto-animate';
-import { truncateAddress } from '@/utils/truncate-address';
-import { useState } from 'react';
+import { SettingsMenu } from './settings-menu';
+
+const ConnectorButton = ({
+  handleConnect,
+  connector,
+  label,
+  icon,
+}: {
+  handleConnect: (connector?: Connector) => void;
+  connector?: Connector;
+  label: string;
+  icon: React.ReactNode;
+}) => {
+  return (
+    <Button
+      variant="outline"
+      onClick={() => handleConnect(connector)}
+      disabled={!connector?.ready}
+    >
+      <span className="space-x-2 inline-flex items-center">
+        {icon}
+        <span>{label}</span>
+      </span>
+    </Button>
+  );
+};
 
 export const ConnectWalletButton = () => {
   const { address, isConnected } = useAccount();
-  const { disconnectAsync } = useDisconnect();
   const { connect, connectors, isLoading } = useConnectWallet();
-  const [isDisconnectButton, setIsDisconnectButton] = useState(false);
 
   const { toast } = useToast();
 
@@ -31,29 +53,10 @@ export const ConnectWalletButton = () => {
         description: `${strippedName} Wallet not found.`,
       });
     }
-    setIsDisconnectButton(false);
-  };
-
-  const handleDisconnectButtonClick = async () => {
-    await disconnectAsync();
-
-    toast({
-      title: 'Disconnected Successfully',
-    });
   };
 
   if (isConnected && address) {
-    return (
-      <Button
-        variant="secondary"
-        className="rounded-full font-mono hover:bg-destructive"
-        onMouseEnter={() => setIsDisconnectButton(true)}
-        onMouseLeave={() => setIsDisconnectButton(false)}
-        onClick={handleDisconnectButtonClick}
-      >
-        {isDisconnectButton ? 'Disconnect' : truncateAddress(address)}
-      </Button>
-    );
+    return <SettingsMenu />;
   }
 
   return (
@@ -83,33 +86,24 @@ export const ConnectWalletButton = () => {
                 >
                   <CoreText />
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => handleConnect(connectors.metamask)}
-                >
-                  <span className="space-x-2 inline-flex items-center">
-                    <MetaMaskIcon />
-                    <p>MetaMask</p>
-                  </span>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => handleConnect(connectors.coinbase)}
-                >
-                  <span className="space-x-2 inline-flex items-center">
-                    <CoinbaseWalletIcon />
-                    <p>Coinbase</p>
-                  </span>
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => handleConnect(connectors.injected)}
-                >
-                  <span className="space-x-2 inline-flex items-center">
-                    <WalletIcon />
-                    <p>Web3</p>
-                  </span>
-                </Button>
+                <ConnectorButton
+                  handleConnect={handleConnect}
+                  connector={connectors.metamask}
+                  icon={<MetaMaskIcon />}
+                  label="MetaMask"
+                />
+                <ConnectorButton
+                  handleConnect={handleConnect}
+                  connector={connectors.coinbase}
+                  icon={<CoinbaseWalletIcon />}
+                  label="Coinbase Wallet"
+                />
+                <ConnectorButton
+                  handleConnect={handleConnect}
+                  connector={connectors.injected}
+                  icon={<WalletIcon />}
+                  label="Other"
+                />
               </div>
             </>
           )}

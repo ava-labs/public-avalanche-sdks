@@ -1,0 +1,13 @@
+{
+  "extends": "@internal/tsconfig/tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "incremental": false // Need to turn off because of tsup dts
+  },
+  "include": ["src", "src/types"],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}
