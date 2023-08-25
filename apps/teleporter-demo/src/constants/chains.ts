@@ -1,6 +1,6 @@
 import type { Chain } from 'wagmi';
 
-const AMPLIFY = {
+export const AMPLIFY = {
   id: 78430,
   name: 'Amplify Subnet',
   nativeCurrency: {
@@ -26,7 +26,7 @@ const AMPLIFY = {
   testnet: true,
 } as const satisfies Chain;
 
-const BULLETIN = {
+export const BULLETIN = {
   id: 78431,
   name: 'Bulletin Subnet',
   nativeCurrency: {
@@ -52,7 +52,7 @@ const BULLETIN = {
   testnet: true,
 } as const satisfies Chain;
 
-const CONDUIT = {
+export const CONDUIT = {
   id: 78432,
   name: 'Conduit Subnet',
   nativeCurrency: {

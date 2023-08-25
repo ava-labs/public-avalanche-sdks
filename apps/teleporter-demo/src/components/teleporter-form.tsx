@@ -1,6 +1,7 @@
+import { AMPLIFY, BULLETIN, CHAINS } from '@/constants/chains';
 import { Button } from '@/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/ui/form';
-import { Input } from '@/ui/input';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
@@ -17,8 +18,8 @@ export const TeleporterForm = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fromChain: '',
-      toChain: '',
+      fromChain: String(AMPLIFY.id),
+      toChain: String(BULLETIN.id),
       address: '',
       amount: '',
     },
@@ -41,10 +42,26 @@ export const TeleporterForm = () => {
             <FormItem>
               <FormLabel>From</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Chain A"
-                  {...field}
-                />
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a subnet" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {CHAINS.map((chain) => (
+                      <SelectItem
+                        value={String(chain.id)}
+                        key={chain.id}
+                      >
+                        {chain.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormDescription>The source chain.</FormDescription>
               <FormMessage />
@@ -58,10 +75,27 @@ export const TeleporterForm = () => {
             <FormItem>
               <FormLabel>To</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Chain B"
-                  {...field}
-                />
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a fruit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Subnet</SelectLabel>
+                      {CHAINS.map((chain) => (
+                        <SelectItem
+                          value={String(chain.id)}
+                          key={chain.id}
+                        >
+                          {chain.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormDescription>The source chain.</FormDescription>
               <FormMessage />
