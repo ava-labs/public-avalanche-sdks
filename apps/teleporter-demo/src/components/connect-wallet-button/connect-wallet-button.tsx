@@ -2,7 +2,7 @@ import { useConnectWallet } from '@/hooks/use-connect-wallet';
 import { Button } from '@/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover';
 import { MetaMaskIcon } from '@/icons/metamask';
-import { CheckCircle, Loader2, WalletIcon } from 'lucide-react';
+import { CheckCircle, WalletIcon } from 'lucide-react';
 import { CoinbaseWalletIcon } from '@/icons/coinbase';
 
 import { CoreText } from '../core-text';
@@ -10,6 +10,7 @@ import { useToast } from '@/ui/hooks/use-toast';
 import { type Connector, useAccount } from 'wagmi';
 import { AutoAnimate } from '@/ui/auto-animate';
 import { SettingsMenu } from './settings-menu';
+import { LoadingSpinner } from '@/ui/loading-spinner';
 
 const ConnectorButton = ({
   handleConnect,
@@ -111,9 +112,9 @@ export const ConnectWalletButton = () => {
 
         <AutoAnimate>
           {isLoading && !isConnected && (
-            <div className="flex-col center">
+            <div className="flex-col space-y-4">
               <p className="text-sm text-center">Waiting for Approval in Wallet...</p>
-              <Loader2 />
+              <LoadingSpinner className="block mx-auto" />
             </div>
           )}
         </AutoAnimate>
