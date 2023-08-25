@@ -1,6 +1,7 @@
 {
   "extends": "@internal/tsconfig/tsconfig.react.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
