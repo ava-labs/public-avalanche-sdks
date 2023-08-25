@@ -135,18 +135,6 @@ importers:
         specifier: 7.2.0
         version: 7.2.0(typescript@5.1.6)
 
-  packages-internal/vite-config:
-    devDependencies:
-      '@internal/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      eslint-config-custom:
-        specifier: workspace:*
-        version: link:../eslint-config-custom
-      tsup:
-        specifier: 7.2.0
-        version: 7.2.0(typescript@5.1.6)
-
   packages/vm-parser:
     dependencies:
       aptos:
@@ -156,6 +144,9 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
     devDependencies:
+      '@internal/tsup-config':
+        specifier: workspace:*
+        version: link:../../packages-internal/tsup-config
       eslint-config-custom:
         specifier: workspace:*
         version: link:../../packages-internal/eslint-config-custom

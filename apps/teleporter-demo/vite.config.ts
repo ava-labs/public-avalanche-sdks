@@ -3,11 +3,9 @@ import react from '@vitejs/plugin-react-swc';
 import { dotenvLoad } from 'dotenv-mono';
 import * as path from 'path';
 import bundleVisualizer from 'rollup-plugin-visualizer';
-import { defineConfig, Plugin } from 'vite';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- ignore
-import checker from 'vite-plugin-checker';
 import loadVersion from 'vite-plugin-package-version';
 import removeConsole from 'vite-plugin-remove-console';
+import { Plugin, defineConfig } from 'vite';
 
 /**
  * Because we want to use one single .env file for all projects we need to load the .env file from
@@ -16,19 +14,21 @@ import removeConsole from 'vite-plugin-remove-console';
  */
 dotenvLoad();
 
+// @ts-expect-error -- ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- ignore
-const getBundleVisualizerPlugin = () =>
-  ({
-    ...bundleVisualizer({
-      template: 'treemap', // or sunburst
-      open: true,
-      gzipSize: true,
-    }),
-    apply: 'build',
-    enforce: 'post',
-  }) as Plugin;
+const getBundleVisualizerPlugin: Plugin = () => ({
+  ...bundleVisualizer({
+    template: 'treemap', // or sunburst
+    open: true,
+    gzipSize: true,
+  }),
+  apply: 'build',
+  enforce: 'post',
+});
 
-// https://vitejs.dev/config/
+/**
+ * @see https://vitejs.dev/config/
+ */
 export default defineConfig(() => ({
   define: {
     'process.env': {},
@@ -39,7 +39,6 @@ export default defineConfig(() => ({
     removeConsole({ includes: ['log', 'warn', 'table'] }), // remove console.log from production builds, only keep console.error
     react(),
     // getBundleVisualizerPlugin(), // uncomment this to analyze bundle
-    // checker({ typescript: true }), // uncomment this to run typescript in a worker inside the browser
   ],
   resolve: {
     alias: {
