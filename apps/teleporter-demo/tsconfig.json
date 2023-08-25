@@ -1,0 +1,10 @@
+{
+  "extends": "@internal/tsconfig/tsconfig.react.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "outDir": "./dist"
+  },
+  "include": ["src"]
+}
