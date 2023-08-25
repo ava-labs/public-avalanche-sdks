@@ -1,19 +1,10 @@
-import { useState } from 'react';
-import './App.css';
-import { Button } from './components/ui/button';
+import './app.css';
+import { Home } from './pages/home/home';
 
-function App() {
-  const [count, setCount] = useState(0);
-
+export default function App() {
   return (
     <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <Button onClick={() => setCount((count) => count + 1)}>Test</Button>
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-      </div>
+      <Home />
     </>
   );
 }
-
-export default App;
