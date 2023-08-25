@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react-swc';
 import { dotenvLoad } from 'dotenv-mono';
 import * as path from 'path';
 import bundleVisualizer from 'rollup-plugin-visualizer';
-import loadVersion from 'vite-plugin-package-version';
 import removeConsole from 'vite-plugin-remove-console';
 import { Plugin, defineConfig } from 'vite';
 
@@ -35,7 +34,6 @@ export default defineConfig(() => ({
     'import.meta.env.BUILD_TIMESTAMP': JSON.stringify(new Date()), // timestamp printed in footer for QA
   },
   plugins: [
-    loadVersion(),
     removeConsole({ includes: ['log', 'warn', 'table'] }), // remove console.log from production builds, only keep console.error
     react(),
     // getBundleVisualizerPlugin(), // uncomment this to analyze bundle
@@ -45,7 +43,6 @@ export default defineConfig(() => ({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  assetsInclude: ['**/*.riv'],
   optimizeDeps: {
     esbuildOptions: {
       target: 'esnext',
@@ -55,20 +52,13 @@ export default defineConfig(() => ({
       },
     },
   },
-  css: {
-    transformer: 'lightningcss',
-  },
   server: {
     port: 3000,
     strictPort: true,
   },
-  esbuild: {
-    logOverride: { 'this-is-undefined-in-esm': 'silent' },
-  },
   build: {
     target: 'esnext',
     outDir: './dist',
-    cssMinify: 'lightningcss',
     chunkSizeWarningLimit: 5000, // 5000 kbs
     sourcemap: false,
     rollupOptions: {
