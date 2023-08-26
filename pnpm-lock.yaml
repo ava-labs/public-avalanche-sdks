@@ -140,6 +140,9 @@ importers:
       '@web3modal/ethereum':
         specifier: 2.7.1
         version: 2.7.1(@wagmi/core@1.3.9)(viem@1.7.0)
+      big.js:
+        specifier: 6.2.1
+        version: 6.2.1
       class-variance-authority:
         specifier: 0.7.0
         version: 0.7.0
@@ -192,6 +195,9 @@ importers:
       '@internal/tsconfig':
         specifier: workspace:*
         version: link:../../packages-internal/tsconfig
+      '@types/big.js':
+        specifier: 6.2.0
+        version: 6.2.0
       '@types/lodash-es':
         specifier: 4.17.8
         version: 4.17.8
@@ -4964,6 +4970,10 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
+  /@types/big.js@6.2.0:
+    resolution: {integrity: sha512-ubLURWoc4tCw/8Yds0P3CE9cBG5q+aoycwWBiXXx4gp7XPYZy9ch0L9+Pv6osSoSRgvuQNqJdlwEhP5QhKKl6w==}
+    dev: true
+
   /@types/cacheable-request@6.0.3:
     resolution: {integrity: sha512-IQ3EbTzGxIigb1I3qPZc1rWJnH0BmSKv5QYTalEwweFvyBDLSAe24zP0le/hyi7ecGfZVlIVAg4BZqb8WBwKqw==}
     dependencies:
@@ -6220,6 +6230,10 @@ packages:
     dependencies:
       is-windows: 1.0.2
     dev: true
+
+  /big.js@6.2.1:
+    resolution: {integrity: sha512-bCtHMwL9LeDIozFn+oNhhFoq+yQ3BNdnsLSASUxLciOb1vgvpHsIO1dsENiGMgbb4SkP5TrzWzRiLddn8ahVOQ==}
+    dev: false
 
   /bigint-buffer@1.1.5:
     resolution: {integrity: sha512-trfYco6AoZ+rKhKnxA0hgX0HAbVP/s808/EuDSe2JDzUnCp/xAsli35Orvk67UrTEcwuxZqYZDmfA2RXJgxVvA==}

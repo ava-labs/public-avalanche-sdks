@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
 import { z } from 'zod';
-import { FancyAvatar } from './token-avatar';
+import { FancyAvatar } from './fancy-avatar';
 import { SwapButton } from './swap-button';
 import { memo, useState } from 'react';
 import { LoadingButton } from './loading-button';
@@ -20,7 +20,7 @@ import { ArrowRight } from 'lucide-react';
 const formSchema = z.object({
   fromChain: z.string(),
   toChain: z.string(),
-  token: z.string(),
+  tokenUniversalId: z.string(),
   amount: z.string(),
 });
 
@@ -33,7 +33,7 @@ export const TeleporterForm = memo(() => {
     defaultValues: {
       fromChain: String(CHAIN.AMPLIFY.wagmi.id),
       toChain: String(CHAIN.BULLETIN.wagmi.id),
-      token: '',
+      tokenUniversalId: '',
       amount: '',
     },
   });
@@ -146,7 +146,7 @@ export const TeleporterForm = memo(() => {
           </div>
           <FormField
             control={form.control}
-            name="token"
+            name="tokenUniversalId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Token</FormLabel>
@@ -176,7 +176,8 @@ export const TeleporterForm = memo(() => {
                                       label={token.symbol}
                                       className="w-6 h-6"
                                     />
-                                    <p>{token.name}</p>
+                                    <span className="font-semibold">{token.symbol}</span>
+                                    <span className="text-gray-300">{token.name}</span>
                                   </div>
                                 </SelectItem>
                               );
@@ -211,13 +212,20 @@ export const TeleporterForm = memo(() => {
               </FormItem>
             )}
           />
-          <LoadingButton
-            type="submit"
-            className="w-full"
-            isLoading={isSubmitting}
-          >
-            TELEPORT!
-          </LoadingButton>
+          {isConnected ? (
+            <LoadingButton
+              type="submit"
+              className="w-full"
+              isLoading={isSubmitting}
+            >
+              TELEPORT!
+            </LoadingButton>
+          ) : (
+            <ConnectWalletButton
+              variant="default"
+              className="w-full"
+            />
+          )}
         </form>
       </Form>
     </>

@@ -43,6 +43,7 @@
     "@rive-app/react-canvas": "4.1.4",
     "@tanstack/react-table": "8.9.3",
     "@web3modal/ethereum": "2.7.1",
+    "big.js": "6.2.1",
     "class-variance-authority": "0.7.0",
     "clsx": "2.0.0",
     "cmdk": "0.2.0",
@@ -62,6 +63,7 @@
   "devDependencies": {
     "@internal/glacier": "workspace:*",
     "@internal/tsconfig": "workspace:*",
+    "@types/big.js": "6.2.0",
     "@types/lodash-es": "4.17.8",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
