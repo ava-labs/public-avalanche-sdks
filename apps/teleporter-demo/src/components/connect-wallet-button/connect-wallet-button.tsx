@@ -1,5 +1,5 @@
 import { useConnectWallet } from '@/hooks/use-connect-wallet';
-import { Button, buttonVariants } from '@/ui/button';
+import { Button, buttonVariants, type ButtonProps } from '@/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover';
 import { MetaMaskIcon } from '@/icons/metamask';
 import { CheckCircle, WalletIcon } from 'lucide-react';
@@ -53,7 +53,7 @@ const ConnectorButton = ({
   );
 };
 
-export const ConnectWalletButton = () => {
+export const ConnectWalletButton = ({ className, ...rest }: ButtonProps) => {
   const { address, isConnected } = useAccount();
   const { connect, connectors, isLoading } = useConnectWallet();
 
@@ -81,7 +81,8 @@ export const ConnectWalletButton = () => {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="rounded-full"
+          className={cn('rounded-full', className)}
+          {...rest}
         >
           Connect Wallet
         </Button>
