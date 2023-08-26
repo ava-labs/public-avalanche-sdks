@@ -66,10 +66,15 @@ export default {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: 0 },
         },
+        'pulse-flashing': {
+          '0%': { 'background-color': 'rgba(255, 255, 255, 0.2)' },
+          '100%': { 'background-color': 'unset' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'pulse-flashing': 'pulse-flashing 1s forwards',
       },
     },
   },

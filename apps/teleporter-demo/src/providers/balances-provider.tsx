@@ -7,6 +7,7 @@ import { getDisplayTokenBalance } from '@/utils/get-display-token-balance';
 import { filterFullfilled } from '@/utils/is-fullfilled';
 import useSWR, { type SWRResponse } from 'swr';
 import { getUniveralTokenId, type Erc20TokenBalance, type NativeTokenBalance, type TokenBalance } from '@/utils/token';
+import Big from 'big.js';
 
 const getNativeBalances = async ([address]: [address: string]): Promise<NativeTokenBalance[]> => {
   const results = await Promise.allSettled(
@@ -25,6 +26,8 @@ const getNativeBalances = async ([address]: [address: string]): Promise<NativeTo
   return flatNativeBalances.map((token) => {
     return {
       ...token,
+      balance: new Big(token.balance).div(10 ** token.decimals),
+      rawBalance: BigInt(token.balance),
       displayBalance: getDisplayTokenBalance(token),
       universalTokenId: getUniveralTokenId(token),
     };
@@ -49,6 +52,8 @@ const getErc20Balances = async ([address]: [address: string]): Promise<Erc20Toke
   return flatErc20Balances.map((token) => {
     return {
       ...token,
+      balance: new Big(token.balance).div(10 ** token.decimals),
+      rawBalance: BigInt(token.balance),
       displayBalance: getDisplayTokenBalance(token),
       universalTokenId: getUniveralTokenId(token),
     };

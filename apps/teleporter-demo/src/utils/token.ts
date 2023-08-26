@@ -2,13 +2,19 @@ import {
   type Erc20TokenBalance as GlacierErc20TokenBalance,
   type NativeTokenBalance as GlacierNativeTokenBalance,
 } from '@internal/glacier';
+import type Big from 'big.js';
+import { type Except } from 'type-fest';
 
-export type Erc20TokenBalance = GlacierErc20TokenBalance & {
+export type Erc20TokenBalance = Except<GlacierErc20TokenBalance, 'balance'> & {
+  balance: Big;
+  rawBalance: bigint;
   displayBalance: string;
   universalTokenId: string;
 };
 
-export type NativeTokenBalance = GlacierNativeTokenBalance & {
+export type NativeTokenBalance = Except<GlacierNativeTokenBalance, 'balance'> & {
+  balance: Big;
+  rawBalance: bigint;
   displayBalance: string;
   universalTokenId: string;
 };

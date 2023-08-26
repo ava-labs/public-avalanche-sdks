@@ -36,8 +36,9 @@ export const useMintAmplify = () => {
           throw new Error('writeAsync is undefined.');
         }
 
-        const writeRes = await writeAsync?.();
-        console.info('Successfully minted token.', writeRes);
+        const mintResponse = await writeAsync?.();
+        console.info('Successfully minted token.', mintResponse);
+        return mintResponse;
         toast({
           title: 'Success',
           description: `Successfully minted token.`,
@@ -50,6 +51,8 @@ export const useMintAmplify = () => {
           title: 'Error',
           description: `Unable to mint token - must be connected to ${AMPLIFY_CHAIN.name}.`,
         });
+
+        return undefined;
       }
     },
   };
