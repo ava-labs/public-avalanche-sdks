@@ -192,7 +192,7 @@ export const TeleporterForm = memo(() => {
                   </SelectContent>
                 </Select>
               </FormControl>
-              <FormDescription>The destination chain.</FormDescription>
+              <FormDescription>The token you want to teleport.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
