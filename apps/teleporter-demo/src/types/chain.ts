@@ -1,15 +1,16 @@
+import type { Address } from 'viem';
 import { z } from 'zod';
 
 export type EvmChain = z.infer<typeof evmChainSchema>;
 
 const utilityContract = z.object({
-  address: z.string(),
+  address: z.string().transform((val) => val as Address),
   name: z.string(),
 });
 
 const erc20Contract = z.object({
   universalTokenId: z.string(),
-  address: z.string(),
+  address: z.string().transform((val) => val as Address),
   name: z.string(),
   symbol: z.string(),
 });
@@ -34,7 +35,7 @@ export const evmChainSchema = z.object({
   primaryColor: z.string(),
   chainId: z.string(),
   utilityContracts: z.object({
-    demoErc20: erc20Contract.optional(),
-    bridge: utilityContract.optional(),
+    demoErc20: erc20Contract,
+    bridge: utilityContract,
   }),
 });

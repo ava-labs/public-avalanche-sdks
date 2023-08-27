@@ -1,8 +1,20 @@
 import type { TeleportForm } from '@/components/teleporter-form';
 import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge-abi';
-import { AMPLIFY_CHAIN, CHAINS } from '@/constants/chains';
+import { CHAINS } from '@/constants/chains';
 import { toast } from '@/ui/hooks/use-toast';
-import { useAccount, useChainId, useContractWrite, usePrepareContractWrite, useSwitchNetwork } from 'wagmi';
+import {
+  useAccount,
+  useChainId,
+  useContractWrite,
+  usePrepareContractWrite,
+  useSwitchNetwork,
+  useContractRead,
+} from 'wagmi';
+import { useApprove } from './use-approve';
+import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
+import { isNil } from 'lodash-es';
+
+const TELEPORT_AMOUNT = BigInt('1000000000000000');
 
 export const useTeleport = (form: TeleportForm) => {
   const chainId = String(useChainId());
@@ -15,18 +27,22 @@ export const useTeleport = (form: TeleportForm) => {
   const toChainId = form.getValues('toChain');
   const toChain = CHAINS.find((chain) => chain.chainId === toChainId);
 
-  console.info([
-    toChain?.platformChainIdHex,
-    toChain?.utilityContracts.bridge.address,
-    fromChain?.utilityContracts.demoErc20.address,
-    address,
-    BigInt('100000000000000000'),
-    BigInt(0),
-    BigInt(0),
-  ]);
+  const { data: currentAllowance } = useContractRead({
+    address: fromChain?.utilityContracts.demoErc20.address,
+    functionName: 'allowance',
+    abi: NATIVE_ERC20_ABI,
+    args: address && fromChain ? [address, fromChain?.utilityContracts.bridge.address] : undefined,
+  });
+
+  const { approve } = useApprove({
+    chain: fromChain,
+    amount: TELEPORT_AMOUNT,
+    addressToApprove: fromChain?.utilityContracts.bridge.address,
+    tokenAddress: fromChain?.utilityContracts.demoErc20.address,
+  });
 
   const { config } = usePrepareContractWrite({
-    address: AMPLIFY_CHAIN.utilityContracts.demoErc20.address,
+    address: fromChain?.utilityContracts.bridge.address,
     functionName: 'bridgeTokens',
     abi: TELEPORTER_BRIDGE_ABI,
     args:
@@ -36,7 +52,7 @@ export const useTeleport = (form: TeleportForm) => {
             toChain?.utilityContracts.bridge.address,
             fromChain?.utilityContracts.demoErc20.address,
             address,
-            BigInt('100000000000000000'),
+            TELEPORT_AMOUNT,
             BigInt(0),
             BigInt(0),
           ]
@@ -66,6 +82,15 @@ export const useTeleport = (form: TeleportForm) => {
           if (String(chainSwitchRes.id) !== fromChain.chainId) {
             throw new Error(`Must be connected to ${fromChain.name}.`);
           }
+        }
+
+        if (isNil(currentAllowance)) {
+          throw new Error('Unable to detect current allowance.');
+        }
+
+        if (currentAllowance < TELEPORT_AMOUNT) {
+          const approveResponse = await approve();
+          console.log('Approve successful.', approveResponse);
         }
 
         if (!writeAsync) {
