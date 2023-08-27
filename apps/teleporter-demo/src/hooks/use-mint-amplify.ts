@@ -8,7 +8,7 @@ export const useMintAmplify = () => {
   const { switchNetworkAsync } = useSwitchNetwork();
 
   const { config } = usePrepareContractWrite({
-    address: AMPLIFY_CHAIN.utilityContracts.nativeErc20.address,
+    address: AMPLIFY_CHAIN.utilityContracts.demoErc20.address,
     functionName: 'mint',
     abi: NATIVE_ERC20_ABI,
     args: [BigInt('1000000000000000000')],
@@ -38,18 +38,18 @@ export const useMintAmplify = () => {
 
         const mintResponse = await writeAsync?.();
         console.info('Successfully minted token.', mintResponse);
-        return mintResponse;
         toast({
           title: 'Success',
           description: `Successfully minted token.`,
         });
+        return mintResponse;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.warn(e?.message ?? e);
 
         toast({
           title: 'Error',
-          description: `Unable to mint token - must be connected to ${AMPLIFY_CHAIN.name}.`,
+          description: `Mint failed.`,
         });
 
         return undefined;

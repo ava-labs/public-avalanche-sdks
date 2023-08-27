@@ -15,6 +15,9 @@ const erc20Contract = z.object({
 });
 
 export const evmChainSchema = z.object({
+  platformChainId: z.string(),
+  platformChainIdHex: z.string(),
+  subnetId: z.string(),
   slug: z.string(),
   explorerUrl: z.string(),
   rpcUrl: z.string(),
@@ -31,8 +34,7 @@ export const evmChainSchema = z.object({
   primaryColor: z.string(),
   chainId: z.string(),
   utilityContracts: z.object({
-    nativeErc20: erc20Contract.optional(),
-    wrappedErc20: erc20Contract.optional(),
+    demoErc20: erc20Contract.optional(),
     bridge: utilityContract.optional(),
   }),
 });

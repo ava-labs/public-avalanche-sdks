@@ -22,7 +22,7 @@ export const MintForm = memo(() => {
 
   const { tokensMap, mutate } = useBalances();
   const gasToken = tokensMap?.get(AMPLIFY_CHAIN.networkToken.universalTokenId);
-  const erc20Token = tokensMap?.get(AMPLIFY_CHAIN.utilityContracts.nativeErc20.universalTokenId);
+  const erc20Token = tokensMap?.get(AMPLIFY_CHAIN.utilityContracts.demoErc20.universalTokenId);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mintTxHash, setMintTxHash] = useState<string>();
@@ -66,10 +66,10 @@ export const MintForm = memo(() => {
               </FlashingUpdate>
               <FancyAvatar
                 src={AMPLIFY_CHAIN.logoUrl}
-                label={AMPLIFY_CHAIN.utilityContracts.nativeErc20.symbol}
+                label={AMPLIFY_CHAIN.utilityContracts.demoErc20.symbol}
                 className="w-6 h-6"
               />
-              <span className="text-lg font-semibold">{AMPLIFY_CHAIN.utilityContracts.nativeErc20.symbol}</span>{' '}
+              <span className="text-lg font-semibold">{AMPLIFY_CHAIN.utilityContracts.demoErc20.symbol}</span>
             </div>
           </AutoAnimate>
           {!isNil(mintTxHash) ? (

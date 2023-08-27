@@ -23,7 +23,7 @@ export default function App() {
               <BalancesProvider>
                 <PageContainer>
                   <div className="flex min-w-full justify-center">
-                    <Tabs defaultValue="mint">
+                    <Tabs defaultValue="teleport">
                       <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="teleport">Teleport</TabsTrigger>
                         <TabsTrigger value="mint">Mint</TabsTrigger>

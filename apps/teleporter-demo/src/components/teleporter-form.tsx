@@ -2,7 +2,7 @@ import { CHAIN, CHAINS } from '@/constants/chains';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/ui/form';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, type UseFormReturn } from 'react-hook-form';
 
 import { z } from 'zod';
 import { FancyAvatar } from './fancy-avatar';
@@ -16,6 +16,7 @@ import { CardContent } from '@/ui/card';
 import { ConnectWalletButton } from './connect-wallet-button';
 import { Button } from '@/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { useTeleport } from '@/hooks/use-teleport';
 
 const formSchema = z.object({
   fromChain: z.string(),
@@ -24,11 +25,18 @@ const formSchema = z.object({
   amount: z.string(),
 });
 
+export type TeleportForm = UseFormReturn<
+  z.infer<typeof formSchema>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  any,
+  undefined
+>;
+
 export const TeleporterForm = memo(() => {
   const { isConnected } = useAccount();
   const { tokens } = useBalances();
 
-  const form = useForm({
+  const form: TeleportForm = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fromChain: String(CHAIN.AMPLIFY.wagmi.id),
@@ -37,13 +45,24 @@ export const TeleporterForm = memo(() => {
       amount: '',
     },
   });
+
+  const { teleportToken } = useTeleport(form);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = (fields: z.infer<typeof formSchema>) => {
+  const onSubmit = async (fields: z.infer<typeof formSchema>) => {
     console.log(fields);
 
-    setIsSubmitting(true);
-    setTimeout(() => setIsSubmitting(false), 2000);
+    try {
+      setIsSubmitting(true);
+      const result = await teleportToken();
+      console.log('result', result);
+      setIsSubmitting(false);
+    } catch (error) {
+      console.error(error);
+
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -157,7 +176,7 @@ export const TeleporterForm = memo(() => {
                     disabled={isSubmitting}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a fruit" />
+                      <SelectValue placeholder="Select a token" />
                     </SelectTrigger>
                     <SelectContent>
                       <ScrollArea className="max-h-72">
