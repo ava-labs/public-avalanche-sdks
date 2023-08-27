@@ -71,16 +71,13 @@ export const BULLETIN_CHAIN = {
 } as const satisfies EvmChain;
 
 export const CONDUIT_CHAIN = {
-  chainId: '43114',
-  // TODO: remember to flip this back.
-  // chainId: '78432',
+  chainId: '78432',
   name: 'Conduit Subnet',
   subnetId: 'wW7JVmjXp8SKrpacGzM81RBXdfcLDVY6M2DkFyArEXgtkyozK',
   platformChainId: '9asUA3QckLh7vGnFQiiUJGPTx8KE4nFtP8c1wTWJuP8XiWW75',
   platformChainIdHex: '0x137daedb40251e7c196fd9711f6cd4a787d154cdc59fb7777d4d079cc116e5f1',
   networkToken: {
-    // TODO: this too
-    universalTokenId: '43114-CON',
+    universalTokenId: '78432-CON',
     decimals: 18,
     name: 'CON',
     symbol: 'CON',
@@ -95,8 +92,7 @@ export const CONDUIT_CHAIN = {
   primaryColor: '#00C2B4',
   utilityContracts: {
     demoErc20: {
-      // TODO: here too
-      universalTokenId: '43114-0xa415AAC7979a0b68E1c3117763C8978F7e89C9E0',
+      universalTokenId: '78432-0xa415AAC7979a0b68E1c3117763C8978F7e89C9E0',
       address: '0xa415AAC7979a0b68E1c3117763C8978F7e89C9E0',
       name: 'Example',
       symbol: 'EXMP',
