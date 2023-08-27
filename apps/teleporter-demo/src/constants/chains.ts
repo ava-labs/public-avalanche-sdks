@@ -5,9 +5,9 @@ import { FAUCET_URL } from './urls';
 export const AMPLIFY_CHAIN = {
   chainId: '78430',
   name: 'Amplify Subnet',
+  subnetId: '2PsShLjrFFwR51DMcAh8pyuwzLn1Ym3zRhuXLTmLCR1STk2mL6',
   platformChainId: '2nFUad4Nw4pCgEF6MwYgGuKrzKbHJzM8wF29jeVUL41RWHgNRa',
   platformChainIdHex: '0xea70d815f0232f5419dabafe36c964ffe5c22d17ac367b60b556ab3e17a36458',
-  subnetId: '2PsShLjrFFwR51DMcAh8pyuwzLn1Ym3zRhuXLTmLCR1STk2mL6',
   networkToken: {
     universalTokenId: '78430-AMP',
     decimals: 18,
@@ -39,9 +39,9 @@ export const AMPLIFY_CHAIN = {
 export const BULLETIN_CHAIN = {
   chainId: '78431',
   name: 'Bulletin Subnet',
+  subnetId: 'cbXsFGWSDWUYTmRXUoCirVDdQkZmUWrkQQYoVc2wUoDm8eFup',
   platformChainId: '2e3RJ3ub9Pceh8fJ3HX3gZ6nSXJLvBJ9WoXLcU4nwdpZ8X2RLq',
   platformChainIdHex: '0xd7cdc6f08b167595d1577e24838113a88b1005b471a6c430d79c48b4c89cfc53',
-  subnetId: 'cbXsFGWSDWUYTmRXUoCirVDdQkZmUWrkQQYoVc2wUoDm8eFup',
   networkToken: {
     universalTokenId: '78431-BLT',
     decimals: 18,
@@ -75,9 +75,9 @@ export const CONDUIT_CHAIN = {
   // TODO: remember to flip this back.
   // chainId: '78432',
   name: 'Conduit Subnet',
+  subnetId: 'wW7JVmjXp8SKrpacGzM81RBXdfcLDVY6M2DkFyArEXgtkyozK',
   platformChainId: '9asUA3QckLh7vGnFQiiUJGPTx8KE4nFtP8c1wTWJuP8XiWW75',
   platformChainIdHex: '0x137daedb40251e7c196fd9711f6cd4a787d154cdc59fb7777d4d079cc116e5f1',
-  subnetId: 'wW7JVmjXp8SKrpacGzM81RBXdfcLDVY6M2DkFyArEXgtkyozK',
   networkToken: {
     // TODO: this too
     universalTokenId: '43114-CON',
