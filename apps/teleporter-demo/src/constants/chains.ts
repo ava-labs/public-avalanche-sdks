@@ -58,13 +58,13 @@ export const BULLETIN_CHAIN = {
   primaryColor: '#A05195',
   utilityContracts: {
     demoErc20: {
-      universalTokenId: '78431-0x2010D09052e5D3d0F2E80f62b7FB2E564e83B865',
-      address: '0x2010D09052e5D3d0F2E80f62b7FB2E564e83B865',
+      universalTokenId: '78431-0x3C77573dF123f287470BC463835CE6dDc60d5eeD',
+      address: '0x3C77573dF123f287470BC463835CE6dDc60d5eeD',
       name: 'Example',
       symbol: 'EXMP',
     },
     bridge: {
-      address: '0x3C77573dF123f287470BC463835CE6dDc60d5eeD',
+      address: '0x48Db0f37e1Bfb569b420aEf96bcaaE9b889Bd2E9',
       name: 'Teleporter Bridge',
     },
   },
@@ -92,13 +92,13 @@ export const CONDUIT_CHAIN = {
   primaryColor: '#00C2B4',
   utilityContracts: {
     demoErc20: {
-      universalTokenId: '78432-0xa415AAC7979a0b68E1c3117763C8978F7e89C9E0',
-      address: '0xa415AAC7979a0b68E1c3117763C8978F7e89C9E0',
+      universalTokenId: '78432-0x6589D828F91790c50C097175FF6e3Ba3d934868D',
+      address: '0x6589D828F91790c50C097175FF6e3Ba3d934868D',
       name: 'Example',
       symbol: 'EXMP',
     },
     bridge: {
-      address: '0x6589D828F91790c50C097175FF6e3Ba3d934868D',
+      address: '0xa415AAC7979a0b68E1c3117763C8978F7e89C9E0',
       name: 'Teleporter Bridge',
     },
   },
