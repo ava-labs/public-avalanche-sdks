@@ -1,12 +1,5 @@
 import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge-abi';
-import {
-  useAccount,
-  useChainId,
-  useContractWrite,
-  usePrepareContractWrite,
-  useSwitchNetwork,
-  useContractRead,
-} from 'wagmi';
+import { useAccount, useChainId, useContractWrite, useSwitchNetwork, useContractRead } from 'wagmi';
 import { useApprove } from './use-approve';
 import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import { isNil } from 'lodash-es';
@@ -25,11 +18,12 @@ export const useTeleport = ({
   const { switchNetworkAsync } = useSwitchNetwork();
   const { address } = useAccount();
 
-  const { data: currentAllowance } = useContractRead({
+  const { refetch: fetchAllowance } = useContractRead({
     address: fromChain?.utilityContracts.demoErc20.address,
     functionName: 'allowance',
     abi: NATIVE_ERC20_ABI,
     args: address && fromChain ? [address, fromChain?.utilityContracts.bridge.address] : undefined,
+    enabled: false, // Disable auto-fetch since we fetch manually right before teleporting.
   });
 
   const { approve } = useApprove({
@@ -38,7 +32,7 @@ export const useTeleport = ({
     tokenAddress: fromChain?.utilityContracts.demoErc20.address,
   });
 
-  const { config } = usePrepareContractWrite({
+  const { writeAsync } = useContractWrite({
     address: fromChain?.utilityContracts.bridge.address,
     functionName: 'bridgeTokens',
     abi: TELEPORTER_BRIDGE_ABI,
@@ -56,9 +50,8 @@ export const useTeleport = ({
         : undefined,
     maxFeePerGas: BigInt(0),
     maxPriorityFeePerGas: BigInt(0),
+    chainId: fromChain ? Number(fromChain.chainId) : undefined,
   });
-
-  const { writeAsync } = useContractWrite(config);
 
   return {
     teleportToken: async () => {
@@ -92,12 +85,16 @@ export const useTeleport = ({
         /**
          * Get approval if allowance is insuffient.
          */
+        const { data: currentAllowance } = await fetchAllowance();
         if (isNil(currentAllowance)) {
           throw new Error('Unable to detect current allowance.');
         }
-        if (currentAllowance < amount) {
+
+        const hasSufficientAllowance = amount < currentAllowance;
+        if (!hasSufficientAllowance) {
           const approveResponse = await approve();
           console.info('Approve successful.', approveResponse);
+          await fetchAllowance();
         }
 
         /**

@@ -27,8 +27,6 @@ const BalancesCard = ({ chain, isBigLayout = false }: { chain: EvmChain; isBigLa
 
   const { formattedErc20Balance } = useErc20Balance({
     chain: chain,
-    tokenAddress: chain.utilityContracts.demoErc20.address,
-    decimals: chain.utilityContracts.demoErc20.decimals,
   });
 
   return (
@@ -78,8 +76,6 @@ export const MintForm = memo(() => {
 
   const { refetch } = useErc20Balance({
     chain: AMPLIFY_CHAIN,
-    tokenAddress: AMPLIFY_CHAIN.utilityContracts.demoErc20.address,
-    decimals: AMPLIFY_CHAIN.utilityContracts.demoErc20.decimals,
   });
 
   const handleMint = async () => {

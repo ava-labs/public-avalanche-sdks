@@ -1,17 +1,15 @@
-import { AMPLIFY_CHAIN, BULLETIN_CHAIN, CHAINS } from '@/constants/chains';
+import { AMPLIFY_CHAIN, CHAINS } from '@/constants/chains';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
-import { type UseFormReturn } from 'react-hook-form';
 
-import { z } from 'zod';
 import { FancyAvatar } from './fancy-avatar';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { LoadingButton } from './loading-button';
 
-import { useAccount, useBalance } from 'wagmi';
+import { useAccount, useBalance, useChainId, useSwitchNetwork } from 'wagmi';
 import { Card, CardContent } from '@/ui/card';
 
 import type { EvmChain } from '@/types/chain';
-import { Input } from '@/ui/input';
+import { InputWithMax } from '@/ui/input';
 import { AutoAnimate } from '@/ui/auto-animate';
 import { useErc20Balance } from '@/hooks/use-erc20-balance';
 import { Skeleton } from '@/ui/skeleton';
@@ -26,20 +24,6 @@ import { OutOfGasCard } from './out-of-gas-card';
 import { toast } from '@/ui/hooks/use-toast';
 import { TransactionSuccessAlert } from './transaction-success-alert';
 
-const formSchema = z.object({
-  fromChain: z.string(),
-  toChain: z.string(),
-  tokenUniversalId: z.string(),
-  amount: z.string(),
-});
-
-export type TeleportForm = UseFormReturn<
-  z.infer<typeof formSchema>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any,
-  undefined
->;
-
 const findChain = (chainId: string) => {
   const chain = CHAINS.find((chain) => chain.chainId === chainId);
   if (!chain) {
@@ -50,42 +34,57 @@ const findChain = (chainId: string) => {
 
 export const TeleporterForm = memo(() => {
   /**
+   * Chain state
+   */
+  const chainId = String(useChainId());
+  const fromChain = useMemo(() => CHAINS.find((chain) => chain.chainId === chainId), [chainId]);
+  const defaultToChain = useMemo(() => CHAINS.find((chain) => chain.chainId !== fromChain?.chainId), [fromChain]);
+  const [toChain, setToChain] = useState<EvmChain | undefined>(defaultToChain);
+  const { switchNetworkAsync } = useSwitchNetwork();
+  const toChainsList = useMemo(
+    () => (fromChain ? CHAINS.filter((chain) => chain.chainId !== fromChain.chainId) : []),
+    [fromChain],
+  );
+
+  /**
    * Form state
    */
-  const [fromChain, setFromChain] = useState<EvmChain>(AMPLIFY_CHAIN);
-  const [toChain, setToChain] = useState<EvmChain>(BULLETIN_CHAIN);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const toChainsList = useMemo(() => CHAINS.filter((chain) => chain.chainId !== fromChain.chainId), [fromChain]);
   const [amount, setAmount] = useState('');
   const amountBigInt = useMemo(() => {
     try {
-      return BigInt(new Big(amount).mul(10 ** fromChain.utilityContracts.demoErc20.decimals).toString());
+      return fromChain
+        ? BigInt(new Big(amount).mul(10 ** fromChain.utilityContracts.demoErc20.decimals).toString())
+        : undefined;
     } catch {
       return undefined;
     }
   }, [amount]);
-  const [teleportTxHash, setTeleportTxHash] = useState<string>();
+  const [completedTeleportTx, setCompletedTeleportTx] = useState<{
+    txHash: string;
+    chain: EvmChain;
+  }>();
 
   /**
    * Wallet state
    */
   const { address, isConnected } = useAccount();
-  const { data: gasBalance } = useBalance({
-    address,
-    chainId: Number(fromChain.chainId),
-  });
-
+  const { data: gasBalance, refetch: refetchGasBalance } = useBalance({ address });
   const {
     erc20Balance,
     formattedErc20Balance,
     isLoading: isLoadingErc20Balance,
-  } = useErc20Balance({
-    chain: fromChain,
-    tokenAddress: fromChain.utilityContracts.demoErc20.address,
-    decimals: fromChain.utilityContracts.demoErc20.decimals,
-  });
+    refetch: refetchErc20Balance,
+  } = useErc20Balance({ chain: fromChain });
 
+  /**
+   * If fromChain is changed to same as toChain,
+   * update toChain to be a different chain.
+   */
   useEffect(() => {
+    if (!fromChain || !toChain) {
+      return;
+    }
     if (fromChain.chainId === toChain.chainId) {
       const nextToChain = toChainsList[0];
       if (!nextToChain) {
@@ -103,8 +102,16 @@ export const TeleporterForm = memo(() => {
   });
 
   const handleTeleport = async () => {
+    if (!fromChain) {
+      toast({
+        title: 'Teleport failed',
+        description: 'Invalid source chain.',
+        variant: 'destructive',
+      });
+      return;
+    }
     setIsSubmitting(true);
-    setTeleportTxHash(undefined);
+    setCompletedTeleportTx(undefined);
     const res = await teleportToken();
     setIsSubmitting(false);
     if (!res) {
@@ -115,8 +122,12 @@ export const TeleporterForm = memo(() => {
       });
       return;
     }
-
-    setTeleportTxHash(res.hash);
+    refetchGasBalance();
+    refetchErc20Balance();
+    setCompletedTeleportTx({
+      chain: fromChain,
+      txHash: res.hash,
+    });
 
     toast({
       title: 'Teleport success!',
@@ -125,7 +136,9 @@ export const TeleporterForm = memo(() => {
   };
 
   const hasGas = !isNil(gasBalance) ? gasBalance.value > MIN_AMOUNT_FOR_GAS : true;
-  const hasSufficientErc20Balance = !isNil(erc20Balance) && !isNil(amountBigInt) ? erc20Balance > amountBigInt : true;
+  const hasSufficientErc20Balance = !isNil(erc20Balance) && !isNil(amountBigInt) ? erc20Balance >= amountBigInt : true;
+
+  const isReadyToTeleport = isConnected && hasGas && amountBigInt && hasSufficientErc20Balance && !isSubmitting;
 
   return (
     <>
@@ -134,11 +147,27 @@ export const TeleporterForm = memo(() => {
           <div className="grid grid-cols-12 gap-y-4 gap-x-4">
             <p className="font-semibold text-md col-span-3 sm:col-span-6">From</p>
             <Select
-              onValueChange={(chainId) => setFromChain(findChain(chainId))}
-              value={fromChain.chainId}
+              onValueChange={async (chainId) => {
+                if (!switchNetworkAsync) {
+                  toast({
+                    title: 'Switch network failed',
+                    description: 'Please try again',
+                    variant: 'destructive',
+                  });
+                  return;
+                }
+
+                if (fromChain?.chainId !== chainId) {
+                  await switchNetworkAsync(Number(chainId));
+                }
+              }}
+              value={fromChain?.chainId ?? ''}
               disabled={isSubmitting}
             >
-              <SelectTrigger className="col-span-9 sm:col-span-6 border-neutral-700">
+              <SelectTrigger
+                disabled={!isConnected}
+                className="col-span-9 sm:col-span-6 border-neutral-700"
+              >
                 <SelectValue placeholder="Select a subnet" />
               </SelectTrigger>
               <SelectContent>
@@ -172,14 +201,22 @@ export const TeleporterForm = memo(() => {
               </div>
             </div>
             <div className="flex flex-col justify-center col-span-3 sm:col-span-6">
-              <p className="font-semibold text-md text-right">{fromChain.utilityContracts.demoErc20.symbol}</p>
+              <p className="font-semibold text-md text-right">
+                {(fromChain ?? AMPLIFY_CHAIN).utilityContracts.demoErc20.symbol}
+              </p>
             </div>
             <div className="col-span-9 sm:col-span-6">
-              <Input
+              <InputWithMax
                 placeholder="0.0"
                 value={amount}
                 onChange={(e) => setAmount(parseNumberInput(e.target.value))}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isConnected}
+                maxButtonProps={{
+                  onClick: () => {
+                    formattedErc20Balance && setAmount(formattedErc20Balance);
+                  },
+                  disabled: !erc20Balance,
+                }}
               />
             </div>
           </div>
@@ -191,10 +228,13 @@ export const TeleporterForm = memo(() => {
             <p className="font-semibold text-md col-span-3 sm:col-span-6">To</p>
             <Select
               onValueChange={(chainId) => setToChain(findChain(chainId))}
-              value={toChain.chainId}
+              value={toChain?.chainId}
               disabled={isSubmitting}
             >
-              <SelectTrigger className="col-span-9 sm:col-span-6 border-neutral-600">
+              <SelectTrigger
+                disabled={!isConnected}
+                className="col-span-9 sm:col-span-6 border-neutral-600"
+              >
                 <SelectValue placeholder="Select a subnet" />
               </SelectTrigger>
               <SelectContent>
@@ -221,11 +261,11 @@ export const TeleporterForm = memo(() => {
 
       <div className="mt-4">
         <LoadingButton
-          variant={isConnected && hasGas && amount && hasSufficientErc20Balance ? 'primary-gradient' : 'secondary'}
+          variant={isReadyToTeleport ? 'primary-gradient' : 'secondary'}
           className="w-full"
           onClick={handleTeleport}
           isLoading={isSubmitting}
-          disabled={!isConnected || !hasGas || isSubmitting || !amount || !hasSufficientErc20Balance}
+          disabled={!isReadyToTeleport}
           loadingText="Teleporting..."
           tooltipContent={
             !isConnected
@@ -239,7 +279,7 @@ export const TeleporterForm = memo(() => {
               : undefined
           }
         >
-          TELEPORT
+          BRIDGE
         </LoadingButton>
         <AutoAnimate>
           {!isConnected ? (
@@ -247,7 +287,7 @@ export const TeleporterForm = memo(() => {
               actionLabel="teleport"
               className="mt-4"
             />
-          ) : !hasGas ? (
+          ) : !hasGas && fromChain ? (
             <OutOfGasCard
               chain={fromChain}
               className="mt-4"
@@ -255,10 +295,10 @@ export const TeleporterForm = memo(() => {
           ) : null}
         </AutoAnimate>
         <AutoAnimate>
-          {!!teleportTxHash && (
+          {!!completedTeleportTx && (
             <TransactionSuccessAlert
-              explorerBaseUrl={fromChain.explorerUrl}
-              txHash={teleportTxHash}
+              explorerBaseUrl={completedTeleportTx.chain.explorerUrl}
+              txHash={completedTeleportTx.txHash}
               className="mt-4"
             />
           )}

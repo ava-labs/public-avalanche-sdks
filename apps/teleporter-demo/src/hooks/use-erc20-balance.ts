@@ -3,31 +3,23 @@ import type { EvmChain } from '@/types/chain';
 import Big from 'big.js';
 import { isNil } from 'lodash-es';
 import { useMemo } from 'react';
-import { useContractRead, type Address, useAccount } from 'wagmi';
+import { useContractRead, useAccount } from 'wagmi';
 
-export const useErc20Balance = ({
-  chain,
-  tokenAddress,
-  decimals,
-}: {
-  chain: EvmChain;
-  tokenAddress: Address;
-  decimals: number;
-}) => {
+export const useErc20Balance = ({ chain }: { chain?: EvmChain }) => {
   const { address } = useAccount();
   const { data: erc20Balance, ...rest } = useContractRead({
     abi: NATIVE_ERC20_ABI,
     functionName: 'balanceOf',
-    address: tokenAddress,
+    address: chain?.utilityContracts.demoErc20.address,
     args: address ? [address] : undefined,
-    chainId: Number(chain.chainId),
+    chainId: chain ? Number(chain.chainId) : undefined,
   });
   const formattedErc20Balance = useMemo(() => {
-    if (isNil(erc20Balance)) {
+    if (isNil(chain) || isNil(erc20Balance)) {
       return undefined;
     }
 
-    return new Big(erc20Balance.toString()).div(10 ** decimals).toString();
+    return new Big(erc20Balance.toString()).div(10 ** chain?.utilityContracts.demoErc20.decimals).toString();
   }, [erc20Balance]);
 
   return {

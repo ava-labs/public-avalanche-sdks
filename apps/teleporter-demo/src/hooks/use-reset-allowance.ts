@@ -1,33 +1,51 @@
 import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import type { EvmChain } from '@/types/chain';
 import { toast } from '@/ui/hooks/use-toast';
-import { useChainId, useContractWrite, usePrepareContractWrite, useSwitchNetwork, type Address } from 'wagmi';
+import {
+  useChainId,
+  useContractWrite,
+  usePrepareContractWrite,
+  useSwitchNetwork,
+  type Address,
+  useContractRead,
+  useAccount,
+} from 'wagmi';
 
 const MAXIMUM_ALLOWANCE = BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
 
-export const useApprove = ({
+export const useResetAllowance = ({
   chain,
   tokenAddress,
-  addressToApprove,
+  addressToReset,
 }: {
   chain?: EvmChain;
   tokenAddress?: Address;
-  addressToApprove?: Address;
+  addressToReset?: Address;
 }) => {
   const chainId = String(useChainId());
   const { switchNetworkAsync } = useSwitchNetwork();
 
-  const { config } = usePrepareContractWrite({
-    address: tokenAddress,
-    functionName: 'approve',
+  const { address } = useAccount();
+  const { data: allowance } = useContractRead({
+    address: chain?.utilityContracts.demoErc20.address,
+    functionName: 'allowance',
     abi: NATIVE_ERC20_ABI,
-    args: chain && tokenAddress && addressToApprove ? [addressToApprove, MAXIMUM_ALLOWANCE] : undefined,
+    args: address && chain ? [address, chain?.utilityContracts.bridge.address] : undefined,
+    enabled: false, // Disable auto-fetch since we fetch manually right before teleporting.
   });
 
-  const { writeAsync } = useContractWrite(config);
+  const { config } = usePrepareContractWrite({
+    address: tokenAddress,
+    functionName: 'decreaseAllowance',
+    abi: NATIVE_ERC20_ABI,
+    args:
+      chain && tokenAddress && addressToReset ? [addressToReset, allowance ? allowance : MAXIMUM_ALLOWANCE] : undefined,
+  });
+
+  const { writeAsync: resetAllowance } = useContractWrite(config);
 
   return {
-    approve: async () => {
+    resetAllownce: async () => {
       try {
         if (!switchNetworkAsync) {
           throw new Error('switchNetworkAsync is undefined.');
@@ -43,17 +61,17 @@ export const useApprove = ({
           }
         }
 
-        if (!writeAsync) {
-          throw new Error('writeAsync is undefined.');
+        if (!resetAllowance) {
+          throw new Error('resetAllowance is undefined.');
         }
 
-        const approveResponse = await writeAsync?.();
-        console.info('Successfully approved token.', approveResponse);
+        const resetAllowanceResponse = await resetAllowance?.();
+        console.info('Successfully reset allowance.', resetAllowanceResponse);
         toast({
           title: 'Success',
-          description: `Approval successful!`,
+          description: `Allowance reset successful!`,
         });
-        return approveResponse;
+        return resetAllowanceResponse;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.warn(e?.message ?? e);
