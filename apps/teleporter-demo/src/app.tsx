@@ -2,7 +2,6 @@ import { PageContainer } from './components/page-container';
 import { ThemeProvider } from './ui/theme-provider';
 import { WalletProvider } from './providers/wallet-provider';
 import { TooltipProvider } from './ui/tooltip';
-import { BalancesProvider } from './providers/balances-provider';
 import { Suspense } from 'react';
 import { LoadingPage } from './pages/loading-page';
 import { Toaster } from './ui/toaster';
@@ -18,11 +17,9 @@ export default function App() {
         <TooltipProvider>
           <WalletProvider>
             <Suspense fallback={<LoadingPage />}>
-              <BalancesProvider>
-                <PageContainer>
-                  <Home />
-                </PageContainer>
-              </BalancesProvider>
+              <PageContainer>
+                <Home />
+              </PageContainer>
             </Suspense>
           </WalletProvider>
           <Toaster />

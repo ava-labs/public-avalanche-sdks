@@ -206,7 +206,10 @@ export const TeleporterForm = memo(() => {
         </LoadingButton>
         <AutoAnimate>
           {!isConnected ? (
-            <NotConnectedCard className="mt-4" />
+            <NotConnectedCard
+              actionLabel="teleport"
+              className="mt-4"
+            />
           ) : !hasGas ? (
             <OutOfGasCard
               chain={fromChain}

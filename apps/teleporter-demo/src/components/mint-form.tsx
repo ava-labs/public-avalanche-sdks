@@ -1,33 +1,86 @@
-import { AMPLIFY_CHAIN } from '@/constants/chains';
+import { AMPLIFY_CHAIN, BULLETIN_CHAIN, CONDUIT_CHAIN } from '@/constants/chains';
 
 import { FancyAvatar } from './fancy-avatar';
 import { memo, useState } from 'react';
 import { LoadingButton } from './loading-button';
-import { useBalances } from '@/providers/balances-provider';
 import { useMintAmplify } from '@/hooks/use-mint-amplify';
 import { AutoAnimate } from '@/ui/auto-animate';
-import { useAccount } from 'wagmi';
-import { ConnectWalletCard } from './connect-wallet-card';
-import { GoToFaucet } from './go-to-faucet';
-import { MIN_AMOUNT_FOR_GAS_BIG } from '@/constants/token';
-import { bigToDisplayString } from '@/utils/format-string';
-import { sleep } from '@/utils/sleep';
+import { useAccount, useBalance } from 'wagmi';
+import { MIN_AMOUNT_FOR_GAS } from '@/constants/token';
+import { formatStringNumber } from '@/utils/format-string';
 import { FlashingUpdate } from './flashing-update';
 import { isNil } from 'lodash-es';
-import { Button } from '@/ui/button';
-import { ArrowLeftIcon, CheckCircle } from 'lucide-react';
+import { NotConnectedCard } from './not-connected-card';
+import { OutOfGasCard } from './out-of-gas-card';
+import { Card, CardContent } from '@/ui/card';
+import type { EvmChain } from '@/types/chain';
+import { useErc20Balance } from '@/hooks/use-erc20-balance';
+import { cn } from '@/utils/cn';
+import successCheck from '@/assets/success-check.riv?url';
+import Rive from '@rive-app/react-canvas';
+import { Alert, AlertDescription, AlertTitle } from '@/ui/alert';
+import { ExternalLink } from 'lucide-react';
+import { truncateAddress } from '@/utils/truncate-address';
+import { buttonVariants } from '@/ui/button';
+
+const BalancesCard = ({ chain, isBigLayout = false }: { chain: EvmChain; isBigLayout?: boolean }) => {
+  const { address } = useAccount();
+  const { data: gasBalance } = useBalance({
+    address,
+    chainId: Number(chain.chainId),
+  });
+
+  const { formattedErc20Balance } = useErc20Balance({
+    chain: chain,
+    tokenAddress: chain.utilityContracts.demoErc20.address,
+    decimals: chain.utilityContracts.demoErc20.decimals,
+  });
+
+  return (
+    <Card className={cn('border-0 w-full', isBigLayout ? 'bg-neutral-800' : 'bg-neutral-900')}>
+      <CardContent>
+        <div className="flex flex-nowrap items-center">
+          <FancyAvatar
+            className="col-span-6 w-6 h-6"
+            src={chain.logoUrl}
+            label={chain.utilityContracts.demoErc20.symbol}
+          />
+          <p className="text-md font-medium ml-2">{chain.name}</p>
+        </div>
+        <div className={cn('mt-4 flex', isBigLayout ? 'align-center justify-around' : 'flex-col gap-2')}>
+          <p className="whitespace-nowrap ">
+            <FlashingUpdate className={cn('font-semibold ml-2', isBigLayout ? 'text-4xl' : 'text-xl')}>
+              {formatStringNumber(gasBalance?.formatted ?? '0')}
+            </FlashingUpdate>
+            <span className="text-md text-neutral-400 font-semibold ml-1">{chain.networkToken.name}</span>
+          </p>
+          <p className="whitespace-nowrap">
+            <FlashingUpdate className={cn('font-semibold ml-2', isBigLayout ? 'text-4xl' : 'text-xl')}>
+              {formatStringNumber(formattedErc20Balance ?? '0')}
+            </FlashingUpdate>
+            <span className="text-md text-neutral-400 font-semibold ml-1">
+              {chain.utilityContracts.demoErc20.symbol}
+            </span>
+          </p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 export const MintForm = memo(() => {
-  const { isConnected } = useAccount();
-
-  const { tokensMap, mutate } = useBalances();
-  const gasToken = tokensMap?.get(AMPLIFY_CHAIN.networkToken.universalTokenId);
-  const erc20Token = tokensMap?.get(AMPLIFY_CHAIN.utilityContracts.demoErc20.universalTokenId);
+  const { address, isConnected } = useAccount();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mintTxHash, setMintTxHash] = useState<string>();
 
   const { mintToken } = useMintAmplify();
+
+  const { refetch } = useErc20Balance({
+    chain: AMPLIFY_CHAIN,
+    tokenAddress: AMPLIFY_CHAIN.utilityContracts.demoErc20.address,
+    decimals: AMPLIFY_CHAIN.utilityContracts.demoErc20.decimals,
+  });
 
   const handleMint = async () => {
     setIsSubmitting(true);
@@ -40,77 +93,83 @@ export const MintForm = memo(() => {
 
     setMintTxHash(response.hash);
 
-    // Wait 1s to let glacier index
-    await sleep(1000);
-    mutate();
+    refetch();
   };
 
-  // return <GoToFaucet chain={AMPLIFY_CHAIN} />;
-
-  console.log('gasToken?.balance.toString()', gasToken?.balance.toString());
-
+  const { data: gasBalance } = useBalance({
+    address,
+    chainId: Number(AMPLIFY_CHAIN.chainId),
+  });
+  const hasGas = !isNil(gasBalance) ? gasBalance.value > MIN_AMOUNT_FOR_GAS : true;
   return (
-    <div className="flex flex-col gap-2 w-48 justify-center items-center">
-      {!isConnected ? (
-        <ConnectWalletCard />
-      ) : gasToken?.balance.lt(MIN_AMOUNT_FOR_GAS_BIG) ? (
-        // TODO: detect balance and show GoToFaucet if low
-        <GoToFaucet chain={AMPLIFY_CHAIN} />
-      ) : (
-        <>
-          <AutoAnimate>
-            <p className="text-gray-400 text-sm text-center">Current Balance:</p>
-            <div className="flex items-center justify-center space-x-2 flex-nowrap mb-2">
-              <FlashingUpdate className="text-3xl font-semibold">
-                {bigToDisplayString(erc20Token?.balance)}
-              </FlashingUpdate>
-              <FancyAvatar
-                src={AMPLIFY_CHAIN.logoUrl}
-                label={AMPLIFY_CHAIN.utilityContracts.demoErc20.symbol}
-                className="w-6 h-6"
+    <>
+      <div className="grid grid-cols-12 gap-2">
+        <div className="col-span-12">
+          <BalancesCard
+            chain={AMPLIFY_CHAIN}
+            isBigLayout
+          />
+        </div>
+        <div className="col-span-12 sm:col-span-6">
+          <BalancesCard chain={BULLETIN_CHAIN} />
+        </div>
+        <div className="col-span-12 sm:col-span-6">
+          <BalancesCard chain={CONDUIT_CHAIN} />
+        </div>
+      </div>
+      <div className="mt-4">
+        <LoadingButton
+          variant={isConnected && hasGas ? 'default' : 'secondary'}
+          className="w-full"
+          isLoading={isSubmitting}
+          onClick={handleMint}
+          disabled={!isConnected || !hasGas}
+        >
+          MINT!
+        </LoadingButton>
+        <AutoAnimate>
+          {!isConnected ? (
+            <NotConnectedCard
+              actionLabel="mint"
+              className="mt-4"
+            />
+          ) : !hasGas ? (
+            <OutOfGasCard
+              chain={AMPLIFY_CHAIN}
+              className="mt-4"
+            />
+          ) : null}
+        </AutoAnimate>
+        <AutoAnimate>
+          {!!mintTxHash && (
+            <Alert className="flex flex-nowrap mt-4">
+              {/* <RocketIcon className="h-4 w-4" /> */}
+              <Rive
+                className="h-8 w-8 inline-flex"
+                src={successCheck}
               />
-              <span className="text-lg font-semibold">{AMPLIFY_CHAIN.utilityContracts.demoErc20.symbol}</span>
-            </div>
-          </AutoAnimate>
-          {!isNil(mintTxHash) ? (
-            <div className="flex flex-col items-center gap-2">
-              <span className="inline-flex flex-nowrap text-xl font-semibold text-gray-300 mb-2">
-                <CheckCircle
-                  className="text-green-500 mr-2"
-                  size={24}
-                />{' '}
-                Mint Success!
-              </span>
-
-              <Button
-                className="w-full"
-                variant="secondary"
-              >
-                <ArrowLeftIcon
-                  className="mr-2"
-                  size={16}
-                />
-                Go to Teleporter
-              </Button>
-              <Button
-                className="w-full h-8"
-                variant="link"
-                onClick={() => setMintTxHash(undefined)}
-              >
-                Reset
-              </Button>
-            </div>
-          ) : (
-            <LoadingButton
-              className="w-full"
-              isLoading={isSubmitting}
-              onClick={handleMint}
-            >
-              MINT!
-            </LoadingButton>
+              <div className="ml-2">
+                <AlertTitle>Mint success!</AlertTitle>
+                <AlertDescription>
+                  View your transaction:
+                  <a
+                    className={cn(buttonVariants({ variant: 'link' }), 'h-2')}
+                    href={`${AMPLIFY_CHAIN.explorerUrl}/tx/${mintTxHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {truncateAddress(mintTxHash)}
+                    <ExternalLink
+                      size={16}
+                      className="ml-1"
+                    />
+                  </a>
+                </AlertDescription>
+              </div>
+            </Alert>
           )}
-        </>
-      )}
-    </div>
+        </AutoAnimate>
+      </div>
+    </>
   );
 });
