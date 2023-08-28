@@ -9,6 +9,7 @@ import { Suspense } from 'react';
 import { LoadingPage } from './pages/loading-page';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { MintForm } from './components/mint-form';
+import { Toaster } from './ui/toaster';
 
 export default function App() {
   return (
@@ -58,6 +59,7 @@ export default function App() {
               </BalancesProvider>
             </Suspense>
           </WalletProvider>
+          <Toaster />
         </TooltipProvider>
       </ThemeProvider>
     </>
