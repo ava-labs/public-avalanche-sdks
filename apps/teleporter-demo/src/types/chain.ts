@@ -13,11 +13,12 @@ const erc20Contract = z.object({
   address: z.string().transform((val) => val as Address),
   name: z.string(),
   symbol: z.string(),
+  decimals: z.number(),
 });
 
 export const evmChainSchema = z.object({
   platformChainId: z.string(),
-  platformChainIdHex: z.string(),
+  platformChainIdHex: z.string().transform((val) => val as `0x${string}`),
   subnetId: z.string(),
   slug: z.string(),
   explorerUrl: z.string(),

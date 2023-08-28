@@ -35,7 +35,7 @@ const ConnectorButton = ({
             variant="outline"
             onClick={() => handleConnect(connector)}
             disabled={isDisabled}
-            className={'w-full'}
+            className="w-full rounded-md"
           >
             <span className="space-x-2 inline-flex items-center">
               {icon}
@@ -100,7 +100,7 @@ export const ConnectWalletButton = ({ className, ...rest }: ButtonProps) => {
                 {connectors.core?.ready ? (
                   <Button
                     variant="outline"
-                    className="h-24"
+                    className="h-24 rounded-lg"
                     onClick={() => handleConnect(connectors.core)}
                   >
                     <CoreText />

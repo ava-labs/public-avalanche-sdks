@@ -1,6 +1,4 @@
-import type { TeleportForm } from '@/components/teleporter-form';
 import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge-abi';
-import { CHAINS } from '@/constants/chains';
 import { toast } from '@/ui/hooks/use-toast';
 import {
   useAccount,
@@ -13,19 +11,22 @@ import {
 import { useApprove } from './use-approve';
 import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import { isNil } from 'lodash-es';
+import type { EvmChain } from '@/types/chain';
 
 const TELEPORT_AMOUNT = BigInt('1000000000000000');
 
-export const useTeleport = (form: TeleportForm) => {
+export const useTeleport = ({
+  fromChain,
+  toChain,
+  amount,
+}: {
+  fromChain?: EvmChain;
+  toChain?: EvmChain;
+  amount?: bigint;
+}) => {
   const chainId = String(useChainId());
   const { switchNetworkAsync } = useSwitchNetwork();
   const { address } = useAccount();
-
-  const fromChainId = form.getValues('fromChain');
-  const fromChain = CHAINS.find((chain) => chain.chainId === fromChainId);
-
-  const toChainId = form.getValues('toChain');
-  const toChain = CHAINS.find((chain) => chain.chainId === toChainId);
 
   const { data: currentAllowance } = useContractRead({
     address: fromChain?.utilityContracts.demoErc20.address,
@@ -36,7 +37,7 @@ export const useTeleport = (form: TeleportForm) => {
 
   const { approve } = useApprove({
     chain: fromChain,
-    amount: TELEPORT_AMOUNT,
+    amount,
     addressToApprove: fromChain?.utilityContracts.bridge.address,
     tokenAddress: fromChain?.utilityContracts.demoErc20.address,
   });
@@ -46,18 +47,17 @@ export const useTeleport = (form: TeleportForm) => {
     functionName: 'bridgeTokens',
     abi: TELEPORTER_BRIDGE_ABI,
     args:
-      fromChain && toChain && address
+      fromChain && toChain && address && amount
         ? [
             toChain?.platformChainIdHex,
             toChain?.utilityContracts.bridge.address,
             fromChain?.utilityContracts.demoErc20.address,
             address,
-            TELEPORT_AMOUNT,
+            amount,
             BigInt(0),
             BigInt(0),
           ]
         : undefined,
-    // args: [toChain?.utilityContracts.bridge.addressfromChain?.platformChainId, isErc20TokenBalance(token) ? token.address : undefined,  ],
     maxFeePerGas: BigInt(0),
     maxPriorityFeePerGas: BigInt(0),
   });

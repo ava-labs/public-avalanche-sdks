@@ -9,8 +9,8 @@ import { AutoAnimate } from '@/ui/auto-animate';
 import { useAccount } from 'wagmi';
 import { ConnectWalletCard } from './connect-wallet-card';
 import { GoToFaucet } from './go-to-faucet';
-import { MIN_AMOUNT_FOR_GAS } from '@/constants/token';
-import { bigToDisplayString } from '@/utils/big-to-display-string';
+import { MIN_AMOUNT_FOR_GAS_BIG } from '@/constants/token';
+import { bigToDisplayString } from '@/utils/format-string';
 import { sleep } from '@/utils/sleep';
 import { FlashingUpdate } from './flashing-update';
 import { isNil } from 'lodash-es';
@@ -53,7 +53,7 @@ export const MintForm = memo(() => {
     <div className="flex flex-col gap-2 w-48 justify-center items-center">
       {!isConnected ? (
         <ConnectWalletCard />
-      ) : gasToken?.balance.lt(MIN_AMOUNT_FOR_GAS) ? (
+      ) : gasToken?.balance.lt(MIN_AMOUNT_FOR_GAS_BIG) ? (
         // TODO: detect balance and show GoToFaucet if low
         <GoToFaucet chain={AMPLIFY_CHAIN} />
       ) : (
