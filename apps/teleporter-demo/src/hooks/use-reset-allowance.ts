@@ -1,7 +1,15 @@
 import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import type { EvmChain } from '@/types/chain';
 import { toast } from '@/ui/hooks/use-toast';
-import { useChainId, useContractWrite, usePrepareContractWrite, useSwitchNetwork, type Address } from 'wagmi';
+import {
+  useChainId,
+  useContractWrite,
+  usePrepareContractWrite,
+  useSwitchNetwork,
+  type Address,
+  useContractRead,
+  useAccount,
+} from 'wagmi';
 
 const MAXIMUM_ALLOWANCE = BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
 
@@ -17,11 +25,21 @@ export const useResetAllowance = ({
   const chainId = String(useChainId());
   const { switchNetworkAsync } = useSwitchNetwork();
 
+  const { address } = useAccount();
+  const { data: allowance } = useContractRead({
+    address: chain?.utilityContracts.demoErc20.address,
+    functionName: 'allowance',
+    abi: NATIVE_ERC20_ABI,
+    args: address && chain ? [address, chain?.utilityContracts.bridge.address] : undefined,
+    enabled: false, // Disable auto-fetch since we fetch manually right before teleporting.
+  });
+
   const { config } = usePrepareContractWrite({
     address: tokenAddress,
     functionName: 'decreaseAllowance',
     abi: NATIVE_ERC20_ABI,
-    args: chain && tokenAddress && addressToReset ? [addressToReset, MAXIMUM_ALLOWANCE] : undefined,
+    args:
+      chain && tokenAddress && addressToReset ? [addressToReset, allowance ? allowance : MAXIMUM_ALLOWANCE] : undefined,
   });
 
   const { writeAsync: resetAllowance } = useContractWrite(config);
