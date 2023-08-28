@@ -103,7 +103,7 @@ export const TeleporterForm = memo(() => {
     setIsSubmitting(false);
   };
 
-  const hasGas = !isNil(gasBalance) && gasBalance.value > MIN_AMOUNT_FOR_GAS;
+  const hasGas = !isNil(gasBalance) ? gasBalance.value > MIN_AMOUNT_FOR_GAS : true;
 
   return (
     <>
