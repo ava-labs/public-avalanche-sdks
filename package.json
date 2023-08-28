@@ -5,6 +5,7 @@
     "changeset": "changeset",
     "ci": "turbo ci",
     "clean": "turbo clean && rm -rf node_modules",
+    "codegen": "turbo codegen",
     "dev": "turbo dev --no-cache --continue",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",

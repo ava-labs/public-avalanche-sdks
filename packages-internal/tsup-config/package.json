@@ -4,9 +4,6 @@
   "private": true,
   "type": "module",
   "main": "index.js",
-  "scripts": {
-    "prettier": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore --write \"src/**/*.ts*\""
-  },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
     "@internal/tsconfig": "workspace:*",

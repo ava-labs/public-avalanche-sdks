@@ -1,0 +1,4 @@
+https://core.app/*
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: no-referrer

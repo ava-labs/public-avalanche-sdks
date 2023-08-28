@@ -3,8 +3,8 @@
   "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "build": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build"]
+      "dependsOn": ["codegen", "^build"],
+      "outputs": ["dist/**"]
     },
     "test": {
       "outputs": ["coverage/**"],
@@ -20,6 +20,10 @@
     },
     "clean": {
       "cache": false
+    },
+    "codegen": {
+      "dependsOn": ["^codegen"],
+      "inputs": ["src/scripts/**"]
     }
   }
 }
