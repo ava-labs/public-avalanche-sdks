@@ -47,7 +47,7 @@ jobs:
 
       - name: Deploy OhMyWarp
         run: |
-          npx wrangler pages deploy ./apps/teleporter-demo/build --project-name=ohmywarp-teleporter --commit-dirty=true > deploy_output_ohmywarp-teleporter.txt
+          npx wrangler pages deploy ./apps/teleporter-demo/dist --project-name=ohmywarp-teleporter --commit-dirty=true > deploy_output_ohmywarp-teleporter.txt
           WRANGLER_LOG=debug npx wrangler pages deployment list --project-name=ohmywarp-teleporter
           DEPLOY_URL_OH_MY_WARP=$(grep -oP -m 1 'https?://\S+' deploy_output_ohmywarp-teleporter.txt)
           echo "DEPLOY_URL_OH_MY_WARP=$DEPLOY_URL_OH_MY_WARP" >> $GITHUB_ENV
