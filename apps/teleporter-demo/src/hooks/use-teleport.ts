@@ -17,19 +17,20 @@ export const useTeleport = ({
   toChain,
   amount,
 }: {
-  fromChain?: EvmChain;
-  toChain?: EvmChain;
+  fromChain: EvmChain;
+  toChain: EvmChain;
   amount?: bigint;
 }) => {
   const chainId = String(useChainId());
   const { switchNetworkAsync } = useSwitchNetwork();
   const { address } = useAccount();
 
-  const { data: currentAllowance } = useContractRead({
+  const { refetch: fetchAllowance } = useContractRead({
     address: fromChain?.utilityContracts.demoErc20.address,
     functionName: 'allowance',
     abi: NATIVE_ERC20_ABI,
     args: address && fromChain ? [address, fromChain?.utilityContracts.bridge.address] : undefined,
+    enabled: false, // Disable auto-fetch since we fetch manually right before teleporting.
   });
 
   const { approve } = useApprove({
@@ -56,6 +57,7 @@ export const useTeleport = ({
         : undefined,
     maxFeePerGas: BigInt(0),
     maxPriorityFeePerGas: BigInt(0),
+    chainId: Number(fromChain.chainId),
   });
 
   const { writeAsync } = useContractWrite(config);
@@ -92,12 +94,16 @@ export const useTeleport = ({
         /**
          * Get approval if allowance is insuffient.
          */
+        const { data: currentAllowance } = await fetchAllowance();
         if (isNil(currentAllowance)) {
           throw new Error('Unable to detect current allowance.');
         }
-        if (currentAllowance < amount) {
+
+        const hasSufficientAllowance = amount < currentAllowance;
+        if (!hasSufficientAllowance) {
           const approveResponse = await approve();
           console.info('Approve successful.', approveResponse);
+          await fetchAllowance();
         }
 
         /**
