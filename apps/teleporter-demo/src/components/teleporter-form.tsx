@@ -127,13 +127,13 @@ export const TeleporterForm = memo(() => {
       <Card className="border-0 bg-neutral-900 rounded-b-none">
         <CardContent>
           <div className="grid grid-cols-12 gap-y-4 gap-x-4">
-            <p className="font-semibold text-md col-span-6">From</p>
+            <p className="font-semibold text-md col-span-3 sm:col-span-6">From</p>
             <Select
               onValueChange={(chainId) => setFromChain(findChain(chainId))}
               value={fromChain.chainId}
               disabled={isSubmitting}
             >
-              <SelectTrigger className="col-span-6 border-neutral-700">
+              <SelectTrigger className="col-span-9 sm:col-span-6 border-neutral-700">
                 <SelectValue placeholder="Select a subnet" />
               </SelectTrigger>
               <SelectContent>
@@ -166,10 +166,10 @@ export const TeleporterForm = memo(() => {
                 )}{' '}
               </p>
             </div>
-            <div className="flex flex-col justify-center col-span-6">
+            <div className="flex flex-col justify-center col-span-3 sm:col-span-6">
               <p className="font-semibold text-md text-right">{fromChain.utilityContracts.demoErc20.symbol}</p>
             </div>
-            <div className="col-span-6">
+            <div className="col-span-9 sm:col-span-6">
               <Input
                 placeholder="0.0"
                 value={amount}
@@ -183,13 +183,13 @@ export const TeleporterForm = memo(() => {
       <Card className="border-0 bg-neutral-800 rounded-t-none">
         <CardContent>
           <div className="grid grid-cols-12 gap-y-4 gap-x-4">
-            <p className="font-semibold text-md col-span-6">To</p>
+            <p className="font-semibold text-md col-span-3 sm:col-span-6">To</p>
             <Select
               onValueChange={(chainId) => setToChain(findChain(chainId))}
               value={toChain.chainId}
               disabled={isSubmitting}
             >
-              <SelectTrigger className="col-span-6 border-neutral-600">
+              <SelectTrigger className="col-span-9 sm:col-span-6 border-neutral-600">
                 <SelectValue placeholder="Select a subnet" />
               </SelectTrigger>
               <SelectContent>

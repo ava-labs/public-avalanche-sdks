@@ -16,7 +16,7 @@ export const Home = memo(() => {
       </TabsList>
       <TabsContent value="teleport">
         <Card className="flex grow">
-          <CardContent className="w-full">
+          <CardContent className="w-full max-sm:px-0">
             <CardTitle>
               <span className="ml-6">Teleport</span>
             </CardTitle>
@@ -28,7 +28,7 @@ export const Home = memo(() => {
       </TabsContent>
       <TabsContent value="mint">
         <Card className="flex grow">
-          <CardContent className="w-full">
+          <CardContent className="w-full max-sm:px-0">
             <CardTitle>
               <span className="ml-6">Mint</span>
             </CardTitle>
