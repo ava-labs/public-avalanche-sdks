@@ -23,6 +23,7 @@ import { NotConnectedCard } from './not-connected-card';
 import { OutOfGasCard } from './out-of-gas-card';
 import { toast } from '@/ui/hooks/use-toast';
 import { TransactionSuccessAlert } from './transaction-success-alert';
+import { DebugResetAllowanceButton } from './debug-reset-allowance';
 
 const findChain = (chainId: string) => {
   const chain = CHAINS.find((chain) => chain.chainId === chainId);
@@ -304,6 +305,8 @@ export const TeleporterForm = memo(() => {
           )}
         </AutoAnimate>
       </div>
+      {/* Use this to debug handling allowances */}
+      {window.location.hostname === 'localhost' && <DebugResetAllowanceButton chain={fromChain} />}
     </>
   );
 });
