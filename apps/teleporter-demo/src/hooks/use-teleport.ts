@@ -1,12 +1,5 @@
 import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge-abi';
-import {
-  useAccount,
-  useChainId,
-  useContractWrite,
-  usePrepareContractWrite,
-  useSwitchNetwork,
-  useContractRead,
-} from 'wagmi';
+import { useAccount, useChainId, useContractWrite, useSwitchNetwork, useContractRead } from 'wagmi';
 import { useApprove } from './use-approve';
 import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import { isNil } from 'lodash-es';
@@ -39,7 +32,7 @@ export const useTeleport = ({
     tokenAddress: fromChain?.utilityContracts.demoErc20.address,
   });
 
-  const { config } = usePrepareContractWrite({
+  const { writeAsync } = useContractWrite({
     address: fromChain?.utilityContracts.bridge.address,
     functionName: 'bridgeTokens',
     abi: TELEPORTER_BRIDGE_ABI,
@@ -59,8 +52,6 @@ export const useTeleport = ({
     maxPriorityFeePerGas: BigInt(0),
     chainId: fromChain ? Number(fromChain.chainId) : undefined,
   });
-
-  const { writeAsync } = useContractWrite(config);
 
   return {
     teleportToken: async () => {
