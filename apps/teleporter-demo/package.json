@@ -5,8 +5,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "dev": "vite --host",
-    "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "test": "vitest run --silent"
+    "lint": "eslint \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@formkit/auto-animate": "0.7.0",
