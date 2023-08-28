@@ -77,14 +77,7 @@ export const TeleporterForm = memo(() => {
     isLoading: isLoadingErc20Balance,
     refetch: refetchErc20Balance,
   } = useErc20Balance({ chain: fromChain });
-  const {
-    erc20Balance: amplifyErc20Balance,
-    formattedErc20Balance: formattedAmplifyErc20Balance,
-    isLoading: isLoadingAmplifyErc20Balance,
-    refetch: refetchAmplifyErc20Balance,
-  } = useErc20Balance({ chain: AMPLIFY_CHAIN });
-  console.log('erc20Balance', erc20Balance);
-  console.log('amplifyErc20Balance', amplifyErc20Balance);
+  const { erc20Balance: amplifyErc20Balance } = useErc20Balance({ chain: AMPLIFY_CHAIN });
 
   const hasErc20Balance = !isNil(erc20Balance) ? erc20Balance > 0 : true;
   const hasAmplifyErc20Balance = !isNil(amplifyErc20Balance) ? amplifyErc20Balance > 0 : true;
