@@ -1,5 +1,5 @@
 ---
-"@core/teleporter-demo": major
+'@core/teleporter-demo': major
 ---
 
 Create teleporter demo
