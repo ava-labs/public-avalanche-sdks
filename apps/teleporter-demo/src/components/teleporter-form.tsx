@@ -266,7 +266,7 @@ export const TeleporterForm = memo(() => {
           onClick={handleTeleport}
           isLoading={isSubmitting}
           disabled={!isReadyToTeleport}
-          loadingText="Teleporting..."
+          loadingText="Bridging..."
           tooltipContent={
             !isConnected
               ? 'Please connect your wallet.'
