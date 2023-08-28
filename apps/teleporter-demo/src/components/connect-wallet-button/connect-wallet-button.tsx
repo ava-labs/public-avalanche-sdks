@@ -107,7 +107,7 @@ export const ConnectWalletButton = ({ className, ...rest }: ButtonProps) => {
                   </Button>
                 ) : (
                   <a
-                    className={cn(buttonVariants({ variant: 'outline' }), 'h-24')}
+                    className={cn(buttonVariants({ variant: 'outline' }), 'h-24 rounded-lg')}
                     href={CORE_CHROME_DOWNLOAD_URL}
                     target="_blank"
                     rel="noopener noreferrer"
