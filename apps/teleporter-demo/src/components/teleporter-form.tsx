@@ -155,7 +155,7 @@ export const TeleporterForm = memo(() => {
               </SelectContent>
             </Select>
             <div className="col-span-12 text-sm text-right text-gray-400">
-              <p>
+              <div>
                 Balance:{' '}
                 {isLoadingErc20Balance ? (
                   <Skeleton className="w-6 h-2 inline-flex" />
@@ -164,7 +164,7 @@ export const TeleporterForm = memo(() => {
                 ) : (
                   formatStringNumber(formattedErc20Balance)
                 )}{' '}
-              </p>
+              </div>
             </div>
             <div className="flex flex-col justify-center col-span-3 sm:col-span-6">
               <p className="font-semibold text-md text-right">{fromChain.utilityContracts.demoErc20.symbol}</p>
