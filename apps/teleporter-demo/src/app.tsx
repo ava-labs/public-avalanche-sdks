@@ -23,38 +23,39 @@ export default function App() {
             <Suspense fallback={<LoadingPage />}>
               <BalancesProvider>
                 <PageContainer>
-                  <div className="flex min-w-full justify-center">
-                    <Tabs defaultValue="teleport">
-                      <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="teleport">Teleport</TabsTrigger>
-                        <TabsTrigger value="mint">Mint</TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="teleport">
-                        <Card className="flex max-w-xl grow">
-                          <CardContent className="w-full">
-                            <CardTitle>
-                              <span className="ml-6">Teleport</span>
-                            </CardTitle>
-                            <CardContent>
-                              <TeleporterForm />
-                            </CardContent>
+                  <Tabs
+                    defaultValue="teleport"
+                    className="w-full mt-4 sm:mt-8"
+                  >
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="teleport">Teleport</TabsTrigger>
+                      <TabsTrigger value="mint">Mint</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="teleport">
+                      <Card className="flex grow">
+                        <CardContent className="w-full">
+                          <CardTitle>
+                            <span className="ml-6">Teleport</span>
+                          </CardTitle>
+                          <CardContent>
+                            <TeleporterForm />
                           </CardContent>
-                        </Card>
-                      </TabsContent>
-                      <TabsContent value="mint">
-                        <Card className="flex max-w-xl grow">
-                          <CardContent className="w-full">
-                            <CardTitle>
-                              <span className="ml-6">Mint</span>
-                            </CardTitle>
-                            <CardContent>
-                              <MintForm />
-                            </CardContent>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                    <TabsContent value="mint">
+                      <Card className="flex grow">
+                        <CardContent className="w-full">
+                          <CardTitle>
+                            <span className="ml-6">Mint</span>
+                          </CardTitle>
+                          <CardContent>
+                            <MintForm />
                           </CardContent>
-                        </Card>
-                      </TabsContent>
-                    </Tabs>
-                  </div>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                  </Tabs>
                 </PageContainer>
               </BalancesProvider>
             </Suspense>

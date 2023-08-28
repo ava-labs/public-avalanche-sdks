@@ -3,20 +3,7 @@ import { TopNavigation } from './top-navigation';
 import { useSpring, animated } from 'react-spring';
 import { cn } from '@/utils/cn';
 
-const Container = ({ children }: PropsWithChildren) => {
-  return (
-    <div
-      className={cn(
-        'flex flex-col items-center justify-center min-h-screen bg-background text-foreground',
-        'sm:px-6 lg:px-8',
-      )}
-    >
-      {children}
-    </div>
-  );
-};
-
-const AnimatedContainer = animated(Container);
+const AnimatedDiv = animated('div');
 
 const PageContent = memo(({ children }: PropsWithChildren) => {
   const styles = useSpring({
@@ -27,13 +14,21 @@ const PageContent = memo(({ children }: PropsWithChildren) => {
     from: { opacity: 0 },
   });
 
-  return <AnimatedContainer style={styles}>{children}</AnimatedContainer>;
+  return (
+    <AnimatedDiv
+      className={cn('flex flex-col w-full items-center')}
+      style={styles}
+    >
+      <div className="w-full max-w-xl px-2">{children}</div>
+    </AnimatedDiv>
+  );
 });
 
 export const PageContainer = ({ children }: PropsWithChildren) => (
   <div className="min-h-screen">
     <TopNavigation />
     <PageContent>{children}</PageContent>
+
     {/* <Footer /> */}
   </div>
 );

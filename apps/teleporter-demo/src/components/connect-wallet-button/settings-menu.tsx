@@ -34,7 +34,7 @@ export const SettingsMenu = () => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="rounded-full"
+          className="rounded-full whitespace-nowrap"
         >
           <Circle
             size={12}

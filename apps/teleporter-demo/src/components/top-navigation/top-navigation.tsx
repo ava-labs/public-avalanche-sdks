@@ -12,11 +12,14 @@ import {
 } from '@/ui/navigation-menu';
 import { ConnectWalletButton } from '../connect-wallet-button';
 import AvalancheLogoWhite from './Avalanche_Horizontal_White.svg';
+import { useBreakpoint } from '@/ui/hooks/use-breakpoint';
 
 export function TopNavigation() {
+  const { isSmUp, isSmDown } = useBreakpoint('sm');
+
   return (
-    <div className="flex w-full justify-center">
-      <NavigationMenu className="py-2 w-full max-w-xl flex justify-between">
+    <div className="flex flex-col w-full items-center justify-center gap-1">
+      <NavigationMenu className="py-2 px-2 w-full max-w-xl flex justify-between">
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/">
@@ -68,13 +71,20 @@ export function TopNavigation() {
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink>
-              <ConnectWalletButton />
-            </NavigationMenuLink>
-          </NavigationMenuItem>
+          {isSmUp && (
+            <NavigationMenuItem>
+              <NavigationMenuLink>
+                <ConnectWalletButton />
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          )}
         </NavigationMenuList>
       </NavigationMenu>
+      {isSmDown && (
+        <NavigationMenu className="px-2 pb-2 w-full max-w-xl flex justify-between">
+          <ConnectWalletButton className="w-full" />
+        </NavigationMenu>
+      )}
     </div>
   );
 }
