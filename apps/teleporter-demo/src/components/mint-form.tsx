@@ -16,12 +16,7 @@ import { Card, CardContent } from '@/ui/card';
 import type { EvmChain } from '@/types/chain';
 import { useErc20Balance } from '@/hooks/use-erc20-balance';
 import { cn } from '@/utils/cn';
-import successCheck from '@/assets/success-check.riv?url';
-import Rive from '@rive-app/react-canvas';
-import { Alert, AlertDescription, AlertTitle } from '@/ui/alert';
-import { ExternalLink } from 'lucide-react';
-import { truncateAddress } from '@/utils/truncate-address';
-import { buttonVariants } from '@/ui/button';
+import { TransactionSuccessAlert } from './transaction-success-alert';
 
 const BalancesCard = ({ chain, isBigLayout = false }: { chain: EvmChain; isBigLayout?: boolean }) => {
   const { address } = useAccount();
@@ -84,6 +79,7 @@ export const MintForm = memo(() => {
 
   const handleMint = async () => {
     setIsSubmitting(true);
+    setMintTxHash(undefined);
     const response = await mintToken();
     setIsSubmitting(false);
 
@@ -142,31 +138,11 @@ export const MintForm = memo(() => {
         </AutoAnimate>
         <AutoAnimate>
           {!!mintTxHash && (
-            <Alert className="flex flex-nowrap mt-4">
-              {/* <RocketIcon className="h-4 w-4" /> */}
-              <Rive
-                className="h-8 w-8 inline-flex"
-                src={successCheck}
-              />
-              <div className="ml-2">
-                <AlertTitle>Mint success!</AlertTitle>
-                <AlertDescription>
-                  View your transaction:
-                  <a
-                    className={cn(buttonVariants({ variant: 'link' }), 'h-2')}
-                    href={`${AMPLIFY_CHAIN.explorerUrl}/tx/${mintTxHash}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {truncateAddress(mintTxHash)}
-                    <ExternalLink
-                      size={16}
-                      className="ml-1"
-                    />
-                  </a>
-                </AlertDescription>
-              </div>
-            </Alert>
+            <TransactionSuccessAlert
+              explorerBaseUrl={AMPLIFY_CHAIN.explorerUrl}
+              txHash={mintTxHash}
+              className="mt-4"
+            />
           )}
         </AutoAnimate>
       </div>

@@ -23,6 +23,8 @@ import { useTeleport } from '@/hooks/use-teleport';
 import Big from 'big.js';
 import { NotConnectedCard } from './not-connected-card';
 import { OutOfGasCard } from './out-of-gas-card';
+import { toast } from '@/ui/hooks/use-toast';
+import { TransactionSuccessAlert } from './transaction-success-alert';
 
 const formSchema = z.object({
   fromChain: z.string(),
@@ -62,6 +64,7 @@ export const TeleporterForm = memo(() => {
       return undefined;
     }
   }, [amount]);
+  const [teleportTxHash, setTeleportTxHash] = useState<string>();
 
   /**
    * Wallet state
@@ -97,8 +100,24 @@ export const TeleporterForm = memo(() => {
 
   const handleTeleport = async () => {
     setIsSubmitting(true);
-    await teleportToken();
+    setTeleportTxHash(undefined);
+    const res = await teleportToken();
     setIsSubmitting(false);
+    if (!res) {
+      toast({
+        title: 'Teleport failed',
+        description: 'Please try again',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setTeleportTxHash(res.hash);
+
+    toast({
+      title: 'Teleport success!',
+      description: 'View your transaction on the explorer',
+    });
   };
 
   const hasGas = !isNil(gasBalance) ? gasBalance.value > MIN_AMOUNT_FOR_GAS : true;
@@ -155,6 +174,7 @@ export const TeleporterForm = memo(() => {
                 placeholder="0.0"
                 value={amount}
                 onChange={(e) => setAmount(parseNumberInput(e.target.value))}
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -200,7 +220,17 @@ export const TeleporterForm = memo(() => {
           className="w-full"
           onClick={handleTeleport}
           isLoading={isSubmitting}
-          disabled={!isConnected || !hasGas}
+          disabled={!isConnected || !hasGas || isSubmitting || !amount}
+          loadingText="Teleporting..."
+          tooltipContent={
+            !isConnected
+              ? 'Please connect your wallet.'
+              : !hasGas
+              ? 'Insufficient gas balance.'
+              : !amount
+              ? 'Please enter an amount.'
+              : undefined
+          }
         >
           TELEPORT
         </LoadingButton>
@@ -216,6 +246,15 @@ export const TeleporterForm = memo(() => {
               className="mt-4"
             />
           ) : null}
+        </AutoAnimate>
+        <AutoAnimate>
+          {!!teleportTxHash && (
+            <TransactionSuccessAlert
+              explorerBaseUrl={fromChain.explorerUrl}
+              txHash={teleportTxHash}
+              className="mt-4"
+            />
+          )}
         </AutoAnimate>
       </div>
     </>

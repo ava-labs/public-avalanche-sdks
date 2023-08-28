@@ -1,5 +1,4 @@
 import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge-abi';
-import { toast } from '@/ui/hooks/use-toast';
 import {
   useAccount,
   useChainId,
@@ -12,8 +11,6 @@ import { useApprove } from './use-approve';
 import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import { isNil } from 'lodash-es';
 import type { EvmChain } from '@/types/chain';
-
-const TELEPORT_AMOUNT = BigInt('1000000000000000');
 
 export const useTeleport = ({
   fromChain,
@@ -34,6 +31,8 @@ export const useTeleport = ({
     abi: NATIVE_ERC20_ABI,
     args: address && fromChain ? [address, fromChain?.utilityContracts.bridge.address] : undefined,
   });
+
+  console.log('currentAllowance', currentAllowance);
 
   const { approve } = useApprove({
     chain: fromChain,
@@ -67,16 +66,25 @@ export const useTeleport = ({
   return {
     teleportToken: async () => {
       try {
-        if (!switchNetworkAsync) {
-          throw new Error('switchNetworkAsync is undefined.');
-        }
+        /**
+         * Validate inputs.
+         */
         if (!fromChain) {
           throw new Error('Missing source subnet.');
         }
         if (!toChain) {
           throw new Error('Missing destination subnet.');
         }
+        if (!amount) {
+          throw new Error('Missing amount.');
+        }
 
+        /**
+         * Switch to the source subnet if not already connected.
+         */
+        if (!switchNetworkAsync) {
+          throw new Error('switchNetworkAsync is undefined.');
+        }
         if (chainId !== fromChain.chainId) {
           const chainSwitchRes = await switchNetworkAsync(Number(fromChain.chainId));
           if (String(chainSwitchRes.id) !== fromChain.chainId) {
@@ -84,34 +92,27 @@ export const useTeleport = ({
           }
         }
 
+        /**
+         * Get approval if allowance is insuffient.
+         */
         if (isNil(currentAllowance)) {
           throw new Error('Unable to detect current allowance.');
         }
-
-        if (currentAllowance < TELEPORT_AMOUNT) {
+        if (currentAllowance < amount) {
           const approveResponse = await approve();
-          console.log('Approve successful.', approveResponse);
+          console.info('Approve successful.', approveResponse);
         }
 
+        /**
+         * Teleport tokens.
+         */
         if (!writeAsync) {
           throw new Error('writeAsync is undefined.');
         }
-
-        const mintResponse = await writeAsync?.();
-        console.info('Successfully minted token.', mintResponse);
-        toast({
-          title: 'Success',
-          description: `Teleportation successful!`,
-        });
-        return mintResponse;
+        return await writeAsync();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
-        console.warn(e?.message ?? e);
-
-        toast({
-          title: 'Error',
-          description: `Teleportation failed.`,
-        });
+        console.error(e?.message ?? e);
 
         return undefined;
       }
