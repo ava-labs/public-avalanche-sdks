@@ -279,7 +279,7 @@ export const TeleporterForm = memo(() => {
               : undefined
           }
         >
-          TELEPORT
+          BRIDGE
         </LoadingButton>
         <AutoAnimate>
           {!isConnected ? (

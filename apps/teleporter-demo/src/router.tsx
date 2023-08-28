@@ -35,7 +35,7 @@ const Root = () => {
             });
           }}
         >
-          Teleport
+          Teleporter
         </TabsTrigger>
         <TabsTrigger
           value="/mint"
@@ -65,7 +65,7 @@ const Index = () => {
       <Card className="flex grow">
         <CardContent className="w-full max-sm:px-0">
           <CardTitle>
-            <span className="ml-6">Teleport</span>
+            <span className="ml-6">Teleporter</span>
           </CardTitle>
           <CardContent>
             <TeleporterForm />
