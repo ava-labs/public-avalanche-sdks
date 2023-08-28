@@ -9,7 +9,7 @@ import { useAccount, useBalance, useChainId, useSwitchNetwork } from 'wagmi';
 import { Card, CardContent } from '@/ui/card';
 
 import type { EvmChain } from '@/types/chain';
-import { Input } from '@/ui/input';
+import { InputWithMax } from '@/ui/input';
 import { AutoAnimate } from '@/ui/auto-animate';
 import { useErc20Balance } from '@/hooks/use-erc20-balance';
 import { Skeleton } from '@/ui/skeleton';
@@ -206,11 +206,17 @@ export const TeleporterForm = memo(() => {
               </p>
             </div>
             <div className="col-span-9 sm:col-span-6">
-              <Input
+              <InputWithMax
                 placeholder="0.0"
                 value={amount}
                 onChange={(e) => setAmount(parseNumberInput(e.target.value))}
                 disabled={isSubmitting || !isConnected}
+                maxButtonProps={{
+                  onClick: () => {
+                    formattedErc20Balance && setAmount(formattedErc20Balance);
+                  },
+                  disabled: !erc20Balance,
+                }}
               />
             </div>
           </div>

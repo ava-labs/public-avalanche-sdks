@@ -10,7 +10,7 @@ export const OutOfGasCard = memo(({ chain, ...rest }: { chain: EvmChain } & Html
     <Card {...rest}>
       <CardContent className="flex flex-col gap-1">
         <p className="text-sm text-neutral-400 text-center">
-          Out of gas! Go to the faucet to mint some {chain.networkToken.symbol}.
+          Out of gas! Go to the faucet to mint some <span className="font-semibold">{chain.networkToken.symbol}</span>.
         </p>
         <a
           className={cn(buttonVariants({ variant: 'default' }), 'mt-1')}
