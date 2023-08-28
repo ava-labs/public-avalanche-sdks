@@ -12,7 +12,6 @@
     "prepare": "husky install",
     "prettier": "prettier --write ./",
     "release": "turbo build && changeset publish && pnpm release:cloudflare",
-    "release:cloudflare": "turbo release:cloudflare",
     "test": "turbo test",
     "version-packages": "changeset version"
   },

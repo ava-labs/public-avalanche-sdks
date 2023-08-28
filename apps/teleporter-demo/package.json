@@ -5,8 +5,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "dev": "vite --host",
-    "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "release:cloudflare": "npx wrangler pages deploy ./dist --project-name=ohmywarp-teleporter"
+    "lint": "eslint \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@formkit/auto-animate": "0.7.0",
