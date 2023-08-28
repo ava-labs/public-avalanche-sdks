@@ -42,7 +42,12 @@ const BalancesCard = ({ chain, isBigLayout = false }: { chain: EvmChain; isBigLa
           />
           <p className="text-md font-medium ml-2">{chain.name}</p>
         </div>
-        <div className={cn('mt-4 flex', isBigLayout ? 'align-center justify-around' : 'flex-col gap-2')}>
+        <div
+          className={cn(
+            'mt-4 flex gap-2',
+            isBigLayout ? 'sm:flex-row flex-col align-center justify-around' : 'flex-col',
+          )}
+        >
           <p className="whitespace-nowrap ">
             <FlashingUpdate className={cn('font-semibold ml-2', isBigLayout ? 'text-4xl' : 'text-xl')}>
               {formatStringNumber(gasBalance?.formatted ?? '0')}
