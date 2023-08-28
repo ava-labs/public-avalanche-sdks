@@ -136,7 +136,7 @@ export const TeleporterForm = memo(() => {
   };
 
   const hasGas = !isNil(gasBalance) ? gasBalance.value > MIN_AMOUNT_FOR_GAS : true;
-  const hasSufficientErc20Balance = !isNil(erc20Balance) && !isNil(amountBigInt) ? erc20Balance > amountBigInt : true;
+  const hasSufficientErc20Balance = !isNil(erc20Balance) && !isNil(amountBigInt) ? erc20Balance >= amountBigInt : true;
 
   const isReadyToTeleport = isConnected && hasGas && amountBigInt && hasSufficientErc20Balance && !isSubmitting;
 
