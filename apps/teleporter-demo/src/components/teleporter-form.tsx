@@ -9,7 +9,6 @@ import { LoadingButton } from './loading-button';
 
 import { useAccount, useBalance } from 'wagmi';
 import { Card, CardContent } from '@/ui/card';
-import { ConnectWalletButton } from './connect-wallet-button';
 
 import type { EvmChain } from '@/types/chain';
 import { Input } from '@/ui/input';
@@ -19,12 +18,11 @@ import { Skeleton } from '@/ui/skeleton';
 import { isNil } from 'lodash-es';
 import { formatStringNumber } from '@/utils/format-string';
 import { MIN_AMOUNT_FOR_GAS } from '@/constants/token';
-import { buttonVariants } from '@/ui/button';
-import { ExternalLink } from 'lucide-react';
-import { cn } from '@/utils/cn';
 import { parseNumberInput } from '@/utils/parse-number-input';
 import { useTeleport } from '@/hooks/use-teleport';
 import Big from 'big.js';
+import { NotConnectedCard } from './not-connected-card';
+import { OutOfGasCard } from './out-of-gas-card';
 
 const formSchema = z.object({
   fromChain: z.string(),
@@ -208,35 +206,12 @@ export const TeleporterForm = memo(() => {
         </LoadingButton>
         <AutoAnimate>
           {!isConnected ? (
-            <Card className="mt-4">
-              <CardContent className="flex flex-col gap-1">
-                <p className="text-sm text-neutral-400 text-center">Must connect wallet to teleport</p>
-                <ConnectWalletButton
-                  variant="default"
-                  className="mt-1"
-                />
-              </CardContent>
-            </Card>
+            <NotConnectedCard className="mt-4" />
           ) : !hasGas ? (
-            <Card className="mt-4">
-              <CardContent className="flex flex-col gap-1">
-                <p className="text-sm text-neutral-400 text-center">
-                  Out of gas! Go to the faucet to mint some {fromChain.networkToken.symbol}.
-                </p>
-                <a
-                  className={cn(buttonVariants({ variant: 'default' }), 'mt-1')}
-                  href={fromChain.faucetUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Go to Faucet
-                  <ExternalLink
-                    size={16}
-                    className="ml-1"
-                  />
-                </a>
-              </CardContent>
-            </Card>
+            <OutOfGasCard
+              chain={fromChain}
+              className="mt-4"
+            />
           ) : null}
         </AutoAnimate>
       </div>
