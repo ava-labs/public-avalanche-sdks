@@ -12,7 +12,7 @@
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 72.2% 50.6%;
+    --primary: #6e87e3;
     --primary-foreground: 0 85.7% 97.3%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
@@ -24,7 +24,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 0 72.2% 50.6%;
+    --ring: #6e87e3;
     --radius: 0.5rem;
   }
 
@@ -35,7 +35,7 @@
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 72.2% 50.6%;
+    --primary: #6e87e3;
     --primary-foreground: 0 85.7% 97.3%;
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
@@ -47,7 +47,12 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
-    --ring: 0 72.2% 50.6%;
+    --ring: #6e87e3;
+
+    /* CUSTOM */
+    --primary-gradient-from: #6e87e3 var(--tw-gradient-from-position);
+    --primary-gradient-to: #f11d1f var(--tw-gradient-to-position);
+    --primary-gradient-foreground: 0 85.7% 97.3%;
   }
 }
 

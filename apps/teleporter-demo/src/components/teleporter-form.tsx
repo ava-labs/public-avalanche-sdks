@@ -216,7 +216,7 @@ export const TeleporterForm = memo(() => {
 
       <div className="mt-4">
         <LoadingButton
-          variant={isConnected && hasGas ? 'default' : 'secondary'}
+          variant={isConnected && hasGas && amount ? 'primary-gradient' : 'secondary'}
           className="w-full"
           onClick={handleTeleport}
           isLoading={isSubmitting}

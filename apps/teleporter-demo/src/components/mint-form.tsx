@@ -120,13 +120,13 @@ export const MintForm = memo(() => {
       </div>
       <div className="mt-4">
         <LoadingButton
-          variant={isConnected && hasGas ? 'default' : 'secondary'}
+          variant={isConnected && hasGas ? 'primary-gradient' : 'secondary'}
           className="w-full"
           isLoading={isSubmitting}
           onClick={handleMint}
-          disabled={!isConnected || !hasGas}
+          disabled={!isConnected || !hasGas || isSubmitting}
         >
-          MINT!
+          MINT
         </LoadingButton>
         <AutoAnimate>
           {!isConnected ? (

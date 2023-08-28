@@ -58,11 +58,6 @@ export const useApprove = ({
       } catch (e: any) {
         console.warn(e?.message ?? e);
 
-        toast({
-          title: 'Error',
-          description: `Approval failed.`,
-        });
-
         return undefined;
       }
     },

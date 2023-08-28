@@ -17,11 +17,11 @@ export default {
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
+        ring: 'var(--ring)',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
+          DEFAULT: 'var(--primary)',
           foreground: 'hsl(var(--primary-foreground))',
         },
         secondary: {
@@ -48,6 +48,11 @@ export default {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+
+        // CUSTOM
+        'primary-gradient-from': 'var(--primary-gradient-from)',
+        'primary-gradient-to': 'var(--primary-gradient-to)',
+        'primary-gradient-foreground': 'var(--primary-gradient-foreground)',
       },
       borderRadius: {
         lg: `var(--radius)`,
