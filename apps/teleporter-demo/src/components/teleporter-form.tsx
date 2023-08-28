@@ -23,7 +23,7 @@ import { NotConnectedCard } from './not-connected-card';
 import { OutOfGasCard } from './out-of-gas-card';
 import { toast } from '@/ui/hooks/use-toast';
 import { TransactionSuccessAlert } from './transaction-success-alert';
-import { DebugResetAllowanceButton } from './debug-reset-allowance';
+import { GoToMintCard } from './go-to-mint-card';
 
 const findChain = (chainId: string) => {
   const chain = CHAINS.find((chain) => chain.chainId === chainId);
@@ -77,6 +77,17 @@ export const TeleporterForm = memo(() => {
     isLoading: isLoadingErc20Balance,
     refetch: refetchErc20Balance,
   } = useErc20Balance({ chain: fromChain });
+  const {
+    erc20Balance: amplifyErc20Balance,
+    formattedErc20Balance: formattedAmplifyErc20Balance,
+    isLoading: isLoadingAmplifyErc20Balance,
+    refetch: refetchAmplifyErc20Balance,
+  } = useErc20Balance({ chain: AMPLIFY_CHAIN });
+  console.log('erc20Balance', erc20Balance);
+  console.log('amplifyErc20Balance', amplifyErc20Balance);
+
+  const hasErc20Balance = !isNil(erc20Balance) ? erc20Balance > 0 : true;
+  const hasAmplifyErc20Balance = !isNil(amplifyErc20Balance) ? amplifyErc20Balance > 0 : true;
 
   /**
    * If fromChain is changed to same as toChain,
@@ -293,6 +304,8 @@ export const TeleporterForm = memo(() => {
               chain={fromChain}
               className="mt-4"
             />
+          ) : !hasAmplifyErc20Balance && !hasErc20Balance ? (
+            <GoToMintCard className="mt-4" />
           ) : null}
         </AutoAnimate>
         <AutoAnimate>
@@ -306,7 +319,7 @@ export const TeleporterForm = memo(() => {
         </AutoAnimate>
       </div>
       {/* Use this to debug handling allowances */}
-      {window.location.hostname === 'localhost' && <DebugResetAllowanceButton chain={fromChain} />}
+      {/* {window.location.hostname === 'localhost' && <DebugResetAllowanceButton chain={fromChain} />} */}
     </>
   );
 });
