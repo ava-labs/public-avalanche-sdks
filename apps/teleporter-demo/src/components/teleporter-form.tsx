@@ -13,7 +13,6 @@ import { ConnectWalletButton } from './connect-wallet-button';
 
 import type { EvmChain } from '@/types/chain';
 import { Input } from '@/ui/input';
-import { sleep } from '@/utils/sleep';
 import { AutoAnimate } from '@/ui/auto-animate';
 import { useErc20Balance } from '@/hooks/use-erc20-balance';
 import { Skeleton } from '@/ui/skeleton';
@@ -24,6 +23,8 @@ import { buttonVariants } from '@/ui/button';
 import { ExternalLink } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { parseNumberInput } from '@/utils/parse-number-input';
+import { useTeleport } from '@/hooks/use-teleport';
+import Big from 'big.js';
 
 const formSchema = z.object({
   fromChain: z.string(),
@@ -53,9 +54,16 @@ export const TeleporterForm = memo(() => {
    */
   const [fromChain, setFromChain] = useState<EvmChain>(AMPLIFY_CHAIN);
   const [toChain, setToChain] = useState<EvmChain>(BULLETIN_CHAIN);
-  const [amount, setAmount] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toChainsList = useMemo(() => CHAINS.filter((chain) => chain.chainId !== fromChain.chainId), [fromChain]);
+  const [amount, setAmount] = useState('');
+  const amountBigInt = useMemo(() => {
+    try {
+      return BigInt(new Big(amount).mul(10 ** fromChain.utilityContracts.demoErc20.decimals).toString());
+    } catch {
+      return undefined;
+    }
+  }, [amount]);
 
   /**
    * Wallet state
@@ -66,17 +74,11 @@ export const TeleporterForm = memo(() => {
     chainId: Number(fromChain.chainId),
   });
 
-  const {
-    erc20Balance,
-    formattedErc20Balance,
-    isLoading: isLoadingErc20Balance,
-  } = useErc20Balance({
+  const { formattedErc20Balance, isLoading: isLoadingErc20Balance } = useErc20Balance({
     chain: fromChain,
     tokenAddress: fromChain.utilityContracts.demoErc20.address,
     decimals: fromChain.utilityContracts.demoErc20.decimals,
   });
-  console.log('erc20Balance', erc20Balance);
-  console.log('formattedErc20Balance', formattedErc20Balance);
 
   useEffect(() => {
     if (fromChain.chainId === toChain.chainId) {
@@ -89,9 +91,15 @@ export const TeleporterForm = memo(() => {
     }
   }, [fromChain, toChainsList]);
 
+  const { teleportToken } = useTeleport({
+    amount: amountBigInt,
+    fromChain,
+    toChain,
+  });
+
   const handleTeleport = async () => {
     setIsSubmitting(true);
-    await sleep(1000);
+    await teleportToken();
     setIsSubmitting(false);
   };
 
