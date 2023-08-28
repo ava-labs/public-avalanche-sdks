@@ -3,16 +3,16 @@ import type { EvmChain } from '@/types/chain';
 import { toast } from '@/ui/hooks/use-toast';
 import { useChainId, useContractWrite, usePrepareContractWrite, useSwitchNetwork, type Address } from 'wagmi';
 
+const MAXIMUM_APPROVAL_AMOUNT = BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
+
 export const useApprove = ({
   chain,
   tokenAddress,
   addressToApprove,
-  amount,
 }: {
   chain?: EvmChain;
   tokenAddress?: Address;
   addressToApprove?: Address;
-  amount?: bigint;
 }) => {
   const chainId = String(useChainId());
   const { switchNetworkAsync } = useSwitchNetwork();
@@ -21,7 +21,7 @@ export const useApprove = ({
     address: tokenAddress,
     functionName: 'approve',
     abi: NATIVE_ERC20_ABI,
-    args: chain && tokenAddress && addressToApprove && amount ? [addressToApprove, amount] : undefined,
+    args: chain && tokenAddress && addressToApprove ? [addressToApprove, MAXIMUM_APPROVAL_AMOUNT] : undefined,
   });
 
   const { writeAsync } = useContractWrite(config);

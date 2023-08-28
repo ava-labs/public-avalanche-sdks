@@ -32,11 +32,8 @@ export const useTeleport = ({
     args: address && fromChain ? [address, fromChain?.utilityContracts.bridge.address] : undefined,
   });
 
-  console.log('currentAllowance', currentAllowance);
-
   const { approve } = useApprove({
     chain: fromChain,
-    amount,
     addressToApprove: fromChain?.utilityContracts.bridge.address,
     tokenAddress: fromChain?.utilityContracts.demoErc20.address,
   });

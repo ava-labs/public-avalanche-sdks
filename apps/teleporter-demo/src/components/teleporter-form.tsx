@@ -75,7 +75,11 @@ export const TeleporterForm = memo(() => {
     chainId: Number(fromChain.chainId),
   });
 
-  const { formattedErc20Balance, isLoading: isLoadingErc20Balance } = useErc20Balance({
+  const {
+    erc20Balance,
+    formattedErc20Balance,
+    isLoading: isLoadingErc20Balance,
+  } = useErc20Balance({
     chain: fromChain,
     tokenAddress: fromChain.utilityContracts.demoErc20.address,
     decimals: fromChain.utilityContracts.demoErc20.decimals,
@@ -121,6 +125,7 @@ export const TeleporterForm = memo(() => {
   };
 
   const hasGas = !isNil(gasBalance) ? gasBalance.value > MIN_AMOUNT_FOR_GAS : true;
+  const hasSufficientErc20Balance = !isNil(erc20Balance) && !isNil(amountBigInt) ? erc20Balance > amountBigInt : true;
 
   return (
     <>
@@ -216,11 +221,11 @@ export const TeleporterForm = memo(() => {
 
       <div className="mt-4">
         <LoadingButton
-          variant={isConnected && hasGas && amount ? 'primary-gradient' : 'secondary'}
+          variant={isConnected && hasGas && amount && hasSufficientErc20Balance ? 'primary-gradient' : 'secondary'}
           className="w-full"
           onClick={handleTeleport}
           isLoading={isSubmitting}
-          disabled={!isConnected || !hasGas || isSubmitting || !amount}
+          disabled={!isConnected || !hasGas || isSubmitting || !amount || !hasSufficientErc20Balance}
           loadingText="Teleporting..."
           tooltipContent={
             !isConnected
@@ -229,6 +234,8 @@ export const TeleporterForm = memo(() => {
               ? 'Insufficient gas balance.'
               : !amount
               ? 'Please enter an amount.'
+              : !hasSufficientErc20Balance
+              ? 'Insufficient balance. Please enter a lower amount.'
               : undefined
           }
         >
