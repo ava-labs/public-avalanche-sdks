@@ -5,7 +5,7 @@ import { TooltipProvider } from './ui/tooltip';
 import { Suspense } from 'react';
 import { LoadingPage } from './pages/loading-page';
 import { Toaster } from './ui/toaster';
-import { Home } from './pages/home';
+import { Router } from './router';
 
 export default function App() {
   return (
@@ -18,7 +18,7 @@ export default function App() {
           <WalletProvider>
             <Suspense fallback={<LoadingPage />}>
               <PageContainer>
-                <Home />
+                <Router />
               </PageContainer>
             </Suspense>
           </WalletProvider>
