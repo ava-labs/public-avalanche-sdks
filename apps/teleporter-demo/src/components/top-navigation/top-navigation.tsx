@@ -38,10 +38,15 @@ export function TopNavigation() {
             <NavigationMenuContent>
               <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                 <li className="row-span-3">
-                  <NavigationMenuLink asChild>
+                  <NavigationMenuLink
+                    asChild
+                    className="bg-primary"
+                  >
                     <a
-                      className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                      className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-br from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                       href="https://medium.com/avalancheavax/avalanche-warp-messaging-awm-launches-with-the-first-native-subnet-to-subnet-message-on-avalanche-c0ceec32144a"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       <Newspaper className="h-6 w-6" />
                       <div className="mb-2 mt-4 text-lg font-medium">Teleporter</div>
@@ -52,6 +57,8 @@ export function TopNavigation() {
                 <ListItem
                   href="https://avax.network/"
                   title="Avalanche"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Build anything you want, any way you want on the lightning fast, scalable blockchain that won’t let
                   you down.
@@ -59,12 +66,16 @@ export function TopNavigation() {
                 <ListItem
                   href="https://docs.avax.network/learn/avalanche/subnets-overview"
                   title="Subnets"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Learn more about how Subnets make scaling with blockchain easy.
                 </ListItem>
                 <ListItem
                   href="/docs/installation"
                   title="Avalanche Warp Messaging"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   An inter-subnet communication layer.
                 </ListItem>
