@@ -17,8 +17,8 @@ export const useTeleport = ({
   toChain,
   amount,
 }: {
-  fromChain: EvmChain;
-  toChain: EvmChain;
+  fromChain?: EvmChain;
+  toChain?: EvmChain;
   amount?: bigint;
 }) => {
   const chainId = String(useChainId());
@@ -57,7 +57,7 @@ export const useTeleport = ({
         : undefined,
     maxFeePerGas: BigInt(0),
     maxPriorityFeePerGas: BigInt(0),
-    chainId: Number(fromChain.chainId),
+    chainId: fromChain ? Number(fromChain.chainId) : undefined,
   });
 
   const { writeAsync } = useContractWrite(config);
