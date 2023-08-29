@@ -27,6 +27,7 @@ export const evmChainSchema = z.object({
   isTestnet: z.boolean(),
   logoUrl: z.string(),
   name: z.string(),
+  shortName: z.string(),
   networkToken: z.object({
     universalTokenId: z.string(),
     decimals: z.number(),

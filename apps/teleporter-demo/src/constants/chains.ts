@@ -5,6 +5,7 @@ import { FAUCET_URL } from './urls';
 export const AMPLIFY_CHAIN = {
   chainId: '78430',
   name: 'Amplify Subnet',
+  shortName: 'Amplify',
   subnetId: '2PsShLjrFFwR51DMcAh8pyuwzLn1Ym3zRhuXLTmLCR1STk2mL6',
   platformChainId: '2nFUad4Nw4pCgEF6MwYgGuKrzKbHJzM8wF29jeVUL41RWHgNRa',
   platformChainIdHex: '0xea70d815f0232f5419dabafe36c964ffe5c22d17ac367b60b556ab3e17a36458',
@@ -24,10 +25,10 @@ export const AMPLIFY_CHAIN = {
   primaryColor: '#FF7C43',
   utilityContracts: {
     demoErc20: {
-      universalTokenId: '78430-0x2010D09052e5D3d0F2E80f62b7FB2E564e83B865',
-      address: '0x2010D09052e5D3d0F2E80f62b7FB2E564e83B865',
-      name: 'Example',
-      symbol: 'EXMP',
+      universalTokenId: '78430-0x127be3D46138500Dc85ae22485e67D0263c09829',
+      address: '0x127be3D46138500Dc85ae22485e67D0263c09829',
+      name: 'Teleporter Example Token',
+      symbol: 'TLP',
       decimals: 18,
     },
     bridge: {
@@ -40,6 +41,7 @@ export const AMPLIFY_CHAIN = {
 export const BULLETIN_CHAIN = {
   chainId: '78431',
   name: 'Bulletin Subnet',
+  shortName: 'Bulletin',
   subnetId: 'cbXsFGWSDWUYTmRXUoCirVDdQkZmUWrkQQYoVc2wUoDm8eFup',
   platformChainId: '2e3RJ3ub9Pceh8fJ3HX3gZ6nSXJLvBJ9WoXLcU4nwdpZ8X2RLq',
   platformChainIdHex: '0xd7cdc6f08b167595d1577e24838113a88b1005b471a6c430d79c48b4c89cfc53',
@@ -59,10 +61,10 @@ export const BULLETIN_CHAIN = {
   primaryColor: '#A05195',
   utilityContracts: {
     demoErc20: {
-      universalTokenId: '78431-0x3C77573dF123f287470BC463835CE6dDc60d5eeD',
-      address: '0x3C77573dF123f287470BC463835CE6dDc60d5eeD',
-      name: 'Example',
-      symbol: 'EXMP',
+      universalTokenId: '78431-0xD70a4bF82cCc20413ca8C264aF7A6919c8935C01',
+      address: '0xD70a4bF82cCc20413ca8C264aF7A6919c8935C01',
+      name: 'Teleporter Example Token',
+      symbol: 'TLP',
       decimals: 18,
     },
     bridge: {
@@ -75,6 +77,7 @@ export const BULLETIN_CHAIN = {
 export const CONDUIT_CHAIN = {
   chainId: '78432',
   name: 'Conduit Subnet',
+  shortName: 'Conduit',
   subnetId: 'wW7JVmjXp8SKrpacGzM81RBXdfcLDVY6M2DkFyArEXgtkyozK',
   platformChainId: '9asUA3QckLh7vGnFQiiUJGPTx8KE4nFtP8c1wTWJuP8XiWW75',
   platformChainIdHex: '0x137daedb40251e7c196fd9711f6cd4a787d154cdc59fb7777d4d079cc116e5f1',
@@ -94,10 +97,10 @@ export const CONDUIT_CHAIN = {
   primaryColor: '#00C2B4',
   utilityContracts: {
     demoErc20: {
-      universalTokenId: '78432-0x6589D828F91790c50C097175FF6e3Ba3d934868D',
-      address: '0x6589D828F91790c50C097175FF6e3Ba3d934868D',
-      name: 'Example',
-      symbol: 'EXMP',
+      universalTokenId: '78432-0x5712f185FEb983bBdf4bfF1A2D9d705217924c3d',
+      address: '0x5712f185FEb983bBdf4bfF1A2D9d705217924c3d',
+      name: 'Teleporter Example Token',
+      symbol: 'TLP',
       decimals: 18,
     },
     bridge: {

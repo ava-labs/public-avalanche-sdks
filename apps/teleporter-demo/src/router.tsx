@@ -1,7 +1,4 @@
-import { TeleporterForm } from '@/components/teleporter-form';
-import { Card, CardContent, CardTitle } from '@/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/tabs';
-import { MintForm } from '@/components/mint-form';
 
 import {
   useNavigate,
@@ -12,6 +9,8 @@ import {
   Route,
   RootRoute,
 } from '@tanstack/react-router';
+import { TeleporterPage } from './pages/teleporter';
+import { MintPage } from './pages/mint';
 
 /**
  * Create a Root route
@@ -35,7 +34,7 @@ const Root = () => {
             });
           }}
         >
-          Teleporter
+          Bridge
         </TabsTrigger>
         <TabsTrigger
           value="/mint"
@@ -62,16 +61,7 @@ const rootRoute = new RootRoute({
 const Index = () => {
   return (
     <TabsContent value="/">
-      <Card className="flex grow">
-        <CardContent className="w-full max-sm:px-0">
-          <CardTitle>
-            <span className="ml-6">Teleporter</span>
-          </CardTitle>
-          <CardContent>
-            <TeleporterForm />
-          </CardContent>
-        </CardContent>
-      </Card>
+      <TeleporterPage />
     </TabsContent>
   );
 };
@@ -92,16 +82,7 @@ export const mintRoute = new Route({
 function Mint() {
   return (
     <TabsContent value="/mint">
-      <Card className="flex grow">
-        <CardContent className="w-full max-sm:px-0">
-          <CardTitle>
-            <span className="ml-6">Mint</span>
-          </CardTitle>
-          <CardContent>
-            <MintForm />
-          </CardContent>
-        </CardContent>
-      </Card>
+      <MintPage />
     </TabsContent>
   );
 }

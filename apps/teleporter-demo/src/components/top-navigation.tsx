@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { cn } from '@/utils/cn';
-import { Newspaper } from 'lucide-react';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,9 +9,11 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/ui/navigation-menu';
-import { ConnectWalletButton } from '../connect-wallet-button';
-import AvalancheLogoWhite from './Avalanche_Horizontal_White.svg';
+import { ConnectWalletButton } from './connect-wallet-button';
+import AvalancheLogoWhite from '@/assets/Avalanche_Horizontal_White.svg';
 import { useBreakpoint } from '@/ui/hooks/use-breakpoint';
+import { GitHubLogoIcon } from '@radix-ui/react-icons';
+import { NewspaperIcon } from 'lucide-react';
 
 export function TopNavigation() {
   const { isSmUp, isSmDown } = useBreakpoint('sm');
@@ -44,16 +45,38 @@ export function TopNavigation() {
                   >
                     <a
                       className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-br from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                      href="https://medium.com/avalancheavax/avalanche-warp-messaging-awm-launches-with-the-first-native-subnet-to-subnet-message-on-avalanche-c0ceec32144a"
+                      href="https://github.com/ava-labs/teleporter"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Newspaper className="h-6 w-6" />
-                      <div className="mb-2 mt-4 text-lg font-medium">Teleporter</div>
-                      <p className="text-sm leading-tight text-muted-foreground">The future of interoperability.</p>
+                      <div className="flex align-center mb-2 mt-4">
+                        <GitHubLogoIcon className="h-6 w-6" />
+                        <div className="ml-2 text-lg font-medium">Teleporter</div>
+                      </div>
+                      <p className="text-sm leading-tight text-muted-foreground">
+                        A new cross-chain messaging protocol built on top of Avalanche Warp Messaging.
+                      </p>
                     </a>
                   </NavigationMenuLink>
                 </li>
+                <ListItem
+                  href="https://medium.com/avalancheavax/avalanche-warp-messaging-awm-launches-with-the-first-native-subnet-to-subnet-message-on-avalanche-c0ceec32144a"
+                  title="Warp Messaging"
+                  icon={<NewspaperIcon className="w-5 h-5" />}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  The first native Subnet-to-Subnet messaging platform.
+                </ListItem>
+                <ListItem
+                  href="https://medium.com/avalancheavax/avalanche-warp-messaging-awm-launches-with-the-first-native-subnet-to-subnet-message-on-avalanche-c0ceec32144a"
+                  title="Teleporter DApp Demo"
+                  icon={<GitHubLogoIcon className="w-5 h-5" />}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  See how to integrate Teleporter into your dApp.
+                </ListItem>
                 <ListItem
                   href="https://avax.network/"
                   title="Avalanche"
@@ -70,14 +93,6 @@ export function TopNavigation() {
                   rel="noopener noreferrer"
                 >
                   Learn more about how Subnets make scaling with blockchain easy.
-                </ListItem>
-                <ListItem
-                  href="/docs/installation"
-                  title="Avalanche Warp Messaging"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  An inter-subnet communication layer.
                 </ListItem>
               </ul>
             </NavigationMenuContent>
@@ -100,25 +115,29 @@ export function TopNavigation() {
   );
 }
 
-const ListItem = React.forwardRef<React.ElementRef<'a'>, React.ComponentPropsWithoutRef<'a'>>(
-  ({ className, title, children, ...props }, ref) => {
-    return (
-      <li>
-        <NavigationMenuLink asChild>
-          <a
-            ref={ref}
-            className={cn(
-              'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-              className,
-            )}
-            {...props}
-          >
+const ListItem = React.forwardRef<
+  React.ElementRef<'a'>,
+  React.ComponentPropsWithoutRef<'a'> & { icon?: React.ReactNode }
+>(({ className, title, icon, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+            className,
+          )}
+          {...props}
+        >
+          <div className="flex justify-between items-center">
             <div className="text-sm font-medium leading-none">{title}</div>
-            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{children}</p>
-          </a>
-        </NavigationMenuLink>
-      </li>
-    );
-  },
-);
+            {icon}
+          </div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{children}</p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
 ListItem.displayName = 'ListItem';
