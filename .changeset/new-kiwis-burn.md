@@ -1,5 +1,5 @@
 ---
-"@core/teleporter-demo": patch
+'@core/teleporter-demo': patch
 ---
 
 Tp demo 2
