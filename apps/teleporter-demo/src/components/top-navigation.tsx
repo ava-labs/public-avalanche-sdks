@@ -38,7 +38,7 @@ export function TopNavigation() {
             <NavigationMenuTrigger>Read More</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                <li className="row-span-3">
+                <li className="row-span-4">
                   <NavigationMenuLink
                     asChild
                     className="bg-primary"
