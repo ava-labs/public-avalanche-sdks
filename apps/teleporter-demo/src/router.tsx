@@ -34,7 +34,7 @@ const Root = () => {
             });
           }}
         >
-          Teleporter
+          Bridge
         </TabsTrigger>
         <TabsTrigger
           value="/mint"
