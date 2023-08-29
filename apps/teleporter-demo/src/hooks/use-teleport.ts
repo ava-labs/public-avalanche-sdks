@@ -5,6 +5,7 @@ import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import { isNil } from 'lodash-es';
 import type { EvmChain } from '@/types/chain';
 import { useConnectedChain } from './use-connected-chain';
+import { useLatestTeleporterTransactions } from './use-transactions';
 
 export const useTeleport = ({
   fromChain,
@@ -18,6 +19,8 @@ export const useTeleport = ({
   const { connectedChain } = useConnectedChain();
   const { switchNetworkAsync } = useSwitchNetwork();
   const { address } = useAccount();
+
+  const { mutate: refetchTxs } = useLatestTeleporterTransactions();
 
   const { refetch: fetchAllowance } = useContractRead({
     address: fromChain?.utilityContracts.demoErc20.address,
@@ -99,6 +102,7 @@ export const useTeleport = ({
         if (!writeAsync) {
           throw new Error('writeAsync is undefined.');
         }
+        setTimeout(refetchTxs, 3000); // Wait since glacier is behind the RPC by a few seconds
         return await writeAsync();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
