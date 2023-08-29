@@ -70,7 +70,7 @@ export const WhatsTeleporterSheet = () => {
               Avalanche, opening doors to many interoperability opportunities.
             </p>
             <p className="mt-4">
-              This demo was built to showcases how easy it is to transfer ERC-20 tokens between Subnets. The three
+              This demo was built to showcase how easy it is to transfer ERC-20 tokens between Subnets. The three
               subnets in this demo, including Amplify, Bulletin, and Conduit, are all equiped with the latest and
               greatest Teleporter smart contracts.
             </p>
@@ -82,7 +82,7 @@ export const WhatsTeleporterSheet = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                our faucet
+                the faucet
               </a>{' '}
               to get your hands on some Amplify / Bulletin / Conduit gas tokens. After that, you can{' '}
               <Link
