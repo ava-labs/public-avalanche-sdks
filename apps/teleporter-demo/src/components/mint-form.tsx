@@ -157,7 +157,7 @@ export const MintForm = memo(() => {
                   size={16}
                   className="mr-1"
                 />
-                Go to Teleporter
+                Go to Bridge
               </Link>
             </TransactionSuccessAlert>
           )}

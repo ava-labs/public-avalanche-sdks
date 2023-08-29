@@ -69,7 +69,7 @@ export function TopNavigation() {
                   The first native Subnet-to-Subnet messaging platform.
                 </ListItem>
                 <ListItem
-                  href="https://medium.com/avalancheavax/avalanche-warp-messaging-awm-launches-with-the-first-native-subnet-to-subnet-message-on-avalanche-c0ceec32144a"
+                  href="https://github.com/ava-labs/public-avalanche-sdks/tree/main/apps/teleporter-demo"
                   title="Teleporter DApp Demo"
                   icon={<GitHubLogoIcon className="w-5 h-5" />}
                   target="_blank"
