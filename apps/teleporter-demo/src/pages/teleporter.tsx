@@ -1,5 +1,6 @@
 import { ActivityFeed } from '@/components/activity-feed';
 import { TeleporterForm } from '@/components/teleporter-form';
+import { WhatsTeleporterSheet } from '@/components/whats-teleporter-sheet';
 import { Card, CardContent, CardTitle } from '@/ui/card';
 import { memo } from 'react';
 
@@ -16,6 +17,7 @@ export const TeleporterPage = memo(() => {
           </CardContent>
         </CardContent>
       </Card>
+      <WhatsTeleporterSheet />
       <ActivityFeed />
     </>
   );
