@@ -1,6 +1,6 @@
 {
   "name": "@internal/github-actions",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "private": true,

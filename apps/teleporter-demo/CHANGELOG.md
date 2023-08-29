@@ -1,5 +1,11 @@
 # @core/teleporter-demo
 
+## 1.0.1
+
+### Patch Changes
+
+- cbabfa9: Update license and docs
+
 ## 1.0.0
 
 ### Major Changes
