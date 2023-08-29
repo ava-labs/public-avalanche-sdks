@@ -26,7 +26,7 @@ export const LoadingButton = ({
           {isLoading ? (
             <AutoAnimate config={{ duration: 150 }}>
               <span className="inline-flex flex-nowrap items-center gap-2">
-                <LoadingSpinner />
+                <LoadingSpinner className="my-2" />
                 {!isNil(loadingText) && loadingText}
               </span>
             </AutoAnimate>

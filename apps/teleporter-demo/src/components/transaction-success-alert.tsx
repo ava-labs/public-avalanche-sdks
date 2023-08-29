@@ -13,36 +13,39 @@ export const TransactionSuccessAlert = ({
   txHash,
   actionLabel,
   className,
+  children,
   ...rest
 }: { explorerBaseUrl: string; txHash: string; actionLabel?: string } & HTMLAttributes<HTMLDivElement>) => {
   return (
     <Alert
-      className={cn('flex flex-nowrap mt-4', className)}
+      className={cn('mt-4', className)}
       {...rest}
     >
-      {/* <RocketIcon className="h-4 w-4" /> */}
-      <Rive
-        className="h-8 w-8 inline-flex"
-        src={successCheck}
-      />
-      <div className="ml-2">
-        <AlertTitle>{actionLabel ? capitalize(actionLabel) : 'Transaction'} success!</AlertTitle>
-        <AlertDescription>
-          View your transaction:
-          <a
-            className={cn(buttonVariants({ variant: 'link' }), 'h-2')}
-            href={`${explorerBaseUrl}/tx/${txHash}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {truncateAddress(txHash)}
-            <ExternalLink
-              size={16}
-              className="ml-1"
-            />
-          </a>
-        </AlertDescription>
+      <div className="flex flex-nowrap">
+        <Rive
+          className="h-8 w-8 inline-flex"
+          src={successCheck}
+        />
+        <div className="ml-2 w-full">
+          <AlertTitle>{actionLabel ? capitalize(actionLabel) : 'Transaction'} success!</AlertTitle>
+          <AlertDescription>
+            View your transaction:
+            <a
+              className={cn(buttonVariants({ variant: 'link' }), 'h-2')}
+              href={`${explorerBaseUrl}/tx/${txHash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {truncateAddress(txHash)}
+              <ExternalLink
+                size={16}
+                className="ml-1"
+              />
+            </a>
+          </AlertDescription>
+        </div>
       </div>
+      {children}
     </Alert>
   );
 };

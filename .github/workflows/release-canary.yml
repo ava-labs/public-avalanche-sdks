@@ -35,6 +35,10 @@ jobs:
       - name: Install Dependencies
         run: pnpm i
 
+      - name: Create ENV file
+        run: |
+          touch .env
+
       # This will run all build, test, and lint scripts in parallel,
       # outlined in the turbo.json file
       - name: Build, Test, & Lint
@@ -53,3 +57,13 @@ jobs:
         run: |
           pnpm changeset version --snapshot ${{ steps.get-canary-subject.outputs.canary-subject }}
           pnpm changeset publish --tag ${{ steps.get-canary-subject.outputs.canary-subject }}
+
+      - name: Deploy OhMyWarp
+        run: |
+          npx wrangler pages deploy ./apps/teleporter-demo/dist --project-name=ohmywarp-teleporter --commit-dirty=true > deploy_output_ohmywarp-teleporter.txt
+          WRANGLER_LOG=debug npx wrangler pages deployment list --project-name=ohmywarp-teleporter
+          DEPLOY_URL_OH_MY_WARP=$(grep -oP -m 1 'https?://\S+' deploy_output_ohmywarp-teleporter.txt)
+          echo "DEPLOY_URL_OH_MY_WARP=$DEPLOY_URL_OH_MY_WARP" >> $GITHUB_ENV
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_PAGES_API_TOKEN }} # Scoped to deploy step for security

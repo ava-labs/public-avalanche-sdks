@@ -11,20 +11,21 @@
     "lint": "turbo lint",
     "prepare": "husky install",
     "prettier": "prettier --write ./",
-    "release": "turbo build && changeset publish",
+    "release": "turbo build && changeset publish && pnpm release:cloudflare",
     "test": "turbo test",
     "version-packages": "changeset version"
   },
   "devDependencies": {
     "@changesets/cli": "2.26.2",
+    "@internal/tsconfig": "workspace:*",
     "eslint": "8.46.0",
     "eslint-config-custom": "workspace:*",
     "husky": "^8.0.0",
     "lint-staged": "14.0.0",
     "prettier": "3.0.1",
-    "@internal/tsconfig": "workspace:*",
     "turbo": "1.10.12",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "wrangler": "3.6.0"
   },
   "packageManager": "pnpm@8.6.10",
   "lint-staged": {

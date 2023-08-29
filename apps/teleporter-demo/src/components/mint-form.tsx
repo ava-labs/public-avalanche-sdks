@@ -17,6 +17,9 @@ import type { EvmChain } from '@/types/chain';
 import { useErc20Balance } from '@/hooks/use-erc20-balance';
 import { cn } from '@/utils/cn';
 import { TransactionSuccessAlert } from './transaction-success-alert';
+import { buttonVariants } from '@/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 
 const BalancesCard = ({ chain, isBigLayout = false }: { chain: EvmChain; isBigLayout?: boolean }) => {
   const { address } = useAccount();
@@ -143,7 +146,18 @@ export const MintForm = memo(() => {
               explorerBaseUrl={AMPLIFY_CHAIN.explorerUrl}
               txHash={mintTxHash}
               className="mt-4"
-            />
+            >
+              <Link
+                to="/"
+                className={cn(buttonVariants({ variant: 'default' }), 'w-full mt-4')}
+              >
+                <ArrowLeft
+                  size={16}
+                  className="mr-1"
+                />
+                Go to Teleporter
+              </Link>
+            </TransactionSuccessAlert>
           )}
         </AutoAnimate>
       </div>

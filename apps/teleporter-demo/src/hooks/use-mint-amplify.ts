@@ -1,10 +1,11 @@
 import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import { AMPLIFY_CHAIN } from '@/constants/chains';
 import { toast } from '@/ui/hooks/use-toast';
-import { useChainId, useContractWrite, usePrepareContractWrite, useSwitchNetwork } from 'wagmi';
+import { useContractWrite, usePrepareContractWrite, useSwitchNetwork } from 'wagmi';
+import { useConnectedChain } from './use-connected-chain';
 
 export const useMintAmplify = () => {
-  const chainId = String(useChainId());
+  const { connectedChain } = useConnectedChain();
   const { switchNetworkAsync } = useSwitchNetwork();
 
   const { config } = usePrepareContractWrite({
@@ -25,7 +26,7 @@ export const useMintAmplify = () => {
           throw new Error('switchNetworkAsync is undefined.');
         }
 
-        if (chainId !== AMPLIFY_CHAIN.chainId) {
+        if (connectedChain?.chainId !== AMPLIFY_CHAIN.chainId) {
           const chainSwitchRes = await switchNetworkAsync(Number(AMPLIFY_CHAIN.chainId));
           if (String(chainSwitchRes.id) !== AMPLIFY_CHAIN.chainId) {
             throw new Error(`Can only mint on ${AMPLIFY_CHAIN.name}.`);
