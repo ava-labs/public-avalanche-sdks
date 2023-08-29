@@ -70,30 +70,30 @@ export const WhatsTeleporterSheet = () => {
               Avalanche, opening doors to many interoperability opportunities.
             </p>
             <p className="mt-4">
-              This demo was built to showcases how easy it is to transfer ERC-20 tokens between Subnets. The three
+              This demo was built to showcase how easy it is to transfer ERC-20 tokens between Subnets. The three
               subnets in this demo, including Amplify, Bulletin, and Conduit, are all equiped with the latest and
               greatest Teleporter smart contracts.
             </p>
             <p className="mt-4">
               To get started, first head to{' '}
               <a
-                className={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'px-1 py-0 -my-1')}
+                className={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'text-md px-0 py-0 -my-2')}
                 href={AMPLIFY_CHAIN.faucetUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                our faucet
+                the faucet
               </a>{' '}
               to get your hands on some Amplify / Bulletin / Conduit gas tokens. After that, you can{' '}
               <Link
-                className={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'px-1 py-0 -my-1')}
+                className={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'text-md px-0 py-0 -my-2')}
                 to="/mint"
               >
                 mint
               </Link>{' '}
-              the TLP (Teleporter Test Token) ERC-20 on the Amplify Subnet. Finally, you can head to the
+              the TLP (Teleporter Test Token) ERC-20 on the Amplify Subnet. Finally, you can head to the{' '}
               <Link
-                className={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'px-1 py-0 -my-1')}
+                className={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'text-md px-0 py-0 -my-2')}
                 to="/"
               >
                 Teleporter Bridge tool
@@ -110,7 +110,7 @@ export const WhatsTeleporterSheet = () => {
             <p className="mt-4">
               For now, you can check out the Teleporter repos at the links up top, and read more at{' '}
               <a
-                className={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'px-1 py-0 -my-1')}
+                className={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'text-md px-0 py-0 -my-2')}
                 href={
                   'https://medium.com/avalancheavax/avalanche-warp-messaging-awm-launches-with-the-first-native-subnet-to-subnet-message-on-avalanche-c0ceec32144a'
                 }

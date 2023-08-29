@@ -24,7 +24,7 @@ export const ActivityFeed = () => {
 
   return (
     <div className="px-14 max-sm:px-1 my-12">
-      <h2 className="ml-4 font-medium">Your Activity</h2>
+      <h2 className="ml-2 text-lg font-medium">Your Activity</h2>
       <div className="flex flex-col mt-2">
         {transactions.map((tx) => {
           const isExport = isExportTx(tx, address);

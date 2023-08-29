@@ -31,6 +31,7 @@ import { useConnectedChain } from '@/hooks/use-connected-chain';
 // @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { DebugResetAllowanceButton } from './debug-reset-allowance';
+import { useSwitchChain } from '@/hooks/use-switch-chain';
 
 const findChain = (chainId: string) => {
   const chain = CHAINS.find((chain) => chain.chainId === chainId);
@@ -109,6 +110,7 @@ export const TeleporterForm = memo(() => {
   const hasErc20Balance = !isNil(erc20Balance) ? erc20Balance > 0 : true;
   const hasAmplifyErc20Balance = !isNil(amplifyErc20Balance) ? amplifyErc20Balance > 0 : true;
 
+  const { switchChain } = useSwitchChain();
   const { teleportToken } = useTeleport({
     amount: amountBigInt,
     fromChain,
@@ -126,27 +128,33 @@ export const TeleporterForm = memo(() => {
     }
     setIsSubmitting(true);
     setCompletedTeleportTx(undefined);
-    const res = await teleportToken();
-    setIsSubmitting(false);
-    if (!res) {
-      toast({
-        title: 'Teleport failed',
-        description: 'Please try again',
-        variant: 'destructive',
+    try {
+      await switchChain(fromChain);
+      const res = await teleportToken();
+      setIsSubmitting(false);
+      if (!res) {
+        toast({
+          title: 'Teleport failed',
+          description: 'Please try again',
+          variant: 'destructive',
+        });
+        return;
+      }
+      refetchGasBalance();
+      refetchErc20Balance();
+      setCompletedTeleportTx({
+        chain: fromChain,
+        txHash: res.hash,
       });
+
+      toast({
+        title: 'Teleport success!',
+        description: 'View your transaction on the explorer',
+      });
+    } catch {
+      setIsSubmitting(false);
       return;
     }
-    refetchGasBalance();
-    refetchErc20Balance();
-    setCompletedTeleportTx({
-      chain: fromChain,
-      txHash: res.hash,
-    });
-
-    toast({
-      title: 'Teleport success!',
-      description: 'View your transaction on the explorer',
-    });
   };
 
   const hasGas = !isNil(gasBalance) ? gasBalance.value > MIN_AMOUNT_FOR_GAS : true;

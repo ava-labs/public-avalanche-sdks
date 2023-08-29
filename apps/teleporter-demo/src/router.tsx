@@ -22,7 +22,7 @@ const Root = () => {
   return (
     <Tabs
       defaultValue="teleport"
-      className="w-full mt-4 sm:mt-8"
+      className="w-full"
       value={location.pathname}
     >
       <TabsList className="grid w-full grid-cols-2">

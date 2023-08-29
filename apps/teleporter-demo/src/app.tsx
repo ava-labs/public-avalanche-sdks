@@ -18,6 +18,7 @@ export default function App() {
           <WalletProvider>
             <Suspense fallback={<LoadingPage />}>
               <PageContainer>
+                <h1 className="mt-4 sm:mt-8 mb-4 text-3xl font-semibold">Teleporter</h1>
                 <Router />
               </PageContainer>
             </Suspense>

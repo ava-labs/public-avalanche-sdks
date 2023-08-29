@@ -26,7 +26,7 @@ pnpm build    # builds all packages
 
 > These are apps published to the web
 
-- `teleporter-demo` (🚧 **WIP** 🚧):This is a demo of the Avalanche Teleporter cross-chain messaging system for EVM subnets.
+- `teleporter-demo`: This is a demo of the Avalanche Teleporter cross-chain messaging system for EVM subnets.
 
 #### Packages
 
@@ -57,3 +57,7 @@ Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
 Package publishing has been configured using [Changesets](https://github.com/changesets/changesets). Please review their [documentation](https://github.com/changesets/changesets#documentation) to familiarize yourself with the workflow.
 
 This repo has an automated npm releases setup in a [GitHub Action](https://github.com/changesets/action) using the [Changesets bot](https://github.com/apps/changeset-bot).
+
+## Contributing
+
+If you're interested in contributing, please read the [contributing docs](/.github/CONTRIBUTING.md) **before submitting a pull request**.
