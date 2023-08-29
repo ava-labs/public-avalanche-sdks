@@ -9,8 +9,8 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/ui/navigation-menu';
-import { ConnectWalletButton } from '../connect-wallet-button';
-import AvalancheLogoWhite from './Avalanche_Horizontal_White.svg';
+import { ConnectWalletButton } from './connect-wallet-button';
+import AvalancheLogoWhite from '@/assets/Avalanche_Horizontal_White.svg';
 import { useBreakpoint } from '@/ui/hooks/use-breakpoint';
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
 import { NewspaperIcon } from 'lucide-react';
