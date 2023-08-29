@@ -1,7 +1,7 @@
 {
   "name": "@internal/github-actions",
   "version": "0.0.0",
-  "license": "SEE LICENSE IN /LICENSE",
+  "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "private": true,
   "publishConfig": {

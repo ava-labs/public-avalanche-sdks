@@ -3,7 +3,7 @@
   "version": "1.9.0",
   "main": "dist/index.js",
   "type": "module",
-  "license": "SEE LICENSE IN /LICENSE",
+  "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "build": "tsup",
     "prettier": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore --write \"src/**/*.ts*\"",

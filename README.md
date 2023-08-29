@@ -8,9 +8,9 @@
 </a>
 </p>
 
-<h1 align="center">Consumer SDKs</h1>
+<h1 align="center">Public Avalanche SDKS</h1>
 <p align="center">
-  This is an official Ava Labs monorepo for JavaScript/TypeScript SDKs and tools.
+  This is an official Ava Labs monorepo used as a testbed for various open source projects.
 </p>
 
 ## Getting Started 🚀
@@ -19,6 +19,13 @@
 pnpm i        # installs all dependencies
 pnpm build    # builds all packages
 ```
+
+## Status
+
+`public-avalanche-sdks` is considered **ALPHA** software and is not safe to use in
+production. The repo is under active development and may change
+significantly over the coming months as its packages are optimized and
+audited.
 
 ## What's inside? 🔍
 
