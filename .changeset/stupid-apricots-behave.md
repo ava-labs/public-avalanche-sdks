@@ -1,5 +1,5 @@
 ---
-"@core/teleporter-demo": minor
+'@core/teleporter-demo': minor
 ---
 
 Teleporter Demo Activity Feed
