@@ -1,11 +1,11 @@
-import { AMPLIFY_CHAIN, CHAINS } from '@/constants/chains';
+import { AMPLIFY_CHAIN, BULLETIN_CHAIN, CHAINS } from '@/constants/chains';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
 
 import { FancyAvatar } from './fancy-avatar';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { LoadingButton } from './loading-button';
 
-import { useAccount, useBalance, useChainId, useSwitchNetwork } from 'wagmi';
+import { useAccount, useBalance } from 'wagmi';
 import { Card, CardContent } from '@/ui/card';
 
 import type { EvmChain } from '@/types/chain';
@@ -23,6 +23,14 @@ import { NotConnectedCard } from './not-connected-card';
 import { OutOfGasCard } from './out-of-gas-card';
 import { toast } from '@/ui/hooks/use-toast';
 import { TransactionSuccessAlert } from './transaction-success-alert';
+import { GoToMintCard } from './go-to-mint-card';
+import { useConnectedChain } from '@/hooks/use-connected-chain';
+
+// Keeping this here for easy debugging.
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { DebugResetAllowanceButton } from './debug-reset-allowance';
 
 const findChain = (chainId: string) => {
   const chain = CHAINS.find((chain) => chain.chainId === chainId);
@@ -36,15 +44,35 @@ export const TeleporterForm = memo(() => {
   /**
    * Chain state
    */
-  const chainId = String(useChainId());
-  const fromChain = useMemo(() => CHAINS.find((chain) => chain.chainId === chainId), [chainId]);
-  const defaultToChain = useMemo(() => CHAINS.find((chain) => chain.chainId !== fromChain?.chainId), [fromChain]);
-  const [toChain, setToChain] = useState<EvmChain | undefined>(defaultToChain);
-  const { switchNetworkAsync } = useSwitchNetwork();
-  const toChainsList = useMemo(
-    () => (fromChain ? CHAINS.filter((chain) => chain.chainId !== fromChain.chainId) : []),
-    [fromChain],
-  );
+  const [fromChain, setFromChain] = useState<EvmChain>(AMPLIFY_CHAIN);
+  const [toChain, setToChain] = useState<EvmChain>(BULLETIN_CHAIN);
+  const toChainsList = useMemo(() => CHAINS.filter((chain) => chain.chainId !== fromChain.chainId), [fromChain]);
+
+  /**
+   * If fromChain is changed to same as toChain,
+   * update toChain to be a different chain.
+   */
+  useEffect(() => {
+    if (fromChain.chainId !== toChain.chainId) {
+      return;
+    }
+    const nextToChain = toChainsList[0];
+    if (!nextToChain) {
+      throw new Error('Invalid toChainList');
+    }
+    setToChain(nextToChain);
+  }, [fromChain, toChainsList]);
+
+  /**
+   * When the connected chain changes, switch to that.
+   */
+  const { connectedChain } = useConnectedChain();
+  useEffect(() => {
+    if (!connectedChain) {
+      return;
+    }
+    setFromChain(connectedChain);
+  }, [connectedChain]);
 
   /**
    * Form state
@@ -76,24 +104,10 @@ export const TeleporterForm = memo(() => {
     isLoading: isLoadingErc20Balance,
     refetch: refetchErc20Balance,
   } = useErc20Balance({ chain: fromChain });
+  const { erc20Balance: amplifyErc20Balance } = useErc20Balance({ chain: AMPLIFY_CHAIN });
 
-  /**
-   * If fromChain is changed to same as toChain,
-   * update toChain to be a different chain.
-   */
-  useEffect(() => {
-    if (!fromChain || !toChain) {
-      return;
-    }
-    if (fromChain.chainId === toChain.chainId) {
-      const nextToChain = toChainsList[0];
-      if (!nextToChain) {
-        throw new Error('Invalid toChainList');
-      }
-
-      setToChain(nextToChain);
-    }
-  }, [fromChain, toChainsList]);
+  const hasErc20Balance = !isNil(erc20Balance) ? erc20Balance > 0 : true;
+  const hasAmplifyErc20Balance = !isNil(amplifyErc20Balance) ? amplifyErc20Balance > 0 : true;
 
   const { teleportToken } = useTeleport({
     amount: amountBigInt,
@@ -147,20 +161,7 @@ export const TeleporterForm = memo(() => {
           <div className="grid grid-cols-12 gap-y-4 gap-x-4">
             <p className="font-semibold text-md col-span-3 sm:col-span-6">From</p>
             <Select
-              onValueChange={async (chainId) => {
-                if (!switchNetworkAsync) {
-                  toast({
-                    title: 'Switch network failed',
-                    description: 'Please try again',
-                    variant: 'destructive',
-                  });
-                  return;
-                }
-
-                if (fromChain?.chainId !== chainId) {
-                  await switchNetworkAsync(Number(chainId));
-                }
-              }}
+              onValueChange={async (chainId) => setFromChain(findChain(chainId))}
               value={fromChain?.chainId ?? ''}
               disabled={isSubmitting}
             >
@@ -292,6 +293,8 @@ export const TeleporterForm = memo(() => {
               chain={fromChain}
               className="mt-4"
             />
+          ) : !hasAmplifyErc20Balance && !hasErc20Balance ? (
+            <GoToMintCard className="mt-4" />
           ) : null}
         </AutoAnimate>
         <AutoAnimate>
@@ -304,6 +307,8 @@ export const TeleporterForm = memo(() => {
           )}
         </AutoAnimate>
       </div>
+      {/* Use this to debug handling allowances */}
+      {/* <DebugResetAllowanceButton chain={fromChain} /> */}
     </>
   );
 });

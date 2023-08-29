@@ -1,20 +1,21 @@
 import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge-abi';
-import { useAccount, useChainId, useContractWrite, useSwitchNetwork, useContractRead } from 'wagmi';
+import { useAccount, useContractWrite, useSwitchNetwork, useContractRead } from 'wagmi';
 import { useApprove } from './use-approve';
 import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import { isNil } from 'lodash-es';
 import type { EvmChain } from '@/types/chain';
+import { useConnectedChain } from './use-connected-chain';
 
 export const useTeleport = ({
   fromChain,
   toChain,
   amount,
 }: {
-  fromChain?: EvmChain;
-  toChain?: EvmChain;
+  fromChain: EvmChain;
+  toChain: EvmChain;
   amount?: bigint;
 }) => {
-  const chainId = String(useChainId());
+  const { connectedChain } = useConnectedChain();
   const { switchNetworkAsync } = useSwitchNetwork();
   const { address } = useAccount();
 
@@ -24,6 +25,7 @@ export const useTeleport = ({
     abi: NATIVE_ERC20_ABI,
     args: address && fromChain ? [address, fromChain?.utilityContracts.bridge.address] : undefined,
     enabled: false, // Disable auto-fetch since we fetch manually right before teleporting.
+    chainId: Number(fromChain.chainId),
   });
 
   const { approve } = useApprove({
@@ -59,12 +61,6 @@ export const useTeleport = ({
         /**
          * Validate inputs.
          */
-        if (!fromChain) {
-          throw new Error('Missing source subnet.');
-        }
-        if (!toChain) {
-          throw new Error('Missing destination subnet.');
-        }
         if (!amount) {
           throw new Error('Missing amount.');
         }
@@ -75,7 +71,7 @@ export const useTeleport = ({
         if (!switchNetworkAsync) {
           throw new Error('switchNetworkAsync is undefined.');
         }
-        if (chainId !== fromChain.chainId) {
+        if (connectedChain?.chainId !== fromChain.chainId) {
           const chainSwitchRes = await switchNetworkAsync(Number(fromChain.chainId));
           if (String(chainSwitchRes.id) !== fromChain.chainId) {
             throw new Error(`Must be connected to ${fromChain.name}.`);
@@ -85,7 +81,7 @@ export const useTeleport = ({
         /**
          * Get approval if allowance is insuffient.
          */
-        const { data: currentAllowance } = await fetchAllowance();
+        const { data: currentAllowance, refetch: fetchAllowanceAgain } = await fetchAllowance();
         if (isNil(currentAllowance)) {
           throw new Error('Unable to detect current allowance.');
         }
@@ -94,7 +90,7 @@ export const useTeleport = ({
         if (!hasSufficientAllowance) {
           const approveResponse = await approve();
           console.info('Approve successful.', approveResponse);
-          await fetchAllowance();
+          await fetchAllowanceAgain();
         }
 
         /**
