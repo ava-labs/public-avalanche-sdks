@@ -2,7 +2,7 @@
   "name": "@internal/tsup-config",
   "version": "0.0.1",
   "private": true,
-  "license": "SEE LICENSE IN /LICENSE",
+  "license": "SEE LICENSE IN LICENSE",
   "type": "module",
   "main": "index.js",
   "devDependencies": {

@@ -1,7 +1,7 @@
 {
   "name": "@internal/glacier",
   "version": "0.0.0",
-  "license": "SEE LICENSE IN /LICENSE",
+  "license": "SEE LICENSE IN LICENSE",
   "main": "src/index.ts",
   "private": true,
   "type": "module",
