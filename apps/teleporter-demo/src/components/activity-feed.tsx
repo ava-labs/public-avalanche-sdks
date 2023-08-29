@@ -42,7 +42,7 @@ export const ActivityFeed = () => {
                   <a
                     className={cn(
                       buttonVariants({ variant: 'link' }),
-                      'text-primary-foreground text-sm font-normal h-2 px-0',
+                      'text-primary-foreground text-sm font-normal h-2 px-0 whitespace-nowrap',
                     )}
                     href={`${tx.chain.explorerUrl}/tx/${tx.txHash}`}
                     target="_blank"
