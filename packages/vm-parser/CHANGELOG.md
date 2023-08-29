@@ -1,5 +1,11 @@
 # @avalabs/vm-parser
 
+## 1.9.1
+
+### Patch Changes
+
+- cbabfa9: Update license and docs
+
 ## 1.9.0
 
 ### Minor Changes
