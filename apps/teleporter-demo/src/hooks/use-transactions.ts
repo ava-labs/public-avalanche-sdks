@@ -1,5 +1,6 @@
 import { glacierService } from '@/constants';
 import { CHAINS } from '@/constants/chains';
+import { NULL_ADDRESS } from '@/constants/token';
 import type { EvmChain } from '@/types/chain';
 import { isFullfilled } from '@/utils/is-fullfilled';
 import type { Erc20Transfer } from '@internal/glacier';
@@ -13,10 +14,10 @@ const TRANSACTION_COUNT = 10;
 
 export const isExportTx = (tx: Erc20TransferWithChain, walletAddress: Address) =>
   tx.from.address === walletAddress && // from wallet
-  tx.to.address === tx.chain?.utilityContracts.bridge.address; // to bridge
+  (tx.to.address === tx.chain?.utilityContracts.bridge.address || tx.to.address === NULL_ADDRESS); // to bridge
 
 export const isImportTx = (tx: Erc20TransferWithChain, walletAddress: Address) =>
-  tx.from.address === tx.chain?.utilityContracts.bridge.address && // from bridge
+  (tx.chain?.utilityContracts.bridge.address || tx.from.address === NULL_ADDRESS) && // from bridge
   tx.to.address === walletAddress; // to wallet
 
 const getLatestTeleporterTransactions = async ({ address }: { address: Address }) => {
@@ -33,6 +34,7 @@ const getLatestTeleporterTransactions = async ({ address }: { address: Address }
   const unsortedTxs = compact(
     settledResponses.flatMap((response, i) => {
       const chain = CHAINS[i];
+
       if (chain && isFullfilled(response)) {
         return response.value.transactions.map((tx) => {
           return {
@@ -49,7 +51,10 @@ const getLatestTeleporterTransactions = async ({ address }: { address: Address }
   const teleporterTxs = unsortedTxs.filter((tx) => {
     return isExportTx(tx, address) || isImportTx(tx, address);
   });
-  const txsSortedByTimestamp = sortBy(teleporterTxs, ({ blockTimestamp }) => -blockTimestamp);
+  const txsSortedByTimestamp = sortBy(teleporterTxs, ({ blockTimestamp }) => -blockTimestamp).slice(
+    0,
+    TRANSACTION_COUNT,
+  );
   return txsSortedByTimestamp;
 };
 
