@@ -25,6 +25,16 @@ export function Footer() {
           <NavigationMenuItem>
             <a
               className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }))}
+              href="https://github.com/ava-labs/public-avalanche-sdks/blob/main/apps/teleporter-demo/README.md"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GitHubLogoIcon className="w-6 h-6" />
+            </a>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <a
+              className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }))}
               href="https://www.avax.network"
               target="_blank"
               rel="noopener noreferrer"
