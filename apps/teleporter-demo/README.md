@@ -3,7 +3,7 @@
 <p align="center">
   <a href="https://subnets.avax.network/">
       <picture>
-        <img alt="Avalanche Logo" src="https://raw.githubusercontent.com/ava-labs/public-avalanche-sdks/main/packages/vm-parser/src/assets/Avalanche_Horizontal_White.svg?token=GHSAT0AAAAAABXWR5JN42WPZEYQSCC63P3YZGRGOUA" width="auto" height="60">
+        <img alt="Avalanche Logo" src="https://images.ctfassets.net/gcj8jwzm6086/Gse8dqDEnJtT87RsbbEf4/1609daeb09e9db4a6617d44623028356/Avalanche_Horizontal_White.svg" width="auto" height="60">
       </picture>
 </a>
 </p>
