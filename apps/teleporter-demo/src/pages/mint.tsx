@@ -1,6 +1,6 @@
 import { MintForm } from '@/components/mint-form';
 import { WhatsTeleporterSheet } from '@/components/whats-teleporter-sheet';
-import { Card, CardContent, CardTitle } from '@/ui/card';
+import { Card, CardContent } from '@/ui/card';
 import { memo } from 'react';
 
 export const MintPage = memo(() => {
@@ -8,9 +8,6 @@ export const MintPage = memo(() => {
     <>
       <Card className="flex grow">
         <CardContent className="w-full max-sm:px-0">
-          <CardTitle>
-            <span className="ml-6">Mint</span>
-          </CardTitle>
           <CardContent>
             <MintForm />
           </CardContent>
