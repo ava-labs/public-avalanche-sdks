@@ -1,10 +1,9 @@
 import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge-abi';
-import { useAccount, useContractWrite, useSwitchNetwork, useContractRead } from 'wagmi';
+import { useAccount, useContractWrite, useContractRead } from 'wagmi';
 import { useApprove } from './use-approve';
 import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import { isNil } from 'lodash-es';
 import type { EvmChain } from '@/types/chain';
-import { useConnectedChain } from './use-connected-chain';
 import { useLatestTeleporterTransactions } from './use-transactions';
 
 export const useTeleport = ({
@@ -16,8 +15,6 @@ export const useTeleport = ({
   toChain: EvmChain;
   amount?: bigint;
 }) => {
-  const { connectedChain } = useConnectedChain();
-  const { switchNetworkAsync } = useSwitchNetwork();
   const { address } = useAccount();
 
   const { mutate: refetchTxs } = useLatestTeleporterTransactions();
@@ -53,8 +50,6 @@ export const useTeleport = ({
             BigInt(0),
           ]
         : undefined,
-    maxFeePerGas: BigInt(0),
-    maxPriorityFeePerGas: BigInt(0),
     chainId: fromChain ? Number(fromChain.chainId) : undefined,
   });
 
@@ -66,19 +61,6 @@ export const useTeleport = ({
          */
         if (!amount) {
           throw new Error('Missing amount.');
-        }
-
-        /**
-         * Switch to the source subnet if not already connected.
-         */
-        if (!switchNetworkAsync) {
-          throw new Error('switchNetworkAsync is undefined.');
-        }
-        if (connectedChain?.chainId !== fromChain.chainId) {
-          const chainSwitchRes = await switchNetworkAsync(Number(fromChain.chainId));
-          if (String(chainSwitchRes.id) !== fromChain.chainId) {
-            throw new Error(`Must be connected to ${fromChain.name}.`);
-          }
         }
 
         /**

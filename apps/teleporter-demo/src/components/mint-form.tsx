@@ -20,6 +20,7 @@ import { TransactionSuccessAlert } from './transaction-success-alert';
 import { buttonVariants } from '@/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
+import { useSwitchChain } from '@/hooks/use-switch-chain';
 
 const BalancesCard = ({ chain, isBigLayout = false }: { chain: EvmChain; isBigLayout?: boolean }) => {
   const { address } = useAccount();
@@ -81,19 +82,20 @@ export const MintForm = memo(() => {
     chain: AMPLIFY_CHAIN,
   });
 
+  const { switchChain } = useSwitchChain();
   const handleMint = async () => {
     setIsSubmitting(true);
     setMintTxHash(undefined);
-    const response = await mintToken();
-    setIsSubmitting(false);
-
-    if (!response) {
+    try {
+      await switchChain(AMPLIFY_CHAIN);
+      const response = await mintToken();
+      setIsSubmitting(false);
+      setMintTxHash(response?.hash);
+      refetch();
+    } catch {
+      setIsSubmitting(false);
       return;
     }
-
-    setMintTxHash(response.hash);
-
-    refetch();
   };
 
   const { data: gasBalance } = useBalance({
