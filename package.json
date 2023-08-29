@@ -12,7 +12,7 @@
     "lint": "turbo lint",
     "prepare": "husky install",
     "prettier": "prettier --write ./",
-    "release": "turbo build && changeset publish && pnpm release:cloudflare",
+    "release": "turbo build && changeset publish",
     "test": "turbo test",
     "version-packages": "changeset version"
   },
