@@ -136,22 +136,18 @@ export const mapChainToWagmiChain = (chain: EvmChain): Chain => ({
   testnet: chain.isTestnet,
 });
 
-export const AMPLIFY_WAGMI_CHAIN = mapChainToWagmiChain(AMPLIFY_CHAIN);
-export const BULLETIN_WAGMI_CHAIN = mapChainToWagmiChain(BULLETIN_CHAIN);
-export const CONDUIT_WAGMI_CHAIN = mapChainToWagmiChain(CONDUIT_CHAIN);
-
-export const CHAIN = {
+const CHAIN = {
   AMPLIFY: {
     info: AMPLIFY_CHAIN,
-    wagmi: AMPLIFY_WAGMI_CHAIN,
+    wagmi: mapChainToWagmiChain(AMPLIFY_CHAIN),
   },
   BULLETIN: {
     info: BULLETIN_CHAIN,
-    wagmi: BULLETIN_WAGMI_CHAIN,
+    wagmi: mapChainToWagmiChain(BULLETIN_CHAIN),
   },
   CONDUIT: {
     info: CONDUIT_CHAIN,
-    wagmi: CONDUIT_WAGMI_CHAIN,
+    wagmi: mapChainToWagmiChain(CONDUIT_CHAIN),
   },
 } as const satisfies Record<
   string,
