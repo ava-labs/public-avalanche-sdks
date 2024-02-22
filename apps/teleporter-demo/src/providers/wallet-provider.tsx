@@ -1,4 +1,4 @@
-import { WAGMI_CHAINS } from '@/constants/chains';
+import { TELEPORTER_CONFIG } from '@/constants/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { WagmiConfig, configureChains } from 'wagmi';
 import { w3mProvider } from '@web3modal/ethereum';
@@ -13,7 +13,10 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
       chains: wagmiChains,
       webSocketPublicClient,
       publicClient,
-    } = configureChains(WAGMI_CHAINS, [publicProvider(), w3mProvider({ projectId: WALLETCONNECT_V2_CORE_PROJECT_ID })]);
+    } = configureChains(
+      TELEPORTER_CONFIG.chains.map(({ wagmiConfig }) => wagmiConfig),
+      [publicProvider(), w3mProvider({ projectId: WALLETCONNECT_V2_CORE_PROJECT_ID })],
+    );
 
     return createWagmiConfig({
       appName: APP_CONFIG.appName,

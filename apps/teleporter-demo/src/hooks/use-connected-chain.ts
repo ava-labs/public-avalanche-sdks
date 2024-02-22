@@ -1,4 +1,4 @@
-import { CHAINS } from '@/constants/chains';
+import { TELEPORTER_CONFIG } from '@/constants/chains';
 import { useMemo } from 'react';
 import { useNetwork } from 'wagmi';
 
@@ -7,7 +7,9 @@ export const useConnectedChain = () => {
 
   return {
     connectedChain: useMemo(() => {
-      return CHAINS.find((chain) => wagmiConnectedChain && chain.chainId === String(wagmiConnectedChain.id));
+      return TELEPORTER_CONFIG.chains.find(
+        (chain) => wagmiConnectedChain && chain.chainId === String(wagmiConnectedChain.id),
+      );
     }, [wagmiConnectedChain]),
   };
 };

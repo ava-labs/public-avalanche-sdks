@@ -1,14 +1,13 @@
-import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
-import { AMPLIFY_CHAIN } from '@/constants/chains';
+import { TELEPORTER_CONFIG } from '@/constants/chains';
 import { toast } from '@/ui/hooks/use-toast';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 
-export const useMintAmplify = () => {
+export const useMintTlp = () => {
   const { config } = usePrepareContractWrite({
-    address: AMPLIFY_CHAIN.utilityContracts.demoErc20.address,
+    address: TELEPORTER_CONFIG.tlpMintChain.contracts.mintableErc20.address,
     functionName: 'mint',
-    abi: NATIVE_ERC20_ABI,
-    args: [BigInt('1000000000000000000')],
+    abi: TELEPORTER_CONFIG.tlpMintChain.contracts.mintableErc20.abi,
+    args: [BigInt('1000000000000000000')], // Mint amount.  1 TLP
   });
 
   const { writeAsync } = useContractWrite(config);

@@ -1,18 +1,17 @@
-import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge-abi';
+import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge.abi';
 import { useAccount, useContractWrite, useContractRead } from 'wagmi';
 import { useApprove } from './use-approve';
-import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import { isNil } from 'lodash-es';
-import type { EvmChain } from '@/types/chain';
 import { useLatestTeleporterTransactions } from './use-transactions';
+import type { EvmTeleporterChain } from '@/constants/chains';
 
 export const useTeleport = ({
   fromChain,
   toChain,
   amount,
 }: {
-  fromChain: EvmChain;
-  toChain: EvmChain;
+  fromChain: EvmTeleporterChain;
+  toChain: EvmTeleporterChain;
   amount?: bigint;
 }) => {
   const { address } = useAccount();
@@ -20,30 +19,30 @@ export const useTeleport = ({
   const { mutate: refetchTxs } = useLatestTeleporterTransactions();
 
   const { refetch: fetchAllowance } = useContractRead({
-    address: fromChain?.utilityContracts.demoErc20.address,
+    address: fromChain?.contracts.teleportedErc20.address,
     functionName: 'allowance',
-    abi: NATIVE_ERC20_ABI,
-    args: address && fromChain ? [address, fromChain?.utilityContracts.bridge.address] : undefined,
+    abi: fromChain?.contracts.teleportedErc20.abi,
+    args: address && fromChain ? [address, fromChain?.contracts.bridge.address] : undefined,
     enabled: false, // Disable auto-fetch since we fetch manually right before teleporting.
     chainId: Number(fromChain.chainId),
   });
 
   const { approve } = useApprove({
     chain: fromChain,
-    addressToApprove: fromChain?.utilityContracts.bridge.address,
-    tokenAddress: fromChain?.utilityContracts.demoErc20.address,
+    addressToApprove: fromChain?.contracts.bridge.address,
+    tokenAddress: fromChain?.contracts.teleportedErc20.address,
   });
 
   const { writeAsync } = useContractWrite({
-    address: fromChain?.utilityContracts.bridge.address,
+    address: fromChain?.contracts.bridge.address,
     functionName: 'bridgeTokens',
     abi: TELEPORTER_BRIDGE_ABI,
     args:
       fromChain && toChain && address && amount
         ? [
             toChain?.platformChainIdHex,
-            toChain?.utilityContracts.bridge.address,
-            fromChain?.utilityContracts.demoErc20.address,
+            toChain?.contracts.bridge.address,
+            fromChain?.contracts.teleportedErc20.address,
             address,
             amount,
             BigInt(0),

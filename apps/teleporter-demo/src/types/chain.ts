@@ -1,16 +1,18 @@
-import type { Address } from 'viem';
+import type { Abi, Address } from 'viem';
+import type { Chain as WagmiChain } from 'wagmi';
 import { z } from 'zod';
 
 export type EvmChain = z.infer<typeof evmChainSchema>;
+export type Erc20Token = z.infer<typeof erc20Token>;
 
-const utilityContract = z.object({
+const contract = z.object({
+  universalId: z.string(),
   address: z.string().transform((val) => val as Address),
   name: z.string(),
+  abi: z.array(z.object({}).passthrough()).transform((abi) => abi as unknown as Abi),
 });
 
-const erc20Contract = z.object({
-  universalTokenId: z.string(),
-  address: z.string().transform((val) => val as Address),
+const erc20Token = contract.extend({
   name: z.string(),
   symbol: z.string(),
   decimals: z.number(),
@@ -29,15 +31,23 @@ export const evmChainSchema = z.object({
   name: z.string(),
   shortName: z.string(),
   networkToken: z.object({
-    universalTokenId: z.string(),
+    universalId: z.string(),
     decimals: z.number(),
     name: z.string(),
     symbol: z.string(),
   }),
   primaryColor: z.string(),
   chainId: z.string(),
-  utilityContracts: z.object({
-    demoErc20: erc20Contract,
-    bridge: utilityContract,
+  contracts: z.object({
+    // Token that is mintable. This is optional because this demo only allows minting from C-Chain.
+    mintableErc20: erc20Token.optional(),
+    // Token that is created upon teleportation
+    teleportedErc20: erc20Token,
+    // The actual teleporter bridge contract
+    bridge: contract,
   }),
+  wagmiConfig: z
+    .object({})
+    .passthrough()
+    .transform((wagmiConfig) => wagmiConfig as WagmiChain),
 });

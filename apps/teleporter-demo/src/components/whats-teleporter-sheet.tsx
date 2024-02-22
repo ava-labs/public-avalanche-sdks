@@ -14,9 +14,12 @@ import { GitHubLogoIcon } from '@radix-ui/react-icons';
 import { Heart, InfoIcon } from 'lucide-react';
 
 import { Link } from '@tanstack/react-router';
-import { AMPLIFY_CHAIN } from '@/constants/chains';
+import { TELEPORTER_CONFIG } from '@/constants/chains';
 import { AvalancheColorIcon } from './avalanche-icon';
 import { ScrollArea } from '@/ui/scroll-area';
+
+const CHAIN_NAMES = TELEPORTER_CONFIG.chains.map((chain) => chain.shortName);
+const CHAINS_LABEL = `${CHAIN_NAMES[0]}, ${CHAIN_NAMES[1]}, and ${CHAIN_NAMES[2]}`;
 
 export const WhatsTeleporterSheet = () => {
   return (
@@ -71,27 +74,28 @@ export const WhatsTeleporterSheet = () => {
             </p>
             <p className="mt-4">
               This demo was built to showcase how easy it is to transfer ERC-20 tokens between Subnets. The three
-              subnets in this demo, including Amplify, Bulletin, and Conduit, are all equipped with the latest and
-              greatest Teleporter smart contracts.
+              subnets in this demo, including {CHAINS_LABEL}, are all equipped with the latest and greatest Teleporter
+              smart contracts.
             </p>
             <p className="mt-4">
               To get started, first head to{' '}
               <a
                 className={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'text-md px-0 py-0 -my-2')}
-                href={AMPLIFY_CHAIN.faucetUrl}
+                href={TELEPORTER_CONFIG.tlpMintChain.faucetUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 the faucet
               </a>{' '}
-              to get your hands on some Amplify / Bulletin / Conduit gas tokens. After that, you can{' '}
+              to get your hands on some {CHAINS_LABEL} gas tokens. After that, you can{' '}
               <Link
                 className={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'text-md px-0 py-0 -my-2')}
                 to="/mint"
               >
                 mint
               </Link>{' '}
-              the TLP (Teleporter Test Token) ERC-20 on the Amplify Subnet. Finally, you can head to the{' '}
+              the TLP (Teleporter Test Token) ERC-20 on the {TELEPORTER_CONFIG.tlpMintChain.name}. Finally, you can head
+              to the{' '}
               <Link
                 className={cn(buttonVariants({ variant: 'link', size: 'sm' }), 'text-md px-0 py-0 -my-2')}
                 to="/"
@@ -104,8 +108,8 @@ export const WhatsTeleporterSheet = () => {
             <p className="mt-4">
               Teleporter and the Warp precompile are currently in experimental/testing phases. There are continued
               efforts to both harden them and gather feedback from testnet deployments. In the coming months, the plan
-              is to begin rolling each out to both existing subnets and the C-chain, so stay tuned for even more updates
-              to come!
+              is to begin rolling each out to both existing subnets and the mainnet C-Chain, so stay tuned for even more
+              updates to come!
             </p>
             <p className="mt-4">
               For now, you can check out the Teleporter repos at the links up top, and read more at{' '}

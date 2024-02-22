@@ -1,5 +1,4 @@
-import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
-import type { EvmChain } from '@/types/chain';
+import type { EvmTeleporterChain } from '@/constants/chains';
 import { toast } from '@/ui/hooks/use-toast';
 import { useContractWrite, type Address } from 'wagmi';
 
@@ -10,14 +9,14 @@ export const useApprove = ({
   tokenAddress,
   addressToApprove,
 }: {
-  chain: EvmChain;
+  chain: EvmTeleporterChain;
   tokenAddress?: Address;
   addressToApprove?: Address;
 }) => {
   const { writeAsync } = useContractWrite({
     address: tokenAddress,
     functionName: 'approve',
-    abi: NATIVE_ERC20_ABI,
+    abi: chain.contracts.teleportedErc20.abi,
     args: chain && tokenAddress && addressToApprove ? [addressToApprove, MAXIMUM_ALLOWANCE] : undefined,
     chainId: Number(chain?.chainId),
   });

@@ -1,12 +1,12 @@
+import type { EvmTeleporterChain } from '@/constants/chains';
 import { useResetAllowance } from '@/hooks/use-reset-allowance';
-import type { EvmChain } from '@/types/chain';
 import { Button } from '@/ui/button';
 
-export const DebugResetAllowanceButton = ({ chain }: { chain: EvmChain }) => {
+export const DebugResetAllowanceButton = ({ chain }: { chain: EvmTeleporterChain }) => {
   const { resetAllownce } = useResetAllowance({
     chain,
-    tokenAddress: chain?.utilityContracts.demoErc20.address,
-    addressToReset: chain?.utilityContracts.bridge.address,
+    tokenAddress: chain?.contracts.teleportedErc20.address,
+    addressToReset: chain?.contracts.bridge.address,
   });
 
   return (

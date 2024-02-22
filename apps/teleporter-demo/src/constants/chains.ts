@@ -1,116 +1,141 @@
 import type { EvmChain } from '@/types/chain';
 import type { Chain } from 'wagmi';
 import { FAUCET_URL } from './urls';
+import { TELEPORTER_BRIDGE_ABI } from './abis/teleporter-bridge.abi';
+import { MINTABLE_ERC20_ABI } from './abis/mintable-erc-20.abi';
+import { ERC20_ABI } from './abis/erc-20.abi';
+import type { Except } from 'type-fest';
 
-export const AMPLIFY_CHAIN = {
-  chainId: '78430',
-  name: 'Amplify Subnet',
-  shortName: 'Amplify',
-  subnetId: '2PsShLjrFFwR51DMcAh8pyuwzLn1Ym3zRhuXLTmLCR1STk2mL6',
-  platformChainId: '2nFUad4Nw4pCgEF6MwYgGuKrzKbHJzM8wF29jeVUL41RWHgNRa',
-  platformChainIdHex: '0xea70d815f0232f5419dabafe36c964ffe5c22d17ac367b60b556ab3e17a36458',
+export const C_CHAIN = {
+  chainId: '43113',
+  name: 'C-Chain',
+  shortName: 'C-Chain',
+  subnetId: '11111111111111111111111111111111LpoYY',
+  platformChainId: 'yH8D7ThNJkxmtkuv2jgBa4P1Rn3Qpr4pPr7QYNfcdoS6k6HWp',
+  platformChainIdHex: '0x7fc93d85c6d62c5b2ac0b519c87010ea5294012d1e407030d6acd0021cac10d5',
   networkToken: {
-    universalTokenId: '78430-AMP',
+    universalId: '43313-AVAX',
     decimals: 18,
-    name: 'AMP',
-    symbol: 'AMP',
+    name: 'AVAX',
+    symbol: 'AVAX',
   },
-  slug: 'amplify',
-  explorerUrl: 'https://subnets-test.avax.network/amplify',
-  rpcUrl: 'https://subnets.avax.network/amplify/testnet/rpc',
-  faucetUrl: `${FAUCET_URL}/?subnet=amplify&token=amplify`,
+  slug: 'cchain',
+  explorerUrl: 'https://subnets-test.avax.network/c-chain',
+  rpcUrl: 'https://api.avax-test.network/ext/bc/C/rpc',
+  faucetUrl: `${FAUCET_URL}/?subnet=c&token=c`,
   isTestnet: true,
   logoUrl:
-    'https://images.ctfassets.net/gcj8jwzm6086/5fZAVhKA9gMyf6p5pRt0pV/bc1f2b3e2f4e7413602f6b868df81546/Screenshot_2023-07-27_at_10.17.25_AM_-_Cameron_Schultz.png?h=250',
-  primaryColor: '#FF7C43',
-  utilityContracts: {
-    demoErc20: {
-      universalTokenId: '78430-0x127be3D46138500Dc85ae22485e67D0263c09829',
-      address: '0x127be3D46138500Dc85ae22485e67D0263c09829',
-      name: 'Teleporter Example Token',
+    'https://images.ctfassets.net/gcj8jwzm6086/5VHupNKwnDYJvqMENeV7iJ/fdd6326b7a82c8388e4ee9d4be7062d4/avalanche-avax-logo.svg',
+  primaryColor: '#e84142',
+  contracts: {
+    mintableErc20: {
+      universalId: '43313-0x6F419E35a60439569640ca078ba5e86599E30cC6',
+      address: '0x6F419E35a60439569640ca078ba5e86599E30cC6',
+      name: 'Example Teleporter Token',
       symbol: 'TLP',
       decimals: 18,
+      abi: MINTABLE_ERC20_ABI,
+    },
+    // Note, for C-Chain the mintable ERC-20 is the same as the teleported one
+    teleportedErc20: {
+      universalId: '43313-0x6F419E35a60439569640ca078ba5e86599E30cC6',
+      address: '0x6F419E35a60439569640ca078ba5e86599E30cC6',
+      name: 'Example Teleporter Token',
+      symbol: 'TLP',
+      decimals: 18,
+      // This is technically not the correct abi.  The correct one is MINTABLE_ERC20_ABI.
+      // We use this ABI here as a hack to appease Wagmi, which throws type errors when
+      // any union of multiple ABIs is passed to certain hooks (such as useContractRead).
+      abi: ERC20_ABI,
     },
     bridge: {
-      address: '0x297C4dCBB51839caEBB550C8387a52b4F3676d35',
-      name: 'Teleporter Bridge',
+      universalId: '43313-0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
+      address: '0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
+      name: 'Teleporter ERC20 Bridge',
+      abi: TELEPORTER_BRIDGE_ABI,
     },
   },
-} as const satisfies EvmChain;
+} as const satisfies Except<EvmChain, 'wagmiConfig'>;
 
-export const BULLETIN_CHAIN = {
-  chainId: '78431',
-  name: 'Bulletin Subnet',
-  shortName: 'Bulletin',
-  subnetId: 'cbXsFGWSDWUYTmRXUoCirVDdQkZmUWrkQQYoVc2wUoDm8eFup',
-  platformChainId: '2e3RJ3ub9Pceh8fJ3HX3gZ6nSXJLvBJ9WoXLcU4nwdpZ8X2RLq',
-  platformChainIdHex: '0xd7cdc6f08b167595d1577e24838113a88b1005b471a6c430d79c48b4c89cfc53',
+export const DISPATCH_CHAIN = {
+  chainId: '779672',
+  name: 'Dispatch Subnet',
+  shortName: 'Dispatch',
+  subnetId: '7WtoAMPhrmh5KosDUsFL9yTcvw7YSxiKHPpdfs4JsgW47oZT5',
+  platformChainId: '2D8RG4UpSXbPbvPCAWppNJyqTG2i2CAXSkTgmTBBvs7GKNZjsY',
+  platformChainIdHex: '0x9f3be606497285d0ffbb5ac9ba24aa60346a9b1812479ed66cb329f394a4b1c7',
   networkToken: {
-    universalTokenId: '78431-BLT',
+    universalId: '779672-DIS',
     decimals: 18,
-    name: 'BLT',
-    symbol: 'BLT',
+    name: 'DIS',
+    symbol: 'DIS',
   },
-  slug: 'bulletin',
-  explorerUrl: 'https://subnets-test.avax.network/bulletin',
-  rpcUrl: 'https://subnets.avax.network/bulletin/testnet/rpc',
-  faucetUrl: `${FAUCET_URL}/?subnet=bulletin&token=bulletin`,
+  slug: 'dispatch',
+  explorerUrl: 'https://subnets-test.avax.network/dispatch',
+  rpcUrl: 'https://subnets.avax.network/dispatch/testnet/rpc',
+  faucetUrl: `${FAUCET_URL}/?subnet=dispatch&token=dispatch`,
   isTestnet: true,
   logoUrl:
-    'https://images.ctfassets.net/gcj8jwzm6086/5B7Vfj3t6r3ZqlEyyAaKRI/da8ec29ddfdf7eaacd3298c01f9c798e/Screenshot_2023-07-27_at_10.17.35_AM_-_Cameron_Schultz.png?h=250',
+    'https://images.ctfassets.net/gcj8jwzm6086/60XrKdf99PqQKrHiuYdwTE/908622f5204311dbb11be9c6008ead44/Dispatch_Subnet_Logo.png',
   primaryColor: '#A05195',
-  utilityContracts: {
-    demoErc20: {
-      universalTokenId: '78431-0xD70a4bF82cCc20413ca8C264aF7A6919c8935C01',
-      address: '0xD70a4bF82cCc20413ca8C264aF7A6919c8935C01',
-      name: 'Teleporter Example Token',
+  contracts: {
+    teleportedErc20: {
+      universalId: '779672-0x80989a8F005c3445898DBD9892D3Abb96d08Cf2B',
+      address: '0x80989a8F005c3445898DBD9892D3Abb96d08Cf2B',
+      name: 'Example Teleporter Token',
       symbol: 'TLP',
       decimals: 18,
+      abi: ERC20_ABI,
     },
     bridge: {
-      address: '0x48Db0f37e1Bfb569b420aEf96bcaaE9b889Bd2E9',
-      name: 'Teleporter Bridge',
+      universalId: '779672-0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
+      address: '0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
+      name: 'Teleporter ERC20 Bridge',
+      abi: TELEPORTER_BRIDGE_ABI,
     },
   },
-} as const satisfies EvmChain;
+} as const satisfies Except<EvmChain, 'wagmiConfig'>;
 
-export const CONDUIT_CHAIN = {
-  chainId: '78432',
-  name: 'Conduit Subnet',
-  shortName: 'Conduit',
-  subnetId: 'wW7JVmjXp8SKrpacGzM81RBXdfcLDVY6M2DkFyArEXgtkyozK',
-  platformChainId: '9asUA3QckLh7vGnFQiiUJGPTx8KE4nFtP8c1wTWJuP8XiWW75',
-  platformChainIdHex: '0x137daedb40251e7c196fd9711f6cd4a787d154cdc59fb7777d4d079cc116e5f1',
+export const ECHO_CHAIN = {
+  chainId: '173750',
+  name: 'Echo Subnet',
+  shortName: 'Echo',
+  subnetId: 'i9gFpZQHPLcGfZaQLiwFAStddQD7iTKBpFfurPFJsXm1CkTZK',
+  platformChainId: '98qnjenm7MBd8G2cPZoRvZrgJC33JGSAAKghsQ6eojbLCeRNp',
+  platformChainIdHex: '0x1278d1be4b987e847be3465940eb5066c4604a7fbd6e086900823597d81af4c1',
   networkToken: {
-    universalTokenId: '78432-CON',
+    universalId: '173750-ECH',
     decimals: 18,
-    name: 'CON',
-    symbol: 'CON',
+    name: 'ECH',
+    symbol: 'ECH',
   },
-  slug: 'conduit',
-  explorerUrl: 'https://subnets-test.avax.network/conduit',
-  rpcUrl: 'https://subnets.avax.network/conduit/testnet/rpc',
-  faucetUrl: `${FAUCET_URL}/?subnet=conduit&token=conduit`,
+  slug: 'echo',
+  explorerUrl: 'https://subnets-test.avax.network/echo',
+  rpcUrl: 'https://subnets.avax.network/echo/testnet/rpc',
+  faucetUrl: `${FAUCET_URL}/?subnet=echo&token=echo`,
   isTestnet: true,
   logoUrl:
-    'https://images.ctfassets.net/gcj8jwzm6086/IeLUEqVDIv4npUjEIOkSB/7d37730f211ff6449a29103c5f22b463/Screenshot_2023-07-27_at_10.17.43_AM_-_Cameron_Schultz.png?h=250',
-  primaryColor: '#00C2B4',
-  utilityContracts: {
-    demoErc20: {
-      universalTokenId: '78432-0x5712f185FEb983bBdf4bfF1A2D9d705217924c3d',
-      address: '0x5712f185FEb983bBdf4bfF1A2D9d705217924c3d',
-      name: 'Teleporter Example Token',
+    'https://images.ctfassets.net/gcj8jwzm6086/7kyTY75fdtnO6mh7f0osix/4c92c93dd688082bfbb43d5d910cbfeb/Echo_Subnet_Logo.png',
+  primaryColor: '#FF7C43',
+  contracts: {
+    teleportedErc20: {
+      universalId: '173750-0x80989a8F005c3445898DBD9892D3Abb96d08Cf2B',
+      address: '0x80989a8F005c3445898DBD9892D3Abb96d08Cf2B',
+      name: 'Example Teleporter Token',
       symbol: 'TLP',
       decimals: 18,
+      abi: ERC20_ABI,
     },
     bridge: {
-      address: '0xa415AAC7979a0b68E1c3117763C8978F7e89C9E0',
-      name: 'Teleporter Bridge',
+      universalId: '173750-0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
+      address: '0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
+      name: 'Teleporter ERC20 Bridge',
+      abi: TELEPORTER_BRIDGE_ABI,
     },
   },
-} as const satisfies EvmChain;
+} as const satisfies Except<EvmChain, 'wagmiConfig'>;
 
-export const mapChainToWagmiChain = (chain: EvmChain): Chain => ({
+export const mapChainToWagmiChain = (chain: Except<EvmChain, 'wagmiConfig'>): Chain => ({
   id: Number(chain.chainId),
   name: chain.name,
   nativeCurrency: {
@@ -136,26 +161,28 @@ export const mapChainToWagmiChain = (chain: EvmChain): Chain => ({
   testnet: chain.isTestnet,
 });
 
-const CHAIN = {
-  AMPLIFY: {
-    info: AMPLIFY_CHAIN,
-    wagmi: mapChainToWagmiChain(AMPLIFY_CHAIN),
-  },
-  BULLETIN: {
-    info: BULLETIN_CHAIN,
-    wagmi: mapChainToWagmiChain(BULLETIN_CHAIN),
-  },
-  CONDUIT: {
-    info: CONDUIT_CHAIN,
-    wagmi: mapChainToWagmiChain(CONDUIT_CHAIN),
-  },
-} as const satisfies Record<
-  string,
-  {
-    info: EvmChain;
-    wagmi: Chain;
-  }
->;
+const C_CHAIN_WITH_WAGMI_CONFIG = {
+  ...C_CHAIN,
+  wagmiConfig: mapChainToWagmiChain(C_CHAIN),
+} as const satisfies EvmChain;
 
-export const CHAINS = Object.values(CHAIN).map(({ info }) => info);
-export const WAGMI_CHAINS = Object.values(CHAIN).map(({ wagmi }) => wagmi);
+const DISPATCH_CHAIN_WITH_WAGMI_CONFIG = {
+  ...DISPATCH_CHAIN,
+  wagmiConfig: mapChainToWagmiChain(DISPATCH_CHAIN),
+} as const satisfies EvmChain;
+
+const ECHO_CHAIN_WITH_WAGMI_CONFIG = {
+  ...ECHO_CHAIN,
+  wagmiConfig: mapChainToWagmiChain(ECHO_CHAIN),
+} as const satisfies EvmChain;
+
+export const TELEPORTER_CONFIG = {
+  tlpMintChain: C_CHAIN_WITH_WAGMI_CONFIG,
+  chains: [
+    C_CHAIN_WITH_WAGMI_CONFIG,
+    DISPATCH_CHAIN_WITH_WAGMI_CONFIG,
+    ECHO_CHAIN_WITH_WAGMI_CONFIG,
+  ] as const satisfies EvmChain[],
+};
+
+export type EvmTeleporterChain = (typeof TELEPORTER_CONFIG.chains)[number];
