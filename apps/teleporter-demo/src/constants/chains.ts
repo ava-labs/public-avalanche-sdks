@@ -182,7 +182,7 @@ export const TELEPORTER_CONFIG = {
     C_CHAIN_WITH_WAGMI_CONFIG,
     DISPATCH_CHAIN_WITH_WAGMI_CONFIG,
     ECHO_CHAIN_WITH_WAGMI_CONFIG,
-  ] as const satisfies EvmChain[],
-};
+  ] as const satisfies readonly EvmChain[],
+} as const;
 
 export type EvmTeleporterChain = (typeof TELEPORTER_CONFIG.chains)[number];

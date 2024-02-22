@@ -31,9 +31,7 @@ export const useResetAllowance = ({
 
   const { writeAsync: resetAllowance } = useContractWrite({
     address: tokenAddress,
-    // TODO: FIX THIS
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    functionName: 'decreaseAllowance' as any,
+    functionName: 'decreaseAllowance',
     abi: chain?.contracts.teleportedErc20.abi,
     args:
       chain && tokenAddress && addressToReset ? [addressToReset, allowance ? allowance : MAXIMUM_ALLOWANCE] : undefined,
