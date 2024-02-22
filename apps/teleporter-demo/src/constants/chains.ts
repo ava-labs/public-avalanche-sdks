@@ -3,7 +3,7 @@ import type { Chain } from 'wagmi';
 import { FAUCET_URL } from './urls';
 import { TELEPORTER_BRIDGE_ABI } from './abis/teleporter-bridge.abi';
 import { MINTABLE_ERC20_ABI } from './abis/mintable-erc-20.abi';
-import { ERC20_ABI } from './abis/erc-20.abi';
+import { TELEPORTED_ERC20_ABI } from './abis/teleported-erc-20.abi';
 import type { Except } from 'type-fest';
 
 export const C_CHAIN = {
@@ -46,7 +46,7 @@ export const C_CHAIN = {
       // This is technically not the correct abi.  The correct one is MINTABLE_ERC20_ABI.
       // We use this ABI here as a hack to appease Wagmi, which throws type errors when
       // any union of multiple ABIs is passed to certain hooks (such as useContractRead).
-      abi: ERC20_ABI,
+      abi: TELEPORTED_ERC20_ABI,
     },
     bridge: {
       universalId: '43313-0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
@@ -85,7 +85,7 @@ export const DISPATCH_CHAIN = {
       name: 'Example Teleporter Token',
       symbol: 'TLP',
       decimals: 18,
-      abi: ERC20_ABI,
+      abi: TELEPORTED_ERC20_ABI,
     },
     bridge: {
       universalId: '779672-0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
@@ -124,7 +124,7 @@ export const ECHO_CHAIN = {
       name: 'Example Teleporter Token',
       symbol: 'TLP',
       decimals: 18,
-      abi: ERC20_ABI,
+      abi: TELEPORTED_ERC20_ABI,
     },
     bridge: {
       universalId: '173750-0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',

@@ -1,8 +1,12 @@
-export const ERC20_ABI = [
+export const TELEPORTED_ERC20_ABI = [
   {
     inputs: [
-      { internalType: 'address', name: 'to', type: 'address' },
-      { internalType: 'uint256', name: 'initSupply', type: 'uint256' },
+      { internalType: 'bytes32', name: 'sourceBlockchainID', type: 'bytes32' },
+      { internalType: 'address', name: 'sourceBridge', type: 'address' },
+      { internalType: 'address', name: 'sourceAsset', type: 'address' },
+      { internalType: 'string', name: 'tokenName', type: 'string' },
+      { internalType: 'string', name: 'tokenSymbol', type: 'string' },
+      { internalType: 'uint8', name: 'tokenDecimals', type: 'uint8' },
     ],
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -55,9 +59,26 @@ export const ERC20_ABI = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'bridgeContract',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [{ internalType: 'uint256', name: 'amount', type: 'uint256' }],
     name: 'burn',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'account', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+    ],
+    name: 'burnFrom',
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -89,9 +110,40 @@ export const ERC20_ABI = [
     type: 'function',
   },
   {
+    inputs: [
+      { internalType: 'address', name: 'account', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+    ],
+    name: 'mint',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [],
     name: 'name',
     outputs: [{ internalType: 'string', name: '', type: 'string' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'nativeAsset',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'nativeBlockchainID',
+    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'nativeBridge',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function',
   },
