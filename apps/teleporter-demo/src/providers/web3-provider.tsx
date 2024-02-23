@@ -28,6 +28,7 @@ const config = defaultWagmiConfig({
   },
   enableCoinbase: false,
   enableEmail: false,
+  enableEIP6963: false,
 });
 
 // 3. Create modal
