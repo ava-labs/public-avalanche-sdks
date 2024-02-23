@@ -1,6 +1,7 @@
 import type { EvmTeleporterChain } from '@/constants/chains';
 import { toast } from '@/ui/hooks/use-toast';
-import { useContractWrite, type Address } from 'wagmi';
+import { type Address } from 'viem';
+import { useWriteContract } from 'wagmi';
 
 const MAXIMUM_ALLOWANCE = BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
 
@@ -13,13 +14,7 @@ export const useApprove = ({
   tokenAddress?: Address;
   addressToApprove?: Address;
 }) => {
-  const { writeAsync } = useContractWrite({
-    address: tokenAddress,
-    functionName: 'approve',
-    abi: chain.contracts.teleportedErc20.abi,
-    args: chain && tokenAddress && addressToApprove ? [addressToApprove, MAXIMUM_ALLOWANCE] : undefined,
-    chainId: Number(chain?.chainId),
-  });
+  const { writeContractAsync } = useWriteContract();
 
   return {
     approve: async () => {
@@ -27,12 +22,20 @@ export const useApprove = ({
         if (!chain) {
           throw new Error('Missing source subnet.');
         }
-
-        if (!writeAsync) {
-          throw new Error('writeAsync is undefined.');
+        if (!tokenAddress) {
+          throw new Error('Missing token address.');
+        }
+        if (!addressToApprove) {
+          throw new Error('Missing address to approve.');
         }
 
-        const approveResponse = await writeAsync?.();
+        const approveResponse = await writeContractAsync({
+          address: tokenAddress,
+          functionName: 'approve',
+          abi: chain.contracts.teleportedErc20.abi,
+          args: [addressToApprove, MAXIMUM_ALLOWANCE],
+          chainId: Number(chain?.chainId),
+        });
         console.info('Successfully approved token.', approveResponse);
         toast({
           title: 'Success',

@@ -1,9 +1,9 @@
 import { TELEPORTER_CONFIG } from '@/constants/chains';
 import { useMemo } from 'react';
-import { useNetwork } from 'wagmi';
+import { useAccount } from 'wagmi';
 
 export const useConnectedChain = () => {
-  const { chain: wagmiConnectedChain } = useNetwork();
+  const { chain: wagmiConnectedChain } = useAccount();
 
   return {
     connectedChain: useMemo(() => {

@@ -1,10 +1,8 @@
 import type { EvmChain } from '@/types/chain';
-import type { Chain } from 'wagmi';
 import { FAUCET_URL } from './urls';
 import { TELEPORTER_BRIDGE_ABI } from './abis/teleporter-bridge.abi';
 import { MINTABLE_ERC20_ABI } from './abis/mintable-erc-20.abi';
 import { TELEPORTED_ERC20_ABI } from './abis/teleported-erc-20.abi';
-import type { Except } from 'type-fest';
 
 export const C_CHAIN = {
   chainId: '43113',
@@ -55,7 +53,7 @@ export const C_CHAIN = {
       abi: TELEPORTER_BRIDGE_ABI,
     },
   },
-} as const satisfies Except<EvmChain, 'wagmiConfig'>;
+} as const satisfies EvmChain;
 
 export const DISPATCH_CHAIN = {
   chainId: '779672',
@@ -94,7 +92,7 @@ export const DISPATCH_CHAIN = {
       abi: TELEPORTER_BRIDGE_ABI,
     },
   },
-} as const satisfies Except<EvmChain, 'wagmiConfig'>;
+} as const satisfies EvmChain;
 
 export const ECHO_CHAIN = {
   chainId: '173750',
@@ -133,56 +131,11 @@ export const ECHO_CHAIN = {
       abi: TELEPORTER_BRIDGE_ABI,
     },
   },
-} as const satisfies Except<EvmChain, 'wagmiConfig'>;
-
-export const mapChainToWagmiChain = (chain: Except<EvmChain, 'wagmiConfig'>): Chain => ({
-  id: Number(chain.chainId),
-  name: chain.name,
-  nativeCurrency: {
-    name: chain.networkToken.name,
-    symbol: chain.networkToken.symbol,
-    decimals: chain.networkToken.decimals,
-  },
-  network: 'avalanche',
-  rpcUrls: {
-    default: {
-      http: [chain.rpcUrl],
-    },
-    public: {
-      http: [chain.rpcUrl],
-    },
-  },
-  blockExplorers: {
-    default: {
-      name: 'Avalanche Subnet Explorer',
-      url: chain.explorerUrl,
-    },
-  },
-  testnet: chain.isTestnet,
-});
-
-const C_CHAIN_WITH_WAGMI_CONFIG = {
-  ...C_CHAIN,
-  wagmiConfig: mapChainToWagmiChain(C_CHAIN),
-} as const satisfies EvmChain;
-
-const DISPATCH_CHAIN_WITH_WAGMI_CONFIG = {
-  ...DISPATCH_CHAIN,
-  wagmiConfig: mapChainToWagmiChain(DISPATCH_CHAIN),
-} as const satisfies EvmChain;
-
-const ECHO_CHAIN_WITH_WAGMI_CONFIG = {
-  ...ECHO_CHAIN,
-  wagmiConfig: mapChainToWagmiChain(ECHO_CHAIN),
 } as const satisfies EvmChain;
 
 export const TELEPORTER_CONFIG = {
-  tlpMintChain: C_CHAIN_WITH_WAGMI_CONFIG,
-  chains: [
-    C_CHAIN_WITH_WAGMI_CONFIG,
-    DISPATCH_CHAIN_WITH_WAGMI_CONFIG,
-    ECHO_CHAIN_WITH_WAGMI_CONFIG,
-  ] as const satisfies readonly EvmChain[],
+  tlpMintChain: C_CHAIN,
+  chains: [C_CHAIN, DISPATCH_CHAIN, ECHO_CHAIN] as const satisfies readonly EvmChain[],
 } as const;
 
 export type EvmTeleporterChain = (typeof TELEPORTER_CONFIG.chains)[number];

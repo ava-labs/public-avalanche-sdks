@@ -1,5 +1,4 @@
 import type { Abi, Address } from 'viem';
-import type { Chain as WagmiChain } from 'wagmi';
 import { z } from 'zod';
 
 export type EvmChain = z.infer<typeof evmChainSchema>;
@@ -46,8 +45,4 @@ export const evmChainSchema = z.object({
     // The actual teleporter bridge contract
     bridge: contract,
   }),
-  wagmiConfig: z
-    .object({})
-    .passthrough()
-    .transform((wagmiConfig) => wagmiConfig as WagmiChain),
 });

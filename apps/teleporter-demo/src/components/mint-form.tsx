@@ -87,9 +87,9 @@ export const MintForm = memo(() => {
     setMintTxHash(undefined);
     try {
       await switchChain(TELEPORTER_CONFIG.tlpMintChain);
-      const response = await mintToken();
+      const txHash = await mintToken();
       setIsSubmitting(false);
-      setMintTxHash(response?.hash);
+      setMintTxHash(txHash);
       refetch();
     } catch (error) {
       console.error(error);

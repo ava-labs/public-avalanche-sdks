@@ -133,9 +133,9 @@ export const TeleporterForm = memo(() => {
     setCompletedTeleportTx(undefined);
     try {
       await switchChain(fromChain);
-      const res = await teleportToken();
+      const txHash = await teleportToken();
       setIsSubmitting(false);
-      if (!res) {
+      if (!txHash) {
         toast({
           title: 'Bridge failed',
           description: 'Please try again',
@@ -147,7 +147,7 @@ export const TeleporterForm = memo(() => {
       refetchErc20Balance();
       setCompletedTeleportTx({
         chain: fromChain,
-        txHash: res.hash,
+        txHash: txHash,
       });
 
       toast({

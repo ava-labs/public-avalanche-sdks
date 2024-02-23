@@ -5,8 +5,8 @@ import { Button } from '@/ui/button';
 export const DebugResetAllowanceButton = ({ chain }: { chain: EvmTeleporterChain }) => {
   const { resetAllownce } = useResetAllowance({
     chain,
-    tokenAddress: chain?.contracts.teleportedErc20.address,
-    addressToReset: chain?.contracts.bridge.address,
+    tokenAddress: chain.contracts.teleportedErc20.address,
+    addressToReset: chain.contracts.bridge.address,
   });
 
   return (

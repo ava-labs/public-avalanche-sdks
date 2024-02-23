@@ -5,7 +5,8 @@ import { isFullfilled } from '@/utils/is-fullfilled';
 import type { Erc20Transfer } from '@internal/glacier';
 import { compact, sortBy } from 'lodash-es';
 import useSWR from 'swr';
-import { useAccount, type Address } from 'wagmi';
+import { type Address } from 'viem';
+import { useAccount } from 'wagmi';
 
 type Erc20TransferWithChain = Erc20Transfer & { chain: EvmTeleporterChain };
 
