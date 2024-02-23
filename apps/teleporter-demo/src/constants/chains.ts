@@ -12,7 +12,7 @@ export const C_CHAIN = {
   platformChainId: 'yH8D7ThNJkxmtkuv2jgBa4P1Rn3Qpr4pPr7QYNfcdoS6k6HWp',
   platformChainIdHex: '0x7fc93d85c6d62c5b2ac0b519c87010ea5294012d1e407030d6acd0021cac10d5',
   networkToken: {
-    universalId: '43313-AVAX',
+    universalId: '43113-AVAX',
     decimals: 18,
     name: 'AVAX',
     symbol: 'AVAX',
@@ -27,7 +27,7 @@ export const C_CHAIN = {
   primaryColor: '#e84142',
   contracts: {
     mintableErc20: {
-      universalId: '43313-0x6F419E35a60439569640ca078ba5e86599E30cC6',
+      universalId: '43113-0x6F419E35a60439569640ca078ba5e86599E30cC6',
       address: '0x6F419E35a60439569640ca078ba5e86599E30cC6',
       name: 'Example Teleporter Token',
       symbol: 'TLP',
@@ -36,7 +36,7 @@ export const C_CHAIN = {
     },
     // Note, for C-Chain the mintable ERC-20 is the same as the teleported one
     teleportedErc20: {
-      universalId: '43313-0x6F419E35a60439569640ca078ba5e86599E30cC6',
+      universalId: '43113-0x6F419E35a60439569640ca078ba5e86599E30cC6',
       address: '0x6F419E35a60439569640ca078ba5e86599E30cC6',
       name: 'Example Teleporter Token',
       symbol: 'TLP',
@@ -47,7 +47,7 @@ export const C_CHAIN = {
       abi: TELEPORTED_ERC20_ABI,
     },
     bridge: {
-      universalId: '43313-0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
+      universalId: '43113-0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
       address: '0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
       name: 'Teleporter ERC20 Bridge',
       abi: TELEPORTER_BRIDGE_ABI,
