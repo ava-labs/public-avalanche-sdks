@@ -26,13 +26,18 @@ const config = defaultWagmiConfig({
     url: 'https://ohmywarp.com/', // origin must match your domain & subdomain
     icons: ['https://avatars.githubusercontent.com/u/37784886'],
   },
+  enableCoinbase: false,
+  enableEmail: false,
 });
 
 // 3. Create modal
+// ID for Core Wallet in WalletConnect V2
+const CORE_WALLET_CONNECT_ID = 'f323633c1f67055a45aac84e321af6ffe46322da677ffdd32f9bc1e33bafe29c';
 createWeb3Modal({
   wagmiConfig: config,
   projectId: WALLETCONNECT_V2_CORE_PROJECT_ID,
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
+  featuredWalletIds: [CORE_WALLET_CONNECT_ID], // Feature core wallet
 });
 
 export const Web3Provider = ({ children }: PropsWithChildren) => {
