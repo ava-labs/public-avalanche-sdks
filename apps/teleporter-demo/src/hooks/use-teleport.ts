@@ -1,9 +1,10 @@
 import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge.abi';
-import { useAccount, useWriteContract, useContractRead } from 'wagmi';
+import { useAccount, useWriteContract, useReadContract } from 'wagmi';
 import { useApprove } from './use-approve';
 import { isNil } from 'lodash-es';
 import { useLatestTeleporterTransactions } from './use-transactions';
 import type { EvmTeleporterChain } from '@/constants/chains';
+import { useWaitForTransactionReceiptAsync } from './use-wait-for-transaction-receipt-async';
 
 export const useTeleport = ({
   fromChain,
@@ -18,7 +19,7 @@ export const useTeleport = ({
 
   const { mutate: refetchTxs } = useLatestTeleporterTransactions();
 
-  const { refetch: fetchAllowance } = useContractRead({
+  const { refetch: fetchAllowance } = useReadContract({
     address: fromChain?.contracts.teleportedErc20.address,
     functionName: 'allowance',
     abi: fromChain?.contracts.teleportedErc20.abi,
@@ -35,7 +36,8 @@ export const useTeleport = ({
     tokenAddress: fromChain?.contracts.teleportedErc20.address,
   });
 
-  const { writeContractAsync } = useWriteContract();
+  const { writeContractAsync } = useWriteContract({});
+  const { waitForTransactionReceipt } = useWaitForTransactionReceiptAsync();
 
   return {
     teleportToken: async () => {
@@ -53,23 +55,22 @@ export const useTeleport = ({
         /**
          * Get approval if allowance is insuffient.
          */
-        const { data: currentAllowance, refetch: fetchAllowanceAgain } = await fetchAllowance();
+        const { data: currentAllowance } = await fetchAllowance();
         if (isNil(currentAllowance)) {
           throw new Error('Unable to detect current allowance.');
         }
 
         const hasSufficientAllowance = amount < currentAllowance;
         if (!hasSufficientAllowance) {
-          const approveResponse = await approve();
-          console.info('Approve successful.', approveResponse);
-          await fetchAllowanceAgain();
+          await approve();
+          await fetchAllowance();
         }
 
         /**
          * Teleport tokens.
          */
         setTimeout(refetchTxs, 3000); // Wait since glacier is behind the RPC by a few seconds
-        return await writeContractAsync({
+        const hash = await writeContractAsync({
           address: fromChain.contracts.bridge.address,
           functionName: 'bridgeTokens',
           abi: TELEPORTER_BRIDGE_ABI,
@@ -84,6 +85,10 @@ export const useTeleport = ({
           ],
           chainId: Number(fromChain.chainId),
         });
+        console.info('Bridge pending.', hash);
+        await waitForTransactionReceipt({ hash });
+        console.info('Bridge successful.', hash);
+        return hash;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.error(e?.message ?? e);

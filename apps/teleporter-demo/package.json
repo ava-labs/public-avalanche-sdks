@@ -45,6 +45,7 @@
     "@tanstack/react-query": "5.*",
     "@tanstack/react-router": "0.0.1-beta.168",
     "@tanstack/react-table": "8.9.3",
+    "@wagmi/core": "*",
     "@web3modal/wagmi": "4.0.9",
     "big.js": "6.2.1",
     "class-variance-authority": "0.7.0",

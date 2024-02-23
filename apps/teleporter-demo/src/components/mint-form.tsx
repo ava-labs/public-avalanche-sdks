@@ -77,7 +77,7 @@ export const MintForm = memo(() => {
 
   const { mintToken } = useMintTlp();
 
-  const { refetch } = useErc20Balance({
+  const { refetch: refetchTlpBalance } = useErc20Balance({
     chain: TELEPORTER_CONFIG.tlpMintChain,
   });
 
@@ -90,7 +90,7 @@ export const MintForm = memo(() => {
       const txHash = await mintToken();
       setIsSubmitting(false);
       setMintTxHash(txHash);
-      refetch();
+      refetchTlpBalance();
     } catch (error) {
       console.error(error);
       setIsSubmitting(false);
