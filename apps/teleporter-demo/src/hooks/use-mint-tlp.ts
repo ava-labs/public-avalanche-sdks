@@ -36,6 +36,7 @@ export const useMintTlp = () => {
         toast({
           title: 'Error',
           description: `Mint failed.`,
+          variant: 'destructive',
         });
 
         return undefined;

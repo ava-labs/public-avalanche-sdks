@@ -48,6 +48,7 @@ export const useSwitchChain = () => {
         const { dismiss } = toast({
           title: 'Unable to Switch Networks',
           description: `Please try again.`,
+          variant: 'destructive',
         });
         setDismissToast(dismiss);
       },
