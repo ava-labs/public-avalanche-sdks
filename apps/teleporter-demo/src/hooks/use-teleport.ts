@@ -1,57 +1,43 @@
-import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge-abi';
-import { useAccount, useContractWrite, useContractRead } from 'wagmi';
+import { TELEPORTER_BRIDGE_ABI } from '@/constants/abis/teleporter-bridge.abi';
+import { useAccount, useWriteContract, useReadContract } from 'wagmi';
 import { useApprove } from './use-approve';
-import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
 import { isNil } from 'lodash-es';
-import type { EvmChain } from '@/types/chain';
 import { useLatestTeleporterTransactions } from './use-transactions';
+import type { EvmTeleporterChain } from '@/constants/chains';
+import { useWaitForTransactionReceiptAsync } from './use-wait-for-transaction-receipt-async';
 
 export const useTeleport = ({
   fromChain,
   toChain,
   amount,
 }: {
-  fromChain: EvmChain;
-  toChain: EvmChain;
+  fromChain: EvmTeleporterChain;
+  toChain: EvmTeleporterChain;
   amount?: bigint;
 }) => {
   const { address } = useAccount();
 
   const { mutate: refetchTxs } = useLatestTeleporterTransactions();
 
-  const { refetch: fetchAllowance } = useContractRead({
-    address: fromChain?.utilityContracts.demoErc20.address,
+  const { refetch: fetchAllowance } = useReadContract({
+    address: fromChain?.contracts.teleportedErc20.address,
     functionName: 'allowance',
-    abi: NATIVE_ERC20_ABI,
-    args: address && fromChain ? [address, fromChain?.utilityContracts.bridge.address] : undefined,
-    enabled: false, // Disable auto-fetch since we fetch manually right before teleporting.
+    abi: fromChain?.contracts.teleportedErc20.abi,
+    args: address && fromChain ? [address, fromChain?.contracts.bridge.address] : undefined,
     chainId: Number(fromChain.chainId),
+    query: {
+      enabled: false, // Disable auto-fetch since we fetch manually right before teleporting.
+    },
   });
 
   const { approve } = useApprove({
     chain: fromChain,
-    addressToApprove: fromChain?.utilityContracts.bridge.address,
-    tokenAddress: fromChain?.utilityContracts.demoErc20.address,
+    addressToApprove: fromChain?.contracts.bridge.address,
+    tokenAddress: fromChain?.contracts.teleportedErc20.address,
   });
 
-  const { writeAsync } = useContractWrite({
-    address: fromChain?.utilityContracts.bridge.address,
-    functionName: 'bridgeTokens',
-    abi: TELEPORTER_BRIDGE_ABI,
-    args:
-      fromChain && toChain && address && amount
-        ? [
-            toChain?.platformChainIdHex,
-            toChain?.utilityContracts.bridge.address,
-            fromChain?.utilityContracts.demoErc20.address,
-            address,
-            amount,
-            BigInt(0),
-            BigInt(0),
-          ]
-        : undefined,
-    chainId: fromChain ? Number(fromChain.chainId) : undefined,
-  });
+  const { writeContractAsync } = useWriteContract({});
+  const { waitForTransactionReceipt } = useWaitForTransactionReceiptAsync();
 
   return {
     teleportToken: async () => {
@@ -59,6 +45,9 @@ export const useTeleport = ({
         /**
          * Validate inputs.
          */
+        if (!address) {
+          throw new Error('Missing address.');
+        }
         if (!amount) {
           throw new Error('Missing amount.');
         }
@@ -66,26 +55,40 @@ export const useTeleport = ({
         /**
          * Get approval if allowance is insuffient.
          */
-        const { data: currentAllowance, refetch: fetchAllowanceAgain } = await fetchAllowance();
+        const { data: currentAllowance } = await fetchAllowance();
         if (isNil(currentAllowance)) {
           throw new Error('Unable to detect current allowance.');
         }
 
         const hasSufficientAllowance = amount < currentAllowance;
         if (!hasSufficientAllowance) {
-          const approveResponse = await approve();
-          console.info('Approve successful.', approveResponse);
-          await fetchAllowanceAgain();
+          await approve();
+          await fetchAllowance();
         }
 
         /**
          * Teleport tokens.
          */
-        if (!writeAsync) {
-          throw new Error('writeAsync is undefined.');
-        }
         setTimeout(refetchTxs, 3000); // Wait since glacier is behind the RPC by a few seconds
-        return await writeAsync();
+        const hash = await writeContractAsync({
+          address: fromChain.contracts.bridge.address,
+          functionName: 'bridgeTokens',
+          abi: TELEPORTER_BRIDGE_ABI,
+          args: [
+            toChain.platformChainIdHex,
+            toChain.contracts.bridge.address,
+            fromChain.contracts.teleportedErc20.address,
+            address,
+            amount,
+            BigInt(0),
+            BigInt(0),
+          ],
+          chainId: Number(fromChain.chainId),
+        });
+        console.info('Bridge pending.', hash);
+        await waitForTransactionReceipt({ hash });
+        console.info('Bridge successful.', hash);
+        return hash;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.error(e?.message ?? e);

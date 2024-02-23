@@ -1,7 +1,8 @@
-import { NATIVE_ERC20_ABI } from '@/constants/abis/native-erc-20';
-import type { EvmChain } from '@/types/chain';
+import type { EvmTeleporterChain } from '@/constants/chains';
 import { toast } from '@/ui/hooks/use-toast';
-import { useContractWrite, type Address } from 'wagmi';
+import { type Address } from 'viem';
+import { useWriteContract } from 'wagmi';
+import { useWaitForTransactionReceiptAsync } from './use-wait-for-transaction-receipt-async';
 
 const MAXIMUM_ALLOWANCE = BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
 
@@ -10,17 +11,12 @@ export const useApprove = ({
   tokenAddress,
   addressToApprove,
 }: {
-  chain: EvmChain;
+  chain: EvmTeleporterChain;
   tokenAddress?: Address;
   addressToApprove?: Address;
 }) => {
-  const { writeAsync } = useContractWrite({
-    address: tokenAddress,
-    functionName: 'approve',
-    abi: NATIVE_ERC20_ABI,
-    args: chain && tokenAddress && addressToApprove ? [addressToApprove, MAXIMUM_ALLOWANCE] : undefined,
-    chainId: Number(chain?.chainId),
-  });
+  const { writeContractAsync } = useWriteContract();
+  const { waitForTransactionReceipt } = useWaitForTransactionReceiptAsync();
 
   return {
     approve: async () => {
@@ -28,18 +24,28 @@ export const useApprove = ({
         if (!chain) {
           throw new Error('Missing source subnet.');
         }
-
-        if (!writeAsync) {
-          throw new Error('writeAsync is undefined.');
+        if (!tokenAddress) {
+          throw new Error('Missing token address.');
+        }
+        if (!addressToApprove) {
+          throw new Error('Missing address to approve.');
         }
 
-        const approveResponse = await writeAsync?.();
-        console.info('Successfully approved token.', approveResponse);
+        const hash = await writeContractAsync({
+          address: tokenAddress,
+          functionName: 'approve',
+          abi: chain.contracts.teleportedErc20.abi,
+          args: [addressToApprove, MAXIMUM_ALLOWANCE],
+          chainId: Number(chain?.chainId),
+        });
+        console.info('Approve pending.', hash);
+        await waitForTransactionReceipt({ hash });
+        console.info('Approve successful.', hash);
         toast({
           title: 'Success',
           description: `Approval successful!`,
         });
-        return approveResponse;
+        return hash;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.warn(e?.message ?? e);

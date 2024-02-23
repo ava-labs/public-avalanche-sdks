@@ -1,4 +1,4 @@
-import { AMPLIFY_CHAIN, BULLETIN_CHAIN, CHAINS } from '@/constants/chains';
+import { TELEPORTER_CONFIG, type EvmTeleporterChain } from '@/constants/chains';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
 
 import { FancyAvatar } from './fancy-avatar';
@@ -34,7 +34,7 @@ import { DebugResetAllowanceButton } from './debug-reset-allowance';
 import { useSwitchChain } from '@/hooks/use-switch-chain';
 
 const findChain = (chainId: string) => {
-  const chain = CHAINS.find((chain) => chain.chainId === chainId);
+  const chain = TELEPORTER_CONFIG.chains.find((chain) => chain.chainId === chainId);
   if (!chain) {
     throw new Error('Invalid selected chain');
   }
@@ -45,9 +45,12 @@ export const TeleporterForm = memo(() => {
   /**
    * Chain state
    */
-  const [fromChain, setFromChain] = useState<EvmChain>(AMPLIFY_CHAIN);
-  const [toChain, setToChain] = useState<EvmChain>(BULLETIN_CHAIN);
-  const toChainsList = useMemo(() => CHAINS.filter((chain) => chain.chainId !== fromChain.chainId), [fromChain]);
+  const [fromChain, setFromChain] = useState<EvmTeleporterChain>(TELEPORTER_CONFIG.chains[0]);
+  const [toChain, setToChain] = useState<EvmTeleporterChain>(TELEPORTER_CONFIG.chains[1]);
+  const toChainsList = useMemo(
+    () => TELEPORTER_CONFIG.chains.filter((chain) => chain.chainId !== fromChain.chainId),
+    [fromChain],
+  );
 
   /**
    * If fromChain is changed to same as toChain,
@@ -83,7 +86,7 @@ export const TeleporterForm = memo(() => {
   const amountBigInt = useMemo(() => {
     try {
       return fromChain
-        ? BigInt(new Big(amount).mul(10 ** fromChain.utilityContracts.demoErc20.decimals).toString())
+        ? BigInt(new Big(amount).mul(10 ** fromChain.contracts.teleportedErc20.decimals).toString())
         : undefined;
     } catch {
       return undefined;
@@ -105,7 +108,7 @@ export const TeleporterForm = memo(() => {
     isLoading: isLoadingErc20Balance,
     refetch: refetchErc20Balance,
   } = useErc20Balance({ chain: fromChain });
-  const { erc20Balance: amplifyErc20Balance } = useErc20Balance({ chain: AMPLIFY_CHAIN });
+  const { erc20Balance: amplifyErc20Balance } = useErc20Balance({ chain: TELEPORTER_CONFIG.tlpMintChain });
 
   const hasErc20Balance = !isNil(erc20Balance) ? erc20Balance > 0 : true;
   const hasAmplifyErc20Balance = !isNil(amplifyErc20Balance) ? amplifyErc20Balance > 0 : true;
@@ -120,7 +123,7 @@ export const TeleporterForm = memo(() => {
   const handleTeleport = async () => {
     if (!fromChain) {
       toast({
-        title: 'Teleport failed',
+        title: 'Bridge failed',
         description: 'Invalid source chain.',
         variant: 'destructive',
       });
@@ -130,11 +133,11 @@ export const TeleporterForm = memo(() => {
     setCompletedTeleportTx(undefined);
     try {
       await switchChain(fromChain);
-      const res = await teleportToken();
+      const txHash = await teleportToken();
       setIsSubmitting(false);
-      if (!res) {
+      if (!txHash) {
         toast({
-          title: 'Teleport failed',
+          title: 'Bridge failed',
           description: 'Please try again',
           variant: 'destructive',
         });
@@ -144,11 +147,11 @@ export const TeleporterForm = memo(() => {
       refetchErc20Balance();
       setCompletedTeleportTx({
         chain: fromChain,
-        txHash: res.hash,
+        txHash: txHash,
       });
 
       toast({
-        title: 'Teleport success!',
+        title: 'Bridge success!',
         description: 'View your transaction on the explorer',
       });
     } catch {
@@ -180,7 +183,7 @@ export const TeleporterForm = memo(() => {
                 <SelectValue placeholder="Select a subnet" />
               </SelectTrigger>
               <SelectContent>
-                {CHAINS.map((chain) => (
+                {TELEPORTER_CONFIG.chains.map((chain) => (
                   <SelectItem
                     value={chain.chainId}
                     key={chain.chainId}
@@ -211,7 +214,7 @@ export const TeleporterForm = memo(() => {
             </div>
             <div className="flex flex-col justify-center col-span-3 sm:col-span-6">
               <p className="font-semibold text-md text-right">
-                {(fromChain ?? AMPLIFY_CHAIN).utilityContracts.demoErc20.symbol}
+                {(fromChain ?? TELEPORTER_CONFIG.tlpMintChain).contracts.teleportedErc20.symbol}
               </p>
             </div>
             <div className="col-span-9 sm:col-span-6">

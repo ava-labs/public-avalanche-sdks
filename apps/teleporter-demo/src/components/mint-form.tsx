@@ -1,9 +1,9 @@
-import { AMPLIFY_CHAIN, BULLETIN_CHAIN, CONDUIT_CHAIN } from '@/constants/chains';
+import { TELEPORTER_CONFIG, type EvmTeleporterChain } from '@/constants/chains';
 
 import { FancyAvatar } from './fancy-avatar';
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { LoadingButton } from './loading-button';
-import { useMintAmplify } from '@/hooks/use-mint-amplify';
+import { useMintTlp } from '@/hooks/use-mint-tlp';
 import { AutoAnimate } from '@/ui/auto-animate';
 import { useAccount, useBalance } from 'wagmi';
 import { MIN_AMOUNT_FOR_GAS } from '@/constants/token';
@@ -13,7 +13,6 @@ import { isNil } from 'lodash-es';
 import { NotConnectedCard } from './not-connected-card';
 import { OutOfGasCard } from './out-of-gas-card';
 import { Card, CardContent } from '@/ui/card';
-import type { EvmChain } from '@/types/chain';
 import { useErc20Balance } from '@/hooks/use-erc20-balance';
 import { cn } from '@/utils/cn';
 import { TransactionSuccessAlert } from './transaction-success-alert';
@@ -22,7 +21,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useSwitchChain } from '@/hooks/use-switch-chain';
 
-const BalancesCard = ({ chain, isBigLayout = false }: { chain: EvmChain; isBigLayout?: boolean }) => {
+const BalancesCard = ({ chain, isBigLayout = false }: { chain: EvmTeleporterChain; isBigLayout?: boolean }) => {
   const { address } = useAccount();
   const { data: gasBalance } = useBalance({
     address,
@@ -30,7 +29,7 @@ const BalancesCard = ({ chain, isBigLayout = false }: { chain: EvmChain; isBigLa
   });
 
   const { formattedErc20Balance } = useErc20Balance({
-    chain: chain,
+    chain,
   });
 
   return (
@@ -40,7 +39,7 @@ const BalancesCard = ({ chain, isBigLayout = false }: { chain: EvmChain; isBigLa
           <FancyAvatar
             className="col-span-6 w-6 h-6"
             src={chain.logoUrl}
-            label={chain.utilityContracts.demoErc20.symbol}
+            label={chain.contracts.teleportedErc20.symbol}
           />
           <p className="text-md font-medium ml-2">{chain.name}</p>
         </div>
@@ -61,7 +60,7 @@ const BalancesCard = ({ chain, isBigLayout = false }: { chain: EvmChain; isBigLa
               {formatStringNumber(formattedErc20Balance ?? '0')}
             </FlashingUpdate>
             <span className="text-md text-neutral-400 font-semibold ml-1">
-              {chain.utilityContracts.demoErc20.symbol}
+              {chain.contracts.teleportedErc20.symbol}
             </span>
           </p>
         </div>
@@ -76,10 +75,10 @@ export const MintForm = memo(() => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mintTxHash, setMintTxHash] = useState<string>();
 
-  const { mintToken } = useMintAmplify();
+  const { mintToken } = useMintTlp();
 
-  const { refetch } = useErc20Balance({
-    chain: AMPLIFY_CHAIN,
+  const { refetch: refetchTlpBalance } = useErc20Balance({
+    chain: TELEPORTER_CONFIG.tlpMintChain,
   });
 
   const { switchChain } = useSwitchChain();
@@ -87,12 +86,13 @@ export const MintForm = memo(() => {
     setIsSubmitting(true);
     setMintTxHash(undefined);
     try {
-      await switchChain(AMPLIFY_CHAIN);
-      const response = await mintToken();
+      await switchChain(TELEPORTER_CONFIG.tlpMintChain);
+      const txHash = await mintToken();
       setIsSubmitting(false);
-      setMintTxHash(response?.hash);
-      refetch();
-    } catch {
+      setMintTxHash(txHash);
+      refetchTlpBalance();
+    } catch (error) {
+      console.error(error);
       setIsSubmitting(false);
       return;
     }
@@ -100,24 +100,31 @@ export const MintForm = memo(() => {
 
   const { data: gasBalance } = useBalance({
     address,
-    chainId: Number(AMPLIFY_CHAIN.chainId),
+    chainId: Number(TELEPORTER_CONFIG.tlpMintChain.chainId),
   });
   const hasGas = !isNil(gasBalance) ? gasBalance.value > MIN_AMOUNT_FOR_GAS : true;
+
+  const nonMintingChains = useMemo(
+    () => TELEPORTER_CONFIG.chains.filter((chain) => chain.chainId !== TELEPORTER_CONFIG.tlpMintChain.chainId),
+    [],
+  );
   return (
     <>
       <div className="grid grid-cols-12 gap-2">
         <div className="col-span-12">
           <BalancesCard
-            chain={AMPLIFY_CHAIN}
+            chain={TELEPORTER_CONFIG.tlpMintChain}
             isBigLayout
           />
         </div>
-        <div className="col-span-12 sm:col-span-6">
-          <BalancesCard chain={BULLETIN_CHAIN} />
-        </div>
-        <div className="col-span-12 sm:col-span-6">
-          <BalancesCard chain={CONDUIT_CHAIN} />
-        </div>
+        {nonMintingChains.map((chain) => (
+          <div
+            className="col-span-12 sm:col-span-6"
+            key={chain.chainId}
+          >
+            <BalancesCard chain={chain} />
+          </div>
+        ))}
       </div>
       <div className="mt-4">
         <LoadingButton
@@ -137,7 +144,7 @@ export const MintForm = memo(() => {
             />
           ) : !hasGas ? (
             <OutOfGasCard
-              chain={AMPLIFY_CHAIN}
+              chain={TELEPORTER_CONFIG.tlpMintChain}
               className="mt-4"
             />
           ) : null}
@@ -145,7 +152,7 @@ export const MintForm = memo(() => {
         <AutoAnimate>
           {!!mintTxHash && (
             <TransactionSuccessAlert
-              explorerBaseUrl={AMPLIFY_CHAIN.explorerUrl}
+              explorerBaseUrl={TELEPORTER_CONFIG.tlpMintChain.explorerUrl}
               txHash={mintTxHash}
               className="mt-4"
             >

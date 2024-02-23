@@ -30,7 +30,10 @@ export const ActivityFeed = () => {
           const isExport = isExportTx(tx, address);
           const isImport = isImportTx(tx, address);
           return (
-            <Card className="border-0 rounded-none px-2 py-3 border-b-2 flex items-center">
+            <Card
+              className="border-0 rounded-none px-2 py-3 border-b flex items-center"
+              key={tx.txHash}
+            >
               <div className=" flex">
                 <FancyAvatar
                   src={tx.chain.logoUrl}
@@ -56,19 +59,19 @@ export const ActivityFeed = () => {
                 </div>
                 <Card
                   className={cn(
-                    'rounded-full py-0.5 px-1 bg-neutral-800 border-0 mt-1 text-xs inline-flex items-center',
+                    'rounded-full py-1.5 px-2 bg-neutral-800 border-0 mt-1 text-xs inline-flex items-center gap-1',
                     isExport ? 'bg-amber-700' : 'bg-sky-800',
                   )}
                 >
                   {isExport ? (
                     <>
-                      <ArrowRight className="w-3 h-3 mx-1" />
-                      Export
+                      <ArrowRight className="w-3 h-3" />
+                      <span className="leading-none">Export</span>
                     </>
                   ) : isImport ? (
                     <>
-                      <ArrowLeft className="w-3 h-3 mx-1" />
-                      Import
+                      <ArrowLeft className="w-3 h-3" />
+                      <span className="leading-none">Import</span>
                     </>
                   ) : (
                     'huh'

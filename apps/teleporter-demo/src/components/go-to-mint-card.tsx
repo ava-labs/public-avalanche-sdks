@@ -4,14 +4,15 @@ import { cn } from '@/utils/cn';
 import { buttonVariants } from '@/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
-import { AMPLIFY_CHAIN } from '@/constants/chains';
+import { TELEPORTER_CONFIG } from '@/constants/chains';
 
 export const GoToMintCard = memo(({ ...rest }: HtmlHTMLAttributes<HTMLDivElement>) => {
   return (
     <Card {...rest}>
       <CardContent className="flex flex-col gap-1">
         <p className="text-sm text-neutral-400 text-center">
-          Mint some <span className="font-semibold">{AMPLIFY_CHAIN.utilityContracts.demoErc20.symbol}</span> to get
+          Mint some{' '}
+          <span className="font-semibold">{TELEPORTER_CONFIG.tlpMintChain.contracts.mintableErc20.symbol}</span> to get
           started.
         </p>
         <Link

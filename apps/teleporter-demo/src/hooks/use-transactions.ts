@@ -1,28 +1,28 @@
 import { glacierService } from '@/constants';
-import { CHAINS } from '@/constants/chains';
+import { TELEPORTER_CONFIG, type EvmTeleporterChain } from '@/constants/chains';
 import { NULL_ADDRESS } from '@/constants/token';
-import type { EvmChain } from '@/types/chain';
 import { isFullfilled } from '@/utils/is-fullfilled';
 import type { Erc20Transfer } from '@internal/glacier';
 import { compact, sortBy } from 'lodash-es';
 import useSWR from 'swr';
-import { useAccount, type Address } from 'wagmi';
+import { type Address } from 'viem';
+import { useAccount } from 'wagmi';
 
-type Erc20TransferWithChain = Erc20Transfer & { chain: EvmChain };
+type Erc20TransferWithChain = Erc20Transfer & { chain: EvmTeleporterChain };
 
 const TRANSACTION_COUNT = 10;
 
 export const isExportTx = (tx: Erc20TransferWithChain, walletAddress: Address) =>
   tx.from.address === walletAddress && // from wallet
-  (tx.to.address === tx.chain?.utilityContracts.bridge.address || tx.to.address === NULL_ADDRESS); // to bridge
+  (tx.to.address === tx.chain?.contracts.bridge.address || tx.to.address === NULL_ADDRESS); // to bridge
 
 export const isImportTx = (tx: Erc20TransferWithChain, walletAddress: Address) =>
-  (tx.chain?.utilityContracts.bridge.address || tx.from.address === NULL_ADDRESS) && // from bridge
+  (tx.chain?.contracts.bridge.address || tx.from.address === NULL_ADDRESS) && // from bridge
   tx.to.address === walletAddress; // to wallet
 
 const getLatestTeleporterTransactions = async ({ address }: { address: Address }) => {
   const settledResponses = await Promise.allSettled(
-    CHAINS.map((chain) => {
+    TELEPORTER_CONFIG.chains.map((chain) => {
       return glacierService.evmTransactions.listErc20Transactions({
         address,
         chainId: chain.chainId,
@@ -33,7 +33,7 @@ const getLatestTeleporterTransactions = async ({ address }: { address: Address }
 
   const unsortedTxs = compact(
     settledResponses.flatMap((response, i) => {
-      const chain = CHAINS[i];
+      const chain = TELEPORTER_CONFIG.chains[i];
 
       if (chain && isFullfilled(response)) {
         return response.value.transactions.map((tx) => {

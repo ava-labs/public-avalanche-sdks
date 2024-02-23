@@ -17,7 +17,10 @@ export const LoadingButton = ({
 }: ButtonProps & { isLoading: boolean; loadingText?: string; tooltipContent?: ReactNode }) => {
   return (
     <Tooltip delayDuration={150}>
-      <TooltipTrigger className={cn(disabled ? 'cursor-default' : '', 'w-full')}>
+      <TooltipTrigger
+        className={cn(disabled ? 'cursor-default' : '', 'w-full')}
+        asChild
+      >
         <Button
           className={cn('rounded-full', className)}
           disabled={disabled}

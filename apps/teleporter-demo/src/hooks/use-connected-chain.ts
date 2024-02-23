@@ -1,13 +1,15 @@
-import { CHAINS } from '@/constants/chains';
+import { TELEPORTER_CONFIG } from '@/constants/chains';
 import { useMemo } from 'react';
-import { useNetwork } from 'wagmi';
+import { useAccount } from 'wagmi';
 
 export const useConnectedChain = () => {
-  const { chain: wagmiConnectedChain } = useNetwork();
+  const { chain: wagmiConnectedChain } = useAccount();
 
   return {
     connectedChain: useMemo(() => {
-      return CHAINS.find((chain) => wagmiConnectedChain && chain.chainId === String(wagmiConnectedChain.id));
+      return TELEPORTER_CONFIG.chains.find(
+        (chain) => wagmiConnectedChain && chain.chainId === String(wagmiConnectedChain.id),
+      );
     }, [wagmiConnectedChain]),
   };
 };
