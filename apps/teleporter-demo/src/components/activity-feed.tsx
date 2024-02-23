@@ -30,7 +30,10 @@ export const ActivityFeed = () => {
           const isExport = isExportTx(tx, address);
           const isImport = isImportTx(tx, address);
           return (
-            <Card className="border-0 rounded-none px-2 py-3 border-b-2 flex items-center">
+            <Card
+              className="border-0 rounded-none px-2 py-3 border-b-2 flex items-center"
+              key={tx.txHash}
+            >
               <div className=" flex">
                 <FancyAvatar
                   src={tx.chain.logoUrl}

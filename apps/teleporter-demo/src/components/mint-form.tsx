@@ -118,7 +118,10 @@ export const MintForm = memo(() => {
           />
         </div>
         {nonMintingChains.map((chain) => (
-          <div className="col-span-12 sm:col-span-6">
+          <div
+            className="col-span-12 sm:col-span-6"
+            key={chain.chainId}
+          >
             <BalancesCard chain={chain} />
           </div>
         ))}
