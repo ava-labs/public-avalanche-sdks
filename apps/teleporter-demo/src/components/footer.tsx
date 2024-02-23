@@ -44,7 +44,7 @@ export function Footer() {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-      <NavigationMenu className="py-2 px-2 w-full max-w-xl flex max-sm:flex-col justify-between gap-4 border-t-2">
+      <NavigationMenu className="py-2 px-2 w-full max-w-xl flex max-sm:flex-col justify-between gap-4 border-t">
         <NavigationMenuList className="flex items-center justify-center">
           <NavigationMenuItem>
             <PoweredByAvalanche />

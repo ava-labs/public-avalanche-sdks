@@ -31,7 +31,7 @@ export const ActivityFeed = () => {
           const isImport = isImportTx(tx, address);
           return (
             <Card
-              className="border-0 rounded-none px-2 py-3 border-b-2 flex items-center"
+              className="border-0 rounded-none px-2 py-3 border-b flex items-center"
               key={tx.txHash}
             >
               <div className=" flex">
