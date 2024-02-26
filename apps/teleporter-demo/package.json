@@ -43,7 +43,7 @@
     "@radix-ui/react-tooltip": "1.0.6",
     "@rive-app/react-canvas": "4.1.4",
     "@tanstack/react-query": "5.*",
-    "@tanstack/react-router": "0.0.1-beta.168",
+    "@tanstack/react-router": "1.17.4",
     "@wagmi/core": "*",
     "@web3modal/wagmi": "4.0.9",
     "big.js": "6.2.1",
@@ -69,6 +69,8 @@
   "devDependencies": {
     "@internal/glacier": "workspace:*",
     "@internal/tsconfig": "workspace:*",
+    "@tanstack/router-devtools": "1.17.4",
+    "@tanstack/router-vite-plugin": "1.16.5",
     "@types/big.js": "6.2.0",
     "@types/lodash-es": "4.17.8",
     "@types/react": "18.2.21",

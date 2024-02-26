@@ -4,6 +4,7 @@ import { dotenvLoad } from 'dotenv-mono';
 import * as path from 'path';
 import bundleVisualizer from 'rollup-plugin-visualizer';
 import { Plugin, defineConfig } from 'vite';
+import { TanStackRouterVite } from '@tanstack/router-vite-plugin';
 
 /**
  * Because we want to use one single .env file for all projects we need to load the .env file from
@@ -28,7 +29,7 @@ const getBundleVisualizerPlugin: Plugin = () => ({
  * @see https://vitejs.dev/config/
  */
 export default defineConfig(() => ({
-  plugins: [react()],
+  plugins: [react(), TanStackRouterVite()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
