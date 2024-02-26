@@ -146,9 +146,6 @@ importers:
       '@tanstack/react-router':
         specifier: 0.0.1-beta.168
         version: 0.0.1-beta.168(react-dom@18.2.0)(react@18.2.0)
-      '@tanstack/react-table':
-        specifier: 8.9.3
-        version: 8.9.3(react-dom@18.2.0)(react@18.2.0)
       '@wagmi/core':
         specifier: '*'
         version: 2.6.5(@types/react@18.2.21)(react@18.2.0)(typescript@5.1.6)(viem@2.7.13)(zod@3.22.2)
@@ -5908,18 +5905,6 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
-  /@tanstack/react-table@8.9.3(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-Ng9rdm3JPoSCi6cVZvANsYnF+UoGVRxflMb270tVj0+LjeT/ZtZ9ckxF6oLPLcKesza6VKBqtdF9mQ+vaz24Aw==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      react: '>=16'
-      react-dom: '>=16'
-    dependencies:
-      '@tanstack/table-core': 8.9.3
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    dev: false
-
   /@tanstack/router-core@0.0.1-beta.168(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-CDZpi9YkQQS/WA9GtZY1PNElnWx/puXvTiixSRQhPSkmbPWCLZwHA1oI18t4Nm6FEFs1o9gmtMZkZDIUrZ3Rmg==}
     engines: {node: '>=12'}
@@ -5938,11 +5923,6 @@ packages:
 
   /@tanstack/store@0.0.1-beta.168:
     resolution: {integrity: sha512-LXrHsutubBMn1rXznmoEo/mT/WAaCKkNRoYP0Eu7R4yT7hg0HuCJJCwnlrOm7AM06Vf2/6JIZrfcSLv2oae04A==}
-    engines: {node: '>=12'}
-    dev: false
-
-  /@tanstack/table-core@8.9.3:
-    resolution: {integrity: sha512-NpHZBoHTfqyJk0m/s/+CSuAiwtebhYK90mDuf5eylTvgViNOujiaOaxNDxJkQQAsVvHWZftUGAx1EfO1rkKtLg==}
     engines: {node: '>=12'}
     dev: false
 
