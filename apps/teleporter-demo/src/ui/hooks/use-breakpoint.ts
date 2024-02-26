@@ -10,7 +10,6 @@ console.log('breakpoints', breakpoints);
 
 export function useBreakpoint<K extends 'sm' | 'md' | 'lg' | 'xl' | '2xl'>(breakpointKey: K) {
   const bool = useMediaQuery({
-    // @ts-expect-error test
     query: `(min-width: ${breakpoints[breakpointKey]})`,
   });
   const capitalizedKey = breakpointKey[0]!.toUpperCase() + breakpointKey.substring(1);
