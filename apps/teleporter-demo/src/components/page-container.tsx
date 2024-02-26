@@ -20,7 +20,7 @@ const PageContent = memo(({ children }: PropsWithChildren) => {
       className={cn('flex flex-col grow w-full items-center')}
       style={styles}
     >
-      <div className="w-full max-w-xl px-2">{children}</div>
+      <div className="w-full max-w-app px-2">{children}</div>
     </AnimatedDiv>
   );
 });

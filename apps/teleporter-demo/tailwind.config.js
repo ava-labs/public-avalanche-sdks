@@ -14,6 +14,9 @@ export default {
       },
     },
     extend: {
+      spacing: {
+        app: '64rem',
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

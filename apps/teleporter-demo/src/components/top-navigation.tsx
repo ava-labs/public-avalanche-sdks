@@ -20,7 +20,7 @@ export function TopNavigation() {
 
   return (
     <div className="flex flex-col w-full items-center justify-center gap-1">
-      <NavigationMenu className="py-2 px-2 w-full max-w-xl flex justify-between">
+      <NavigationMenu className="py-2 px-2 w-full max-w-app flex justify-between">
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink href="/">
@@ -107,9 +107,9 @@ export function TopNavigation() {
         </NavigationMenuList>
       </NavigationMenu>
       {isSmDown && (
-        <NavigationMenu className="px-2 pb-2 w-full max-w-xl flex justify-between">
+        <div className="px-2 pb-2 w-full max-w-app flex justify-between">
           <ConnectWalletButton className="w-full" />
-        </NavigationMenu>
+        </div>
       )}
     </div>
   );

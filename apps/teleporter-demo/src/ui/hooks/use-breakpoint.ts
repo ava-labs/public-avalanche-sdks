@@ -6,7 +6,6 @@ import resolveConfig from 'tailwindcss/resolveConfig';
 const fullTailwindConfig = resolveConfig(partialTailwindConfig);
 
 const breakpoints = fullTailwindConfig.theme!.screens!;
-console.log('breakpoints', breakpoints);
 
 export function useBreakpoint<K extends 'sm' | 'md' | 'lg' | 'xl' | '2xl'>(breakpointKey: K) {
   const bool = useMediaQuery({

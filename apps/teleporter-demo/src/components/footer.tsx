@@ -10,7 +10,7 @@ import { AvalancheColorIcon } from './avalanche-icon';
 export function Footer() {
   return (
     <div className="flex flex-col w-full items-center justify-center gap-1 mt-8">
-      <NavigationMenu className="px-2 w-full max-w-xl flex justify-end">
+      <NavigationMenu className="px-2 w-full max-w-app flex justify-end">
         <NavigationMenuList className="flex items-center justify-center">
           <NavigationMenuItem>
             <a
@@ -44,7 +44,7 @@ export function Footer() {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-      <NavigationMenu className="py-2 px-2 w-full max-w-xl flex max-sm:flex-col justify-between gap-4 border-t">
+      <NavigationMenu className="py-2 px-2 w-full max-w-app flex max-sm:flex-col justify-between gap-4 border-t">
         <NavigationMenuList className="flex items-center justify-center">
           <NavigationMenuItem>
             <PoweredByAvalanche />
@@ -53,7 +53,7 @@ export function Footer() {
         <NavigationMenuList>
           <NavigationMenuItem>
             <p
-              className="text-right max-sm:text-center max-sm:px-8 text-muted-foreground"
+              className="text-right max-sm:text-center text-muted-foreground"
               style={{ fontSize: 11 }}
             >
               By using this application, you agree to the{' '}
@@ -73,7 +73,8 @@ export function Footer() {
                 rel="noopener noreferrer"
               >
                 Privacy Policy
-              </a>{' '}
+              </a>
+              <br />
               ©2023{' '}
               <a
                 className={cn(buttonVariants({ variant: 'link' }), 'h-1 text-primary-foreground px-0')}
