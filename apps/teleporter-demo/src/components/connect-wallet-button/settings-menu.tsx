@@ -35,16 +35,10 @@ export const SettingsMenu = () => {
         <Button
           variant="outline"
           className="rounded-full whitespace-nowrap w-full"
+          startIcon={<Circle className="text-green-500 fill-green-500" />}
+          endIcon={<Settings className="text-gray-400" />}
         >
-          <Circle
-            size={12}
-            className="mr-2 text-green-500 fill-green-500"
-          />
           {truncateAddress(address)}
-          <Settings
-            size={16}
-            className="ml-2 text-gray-400"
-          />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
