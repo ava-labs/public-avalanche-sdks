@@ -58,7 +58,7 @@ export function Footer() {
             >
               By using this application, you agree to the{' '}
               <a
-                className={cn(buttonVariants({ variant: 'link' }), 'h-1 text-primary-foreground px-0')}
+                className={cn(buttonVariants({ variant: 'link' }), 'h-1 text-foreground px-0')}
                 href="https://core.app/terms/core/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -67,7 +67,7 @@ export function Footer() {
               </a>{' '}
               and{' '}
               <a
-                className={cn(buttonVariants({ variant: 'link' }), 'h-1 text-primary-foreground px-0')}
+                className={cn(buttonVariants({ variant: 'link' }), 'h-1 text-foreground px-0')}
                 href="https://www.avalabs.org/privacy-policy"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -77,7 +77,7 @@ export function Footer() {
               <br />
               ©2023{' '}
               <a
-                className={cn(buttonVariants({ variant: 'link' }), 'h-1 text-primary-foreground px-0')}
+                className={cn(buttonVariants({ variant: 'link' }), 'h-1 text-foreground px-0')}
                 href="https://www.avalabs.org/"
                 target="_blank"
                 rel="noopener noreferrer"
