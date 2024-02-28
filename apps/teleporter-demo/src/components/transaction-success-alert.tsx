@@ -18,7 +18,8 @@ export const TransactionSuccessAlert = ({
 }: { explorerBaseUrl: string; txHash: string; actionLabel?: string } & HTMLAttributes<HTMLDivElement>) => {
   return (
     <Alert
-      className={cn('mt-4', className)}
+      variant="success"
+      className={cn(className)}
       {...rest}
     >
       <div className="flex flex-nowrap">
@@ -29,18 +30,14 @@ export const TransactionSuccessAlert = ({
         <div className="ml-2 w-full">
           <AlertTitle>{actionLabel ? capitalize(actionLabel) : 'Transaction'} success!</AlertTitle>
           <AlertDescription>
-            View your transaction:
             <a
-              className={cn(buttonVariants({ variant: 'link' }), 'h-2')}
+              className={cn(buttonVariants({ variant: 'link' }), 'h-6 px-0')}
               href={`${explorerBaseUrl}/tx/${txHash}`}
               target="_blank"
               rel="noopener noreferrer"
             >
               {truncateAddress(txHash)}
-              <ExternalLink
-                size={16}
-                className="ml-1"
-              />
+              <ExternalLink className="h-2 w-2 inline" />
             </a>
           </AlertDescription>
         </div>

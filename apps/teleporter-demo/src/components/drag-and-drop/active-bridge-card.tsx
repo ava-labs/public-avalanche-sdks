@@ -1,6 +1,6 @@
 import type { EvmTeleporterChain } from '@/constants/chains';
 import { Card, CardContent, CardHeader, CardTitle } from '@/ui/card';
-import { Suspense, memo } from 'react';
+import { Suspense, memo, useState } from 'react';
 import { Button } from '@/ui/button';
 
 import { BridgeForm } from './bridge-form';
@@ -9,10 +9,12 @@ import { FromToChain } from './from-to-chain';
 
 export const ActiveBridgeCard = memo(
   ({ fromChain, toChain }: { fromChain: EvmTeleporterChain; toChain: EvmTeleporterChain }) => {
+    const [isTeleporting, setIsTeleporting] = useState(false);
+
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Bridge Tokens</CardTitle>
+          <CardTitle>{isTeleporting ? 'Bridging...' : 'Bridge Tokens'} </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
           <Suspense
@@ -35,6 +37,8 @@ export const ActiveBridgeCard = memo(
             <BridgeForm
               fromChain={fromChain}
               toChain={toChain}
+              isTeleporting={isTeleporting}
+              setIsTeleporting={setIsTeleporting}
             />
           </Suspense>
         </CardContent>

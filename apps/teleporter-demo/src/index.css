@@ -22,6 +22,8 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 2 77% 55%;
     --destructive-foreground: 240 27% 98%;
+    --success: 135 48% 54%;
+    --success-foreground: 240 27% 98%;
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: #6e87e3;

@@ -6,7 +6,7 @@ import { Label } from '@/ui/label';
 export const FromToChain = memo(
   ({ fromChain, toChain }: { fromChain: EvmTeleporterChain; toChain: EvmTeleporterChain }) => {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2">
+      <div className="flex flex-col justify-between sm:flex-row gap-4">
         <div className="space-y-2">
           <Label>From</Label>
           <div className="flex items-center gap-2">

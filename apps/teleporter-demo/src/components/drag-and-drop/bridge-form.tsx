@@ -1,35 +1,78 @@
 import type { EvmTeleporterChain } from '@/constants/chains';
 import { Slider } from '@/ui/slider';
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState, type Dispatch } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useErc20Balance } from '@/hooks/use-erc20-balance';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/ui/form';
 import { Input } from '@/ui/input';
 import { Button } from '@/ui/button';
 import Big from 'big.js';
 import { FromToChain } from './from-to-chain';
 import { useTeleport } from '@/hooks/use-teleport';
-
-const formSchema = z.object({
-  erc20Amount: z.number(),
-});
+import { AutoAnimate } from '@/ui/auto-animate';
+import Rive from '@rive-app/react-canvas';
+import teleportingAnimation from '@/assets/teleporting.riv?url';
+import { FancyAvatar } from '../fancy-avatar';
+import tlpTokenLogo from '@/assets/tlp-token-logo.png';
+import type { TransactionReceipt } from 'viem';
+import { isNil } from 'lodash-es';
+import { Undo2 } from 'lucide-react';
+import { useAccount, useBalance } from 'wagmi';
+import { TransactionSuccessAlert } from '../transaction-success-alert';
 
 export const BridgeForm = memo(
-  ({ fromChain, toChain }: { fromChain: EvmTeleporterChain; toChain: EvmTeleporterChain }) => {
-    const { formattedErc20Balance } = useErc20Balance({
-      chain: fromChain,
+  ({
+    fromChain,
+    toChain,
+    isTeleporting,
+    setIsTeleporting,
+  }: {
+    fromChain: EvmTeleporterChain;
+    toChain: EvmTeleporterChain;
+    isTeleporting: boolean;
+    setIsTeleporting: Dispatch<boolean>;
+  }) => {
+    /**
+     * ERC-20 Balances
+     */
+    const { formattedErc20Balance: fromChainFormattedErc20Balance, refetch: refetchFromChainErc20Balance } =
+      useErc20Balance({ chain: fromChain });
+    const { refetch: refetchToChainErc20Balance } = useErc20Balance({ chain: toChain });
+
+    /**
+     * Gas Balance
+     */
+    const { address } = useAccount();
+    const { refetch: refetchFromChainGasBalance } = useBalance({
+      address,
+      chainId: Number(fromChain.chainId),
+    });
+
+    const formSchema = z.object({
+      erc20Amount: z.preprocess(
+        Number,
+        z
+          .number()
+          .min(0, {
+            message: `Amount must be greater than zero.`,
+          })
+          .max(Number(fromChainFormattedErc20Balance), {
+            message: `Amount must not exceed the current balance of ${fromChainFormattedErc20Balance} ${fromChain.contracts.teleportedErc20.symbol}`,
+          })
+          .default(0),
+      ),
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
       defaultValues: {
-        erc20Amount: Number(formattedErc20Balance) / 2,
+        erc20Amount: Math.min(Number(fromChainFormattedErc20Balance), 1),
       },
     });
 
-    const erc20Amount = form.watch('erc20Amount');
+    const erc20Amount = Number(form.watch('erc20Amount'));
     const { teleportToken } = useTeleport({
       fromChain,
       toChain,
@@ -38,16 +81,79 @@ export const BridgeForm = memo(
         [erc20Amount],
       ),
     });
+    const [transactionReceipt, setTransactionReceipt] = useState<TransactionReceipt>();
 
-    const handleBridgeToken = async () => {
-      await teleportToken();
+    const handleBridgeToken = async (_data: z.infer<typeof formSchema>) => {
+      setIsTeleporting(true);
+      const transactionReceipt = await teleportToken();
+      refetchFromChainErc20Balance();
+      refetchFromChainGasBalance();
+
+      // There currently isn't any way to detect transaction confirmation on the toChain,
+      // so just refetch balances after a short delay.
+      setTimeout(() => {
+        refetchToChainErc20Balance();
+      }, 5000);
+
+      setTransactionReceipt(transactionReceipt);
+      setIsTeleporting(false);
     };
+
+    if (isTeleporting || !isNil(transactionReceipt)) {
+      return (
+        <div className="flex flex-col gap-6">
+          <FromToChain
+            fromChain={fromChain}
+            toChain={toChain}
+          />
+          {isTeleporting ? (
+            <div className="relative">
+              <div className="flex gap-3 items-end justify-center py-5">
+                <span className="font-mono text-3xl">{erc20Amount}</span>
+                <div className="flex gap-1 items-center">
+                  <FancyAvatar
+                    src={tlpTokenLogo}
+                    label={'TLP'}
+                    className="w-6 h-6 -my-3"
+                  />
+                  <span className="text-2xl font-bold text-muted-foreground">TLP</span>
+                </div>
+              </div>
+              <Rive
+                className="h-72 w-[calc(100%+10rem)] absolute -bottom-[100px] -left-[5rem]"
+                src={teleportingAnimation}
+              />
+            </div>
+          ) : (
+            <AutoAnimate>
+              {transactionReceipt && (
+                <div className="flex flex-col items-start gap-6">
+                  <TransactionSuccessAlert
+                    explorerBaseUrl={fromChain.explorerUrl}
+                    txHash={transactionReceipt.transactionHash}
+                    actionLabel="Bridge"
+                  />
+                  <Button
+                    onClick={() => setTransactionReceipt(undefined)}
+                    className="w-full"
+                    variant="secondary"
+                    endIcon={<Undo2 />}
+                  >
+                    Reset
+                  </Button>
+                </div>
+              )}
+            </AutoAnimate>
+          )}
+        </div>
+      );
+    }
 
     return (
       <Form {...form}>
         <form
           className="flex flex-col gap-6"
-          onSubmit={form.handleSubmit(handleBridgeToken)}
+          onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}
         >
           <FromToChain
             fromChain={fromChain}
@@ -61,19 +167,24 @@ export const BridgeForm = memo(
                 <FormLabel>Amount</FormLabel>
                 <div className="grid grid-cols-12 gap-2">
                   <FormControl className="col-span-3">
-                    <Input {...field} />
+                    <Input
+                      type="number"
+                      step={0.01}
+                      {...field}
+                    />
                   </FormControl>
                   <FormControl className="col-span-9">
                     <Slider
-                      min={0}
-                      max={Number(formattedErc20Balance)}
-                      step={1}
+                      max={Number(fromChainFormattedErc20Balance)}
+                      step={0.01}
                       defaultValue={[field.value]}
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => field.onChange(value[0])}
                       value={[field.value]}
                     />
                   </FormControl>
                 </div>
+                <FormDescription />
+                <FormMessage />
               </FormItem>
             )}
           />
