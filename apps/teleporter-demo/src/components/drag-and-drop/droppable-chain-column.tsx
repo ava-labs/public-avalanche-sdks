@@ -6,6 +6,7 @@ import { useAccount, useBalance } from 'wagmi';
 import { formatUnits } from 'viem';
 import { formatStringNumber } from '@/utils/format-string';
 import { Skeleton } from '@/ui/skeleton';
+import { cn } from '@/utils/cn';
 
 export const DroppableChainColumn = memo(({ children, chain }: PropsWithChildren<{ chain: EvmTeleporterChain }>) => {
   const { isOver, active, setNodeRef } = useDroppable({
@@ -20,15 +21,10 @@ export const DroppableChainColumn = memo(({ children, chain }: PropsWithChildren
 
   const isOverByOtherChain = isOver && active?.data?.current?.chainId !== chain.chainId;
 
-  const style = {
-    backgroundColor: isOverByOtherChain ? 'green' : undefined,
-  };
-
   return (
     <div
       ref={setNodeRef}
-      style={style}
-      className="p-4 flex flex-col gap-4"
+      className={cn('p-4 flex flex-col gap-4', isOverByOtherChain ? 'bg-primary/5' : '')}
     >
       <div className="flex items-center gap-4">
         <FancyAvatar

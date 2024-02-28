@@ -42,20 +42,18 @@ export const TeleporterPage = memo(() => {
             key={chain.chainId}
             chain={chain}
           >
-            <div>
-              <Draggable chain={chain}>
-                <TokenBalanceCard
-                  chain={chain}
-                  className={cn(
-                    'transition-opacity duration-300 ease-in-out',
-                    chain === activelyDraggedChain ? '!opacity-50 grayscale' : '!opacity-100',
-                  )}
-                />
-              </Draggable>
-              <AutoAnimate>
-                {activeDrop && activeDrop.toChain.chainId === chain.chainId && <ActiveBridgeCard {...activeDrop} />}
-              </AutoAnimate>
-            </div>
+            <Draggable chain={chain}>
+              <TokenBalanceCard
+                chain={chain}
+                className={cn(
+                  'transition-opacity duration-300 ease-in-out',
+                  chain === activelyDraggedChain ? '!opacity-50 grayscale' : '!opacity-100',
+                )}
+              />
+            </Draggable>
+            <AutoAnimate>
+              {activeDrop && activeDrop.toChain.chainId === chain.chainId && <ActiveBridgeCard {...activeDrop} />}
+            </AutoAnimate>
           </DroppableChainColumn>
         ))}
         <DragOverlay
