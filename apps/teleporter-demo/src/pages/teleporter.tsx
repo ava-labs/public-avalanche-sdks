@@ -1,5 +1,5 @@
 import { TELEPORTER_CONFIG, type EvmTeleporterChain } from '@/constants/chains';
-import { DragOverlay } from '@dnd-kit/core';
+import { DragOverlay, type UniqueIdentifier } from '@dnd-kit/core';
 import { isNil } from 'lodash-es';
 import { memo, useState } from 'react';
 import { DndContext } from '@dnd-kit/core';
@@ -9,21 +9,22 @@ import { TokenBalanceCard } from '@/components/drag-and-drop/token-balance-card'
 import { ActiveBridgeCard } from '@/components/drag-and-drop/active-bridge-card';
 import { DroppableChainColumn } from '@/components/drag-and-drop/droppable-chain-column';
 import { Draggable } from '@/components/drag-and-drop/draggable';
+import { AutoAnimate } from '@/ui/auto-animate';
 
 export const TeleporterPage = memo(() => {
   const [activelyDraggedChain, setActivelyDraggedChain] = useState<EvmTeleporterChain>();
+  const [dropDestinationId, setDropDestinationId] = useState<UniqueIdentifier>();
   const [activeDrop, setActiveDrop] = useState<{ fromChain: EvmTeleporterChain; toChain: EvmTeleporterChain }>();
 
   return (
     <DndContext
       onDragStart={({ active }) => {
-        console.log('active.data?.current', active.data?.current);
-
         setActivelyDraggedChain(active.data?.current as EvmTeleporterChain);
       }}
-      onDragEnd={({ active, over, ...rest }) => {
-        console.log('rest', rest);
-
+      onDragOver={({ over }) => {
+        setDropDestinationId(over?.id);
+      }}
+      onDragEnd={({ active, over }) => {
         setActivelyDraggedChain(undefined);
         if (!over?.id || active.data?.current === over?.data.current) {
           return;
@@ -32,7 +33,6 @@ export const TeleporterPage = memo(() => {
           fromChain: active.data?.current as EvmTeleporterChain,
           toChain: over?.data.current as EvmTeleporterChain,
         });
-        console.log('event', event);
       }}
       onDragCancel={() => setActivelyDraggedChain(undefined)}
     >
@@ -46,14 +46,46 @@ export const TeleporterPage = memo(() => {
               <Draggable chain={chain}>
                 <TokenBalanceCard
                   chain={chain}
-                  className={cn(chain === activelyDraggedChain ? 'opacity-50 grayscale' : '')}
+                  className={cn(
+                    'transition-opacity duration-300 ease-in-out',
+                    chain === activelyDraggedChain ? '!opacity-50 grayscale' : '!opacity-100',
+                  )}
                 />
               </Draggable>
-              {activeDrop && activeDrop.toChain.chainId === chain.chainId && <ActiveBridgeCard {...activeDrop} />}
+              <AutoAnimate>
+                {activeDrop && activeDrop.toChain.chainId === chain.chainId && <ActiveBridgeCard {...activeDrop} />}
+              </AutoAnimate>
             </div>
           </DroppableChainColumn>
         ))}
-        <DragOverlay>
+        <DragOverlay
+          dropAnimation={{
+            // Instead of returning overlay to its initial position, we return it to the position of the actively dragged chain
+            keyframes: ({ active, droppableContainers, transform }) => {
+              const dropDestination = droppableContainers.get(dropDestinationId);
+
+              const dropDestinationRect = dropDestination?.node.current?.getBoundingClientRect();
+              const activeRect = active.node.getBoundingClientRect();
+              const finalCoords = dropDestinationRect
+                ? {
+                    x: dropDestinationRect.left - activeRect.left + 12,
+                    y: dropDestinationRect.top - activeRect.top + 200,
+                  }
+                : transform.final;
+
+              return [
+                {
+                  transform: `translate(${transform.initial.x}px, ${transform.initial.y}px)`,
+                  opacity: '100%',
+                },
+                {
+                  transform: `translate(${finalCoords.x}px, ${finalCoords.y}px)`,
+                  opacity: '0%',
+                },
+              ];
+            },
+          }}
+        >
           {!isNil(activelyDraggedChain) && (
             <TokenBalanceCard
               chain={activelyDraggedChain}
