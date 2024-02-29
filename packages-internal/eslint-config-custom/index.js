@@ -6,6 +6,7 @@ module.exports = {
   extends: ['turbo', 'prettier', 'eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'eslint-plugin-unicorn'],
+  ignorePatterns: ['*.gen.ts'],
   root: true,
   rules: {
     '@typescript-eslint/no-unused-vars': [

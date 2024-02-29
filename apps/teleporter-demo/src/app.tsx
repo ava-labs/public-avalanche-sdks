@@ -5,7 +5,11 @@ import { TooltipProvider } from './ui/tooltip';
 import { Suspense } from 'react';
 import { LoadingPage } from './pages/loading-page';
 import { Toaster } from './ui/toaster';
-import { Router } from './router';
+
+// Import the generated route tree and setup router
+import { routeTree } from './routeTree.gen';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
+const router = createRouter({ routeTree });
 
 export default function App() {
   return (
@@ -19,7 +23,7 @@ export default function App() {
             <Suspense fallback={<LoadingPage />}>
               <PageContainer>
                 <h1 className="mt-4 sm:mt-8 mb-4 text-3xl font-semibold">Teleporter</h1>
-                <Router />
+                <RouterProvider router={router} />
               </PageContainer>
             </Suspense>
           </Web3Provider>
