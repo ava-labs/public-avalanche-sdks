@@ -163,26 +163,38 @@ export const BridgeForm = memo(
             control={form.control}
             name="erc20Amount"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Amount</FormLabel>
-                <div className="grid grid-cols-12 gap-2">
-                  <FormControl className="col-span-3">
-                    <Input
-                      type="number"
-                      step={0.01}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormControl className="col-span-9">
-                    <Slider
-                      max={Number(fromChainFormattedErc20Balance)}
-                      step={0.01}
-                      defaultValue={[field.value]}
-                      onValueChange={(value) => field.onChange(value[0])}
-                      value={[field.value]}
-                    />
+              <FormItem className="flex flex-col gap-2">
+                <div className="flex justify-between items-baseline">
+                  <FormLabel className="flex grow">Amount</FormLabel>
+                  <FormControl className="max-w-40">
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        type="number"
+                        step={0.01}
+                        min={0}
+                        max={Number(fromChainFormattedErc20Balance)}
+                        {...field}
+                      />
+                      <div className="flex gap-1 items-center h-full pointer-events-none">
+                        <FancyAvatar
+                          src={tlpTokenLogo}
+                          label={fromChain.shortName}
+                          className="w-4 h-4 -my-3"
+                        />
+                        <span className="text-lg font-bold text-muted-foreground">TLP</span>
+                      </div>
+                    </div>
                   </FormControl>
                 </div>
+                <FormControl className="col-span-9">
+                  <Slider
+                    max={Number(fromChainFormattedErc20Balance)}
+                    step={0.01}
+                    defaultValue={[field.value]}
+                    onValueChange={(value) => field.onChange(value[0])}
+                    value={[field.value]}
+                  />
+                </FormControl>
                 <FormDescription />
                 <FormMessage />
               </FormItem>
