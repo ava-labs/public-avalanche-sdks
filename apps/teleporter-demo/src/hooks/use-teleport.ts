@@ -5,6 +5,7 @@ import { isNil } from 'lodash-es';
 import { useLatestTeleporterTransactions } from './use-transactions';
 import type { EvmTeleporterChain } from '@/constants/chains';
 import { useWaitForTransactionReceiptAsync } from './use-wait-for-transaction-receipt-async';
+import { toast } from '@/ui/hooks/use-toast';
 
 export const useTeleport = ({
   fromChain,
@@ -92,10 +93,20 @@ export const useTeleport = ({
       console.info('Bridge pending.', hash);
       const transactionReceipt = await waitForTransactionReceipt({ hash });
       console.info('Bridge successful.', hash, transactionReceipt);
+      toast({
+        title: 'Bridge successful!',
+        description: 'View your transaction on the explorer',
+      });
       return transactionReceipt;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.error(e?.message ?? e);
+      toast({
+        title: 'Bridge failed',
+        description: 'Please try again',
+        variant: 'destructive',
+      });
+      return;
 
       return undefined;
     }

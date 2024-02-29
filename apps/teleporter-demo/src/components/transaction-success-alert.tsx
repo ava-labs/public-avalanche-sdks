@@ -31,7 +31,7 @@ export const TransactionSuccessAlert = ({
           <AlertTitle>{actionLabel ? capitalize(actionLabel) : 'Transaction'} success!</AlertTitle>
           <AlertDescription>
             <a
-              className={cn(buttonVariants({ variant: 'link' }), 'h-6 px-0')}
+              className={cn(buttonVariants({ variant: 'link' }), 'h-6 px-0 font-mono')}
               href={`${explorerBaseUrl}/tx/${txHash}`}
               target="_blank"
               rel="noopener noreferrer"

@@ -21,6 +21,7 @@ import { isNil } from 'lodash-es';
 import { Undo2 } from 'lucide-react';
 import { useAccount, useBalance } from 'wagmi';
 import { TransactionSuccessAlert } from '../transaction-success-alert';
+import { useSwitchChain } from '@/hooks/use-switch-chain';
 
 export const BridgeForm = memo(
   ({
@@ -73,6 +74,7 @@ export const BridgeForm = memo(
     });
 
     const erc20Amount = Number(form.watch('erc20Amount'));
+    const { switchChain } = useSwitchChain();
     const { teleportToken } = useTeleport({
       fromChain,
       toChain,
@@ -85,6 +87,7 @@ export const BridgeForm = memo(
 
     const handleBridgeToken = async (_data: z.infer<typeof formSchema>) => {
       setIsTeleporting(true);
+      await switchChain(fromChain);
       const transactionReceipt = await teleportToken();
       refetchFromChainErc20Balance();
       refetchFromChainGasBalance();
