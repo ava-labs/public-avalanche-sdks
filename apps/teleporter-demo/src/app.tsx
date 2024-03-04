@@ -9,6 +9,7 @@ import { Toaster } from './ui/toaster';
 // Import the generated route tree and setup router
 import { routeTree } from './routeTree.gen';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { Typography } from './ui/typography';
 const router = createRouter({ routeTree });
 
 export default function App() {
@@ -22,7 +23,13 @@ export default function App() {
           <Web3Provider>
             <Suspense fallback={<LoadingPage />}>
               <PageContainer>
-                <h1 className="mt-4 sm:mt-8 mb-4 text-3xl font-semibold">Teleporter</h1>
+                <Typography
+                  size="xl"
+                  asChild
+                  className="mt-4 sm:mt-8 mb-4"
+                >
+                  <h1>Teleporter</h1>
+                </Typography>
                 <RouterProvider router={router} />
               </PageContainer>
             </Suspense>
