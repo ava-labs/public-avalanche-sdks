@@ -5,19 +5,11 @@ import { WALLETCONNECT_V2_CORE_PROJECT_ID } from '@/constants';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 import { createWeb3Modal } from '@web3modal/wagmi/react';
-import { mapChainToWagmiChain } from '@/utils/map-chain-to-wagmi-chain';
 
 const queryClient = new QueryClient();
 
-// Wagmi requires a tuple.
-const chains = [
-  mapChainToWagmiChain(TELEPORTER_CONFIG.chains[0]),
-  mapChainToWagmiChain(TELEPORTER_CONFIG.chains[1]),
-  mapChainToWagmiChain(TELEPORTER_CONFIG.chains[2]),
-] as const;
-
 const config = defaultWagmiConfig({
-  chains,
+  chains: TELEPORTER_CONFIG.wagmiChains,
   projectId: WALLETCONNECT_V2_CORE_PROJECT_ID,
   metadata: {
     name: 'OhMyWarp!',

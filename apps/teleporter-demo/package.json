@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
+    "@dnd-kit/modifiers": "7.0.0",
     "@formkit/auto-animate": "0.8.1",
     "@hookform/resolvers": "3.3.4",
     "@poppinss/intl-formatter": "3.0.1",

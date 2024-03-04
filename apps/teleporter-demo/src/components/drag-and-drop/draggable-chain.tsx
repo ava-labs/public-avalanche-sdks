@@ -1,9 +1,10 @@
 import type { EvmTeleporterChain } from '@/constants/chains';
+import { cn } from '@/utils/cn';
 import { useDraggable } from '@dnd-kit/core';
 import { Slot } from '@radix-ui/react-slot';
 import { memo, type HTMLAttributes, type ReactElement } from 'react';
 
-export const Draggable = memo(
+export const DraggableChain = memo(
   ({
     chain,
     ...rest
@@ -11,7 +12,7 @@ export const Draggable = memo(
     chain: EvmTeleporterChain;
     children: ReactElement; // Use ReactElement instead of ReactNode since we need a child that can accept a ref
   }) => {
-    const { attributes, listeners, setNodeRef } = useDraggable({
+    const { attributes, listeners, isDragging, setNodeRef } = useDraggable({
       id: `draggable-${chain.chainId}`,
       data: chain,
     });
@@ -19,6 +20,10 @@ export const Draggable = memo(
     return (
       <Slot
         ref={setNodeRef}
+        className={cn(
+          'transition-opacity duration-300 ease-in-out',
+          isDragging ? '!opacity-50 grayscale' : '!opacity-100',
+        )}
         {...rest}
         {...listeners}
         {...attributes}
@@ -26,4 +31,4 @@ export const Draggable = memo(
     );
   },
 );
-Draggable.displayName = 'Draggable';
+DraggableChain.displayName = 'Draggable';

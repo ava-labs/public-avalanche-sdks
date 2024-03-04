@@ -3,10 +3,11 @@ import { FAUCET_URL } from './urls';
 import { TELEPORTER_BRIDGE_ABI } from './abis/teleporter-bridge.abi';
 import { MINTABLE_ERC20_ABI } from './abis/mintable-erc-20.abi';
 import { TELEPORTED_ERC20_ABI } from './abis/teleported-erc-20.abi';
+import { mapChainToWagmiChain } from '@/utils/map-chain-to-wagmi-chain';
 
 export const C_CHAIN = {
   chainId: '43113',
-  name: 'C-Chain',
+  name: 'Avalanche (C-Chain)',
   shortName: 'C-Chain',
   subnetId: '11111111111111111111111111111111LpoYY',
   platformChainId: 'yH8D7ThNJkxmtkuv2jgBa4P1Rn3Qpr4pPr7QYNfcdoS6k6HWp',
@@ -133,9 +134,20 @@ export const ECHO_CHAIN = {
   },
 } as const satisfies EvmChain;
 
+const teleporterChains = [C_CHAIN, DISPATCH_CHAIN, ECHO_CHAIN] as const satisfies readonly EvmChain[];
+export type EvmTeleporterChain = (typeof teleporterChains)[number];
+
 export const TELEPORTER_CONFIG = {
   tlpMintChain: C_CHAIN,
-  chains: [C_CHAIN, DISPATCH_CHAIN, ECHO_CHAIN] as const satisfies readonly EvmChain[],
-} as const;
+  chains: teleporterChains,
 
-export type EvmTeleporterChain = (typeof TELEPORTER_CONFIG.chains)[number];
+  /**
+   * Mapped tuples for teleporterChains
+   */
+  wagmiChains: [
+    mapChainToWagmiChain(teleporterChains[0]),
+    mapChainToWagmiChain(teleporterChains[1]),
+    mapChainToWagmiChain(teleporterChains[2]),
+  ] as const,
+  chainIds: [teleporterChains[0].chainId, teleporterChains[1].chainId, teleporterChains[2].chainId] as const,
+} as const;

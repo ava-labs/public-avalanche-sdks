@@ -2,41 +2,69 @@ import { TELEPORTER_CONFIG, type EvmTeleporterChain } from '@/constants/chains';
 import { DragOverlay, type UniqueIdentifier } from '@dnd-kit/core';
 import { isNil } from 'lodash-es';
 import { memo, useState } from 'react';
-import { DndContext } from '@dnd-kit/core';
-import { cn } from '@/utils/cn';
+import { DndContext, pointerWithin } from '@dnd-kit/core';
+import { snapCenterToCursor, restrictToVerticalAxis, restrictToHorizontalAxis } from '@dnd-kit/modifiers';
 
-import { TokenBalanceCard } from '@/components/drag-and-drop/token-balance-card';
-import { ActiveBridgeCard } from '@/components/drag-and-drop/active-bridge-card';
-import { DroppableChainColumn } from '@/components/drag-and-drop/droppable-chain-column';
-import { Draggable } from '@/components/drag-and-drop/draggable';
-import { AutoAnimate } from '@/ui/auto-animate';
+import { DraggableChain } from '@/components/drag-and-drop/draggable-chain';
+import { ChainCard } from '@/components/drag-and-drop/chain-card';
+import { DroppableChain } from '@/components/drag-and-drop/droppable-chain';
+import { BridgeForm } from '@/components/drag-and-drop/bridge-form';
+import { Card, CardContent } from '@/ui/card';
+import { FancyAvatar } from '@/components/fancy-avatar';
+import { ArrowRight, GripIcon, GripVertical } from 'lucide-react';
+import { BridgeDragOverlay } from '@/components/drag-and-drop/bridge-drag-overlay';
 
 export const TeleporterPage = memo(() => {
   const [activelyDraggedChain, setActivelyDraggedChain] = useState<EvmTeleporterChain>();
   const [dropDestinationId, setDropDestinationId] = useState<UniqueIdentifier>();
-  const [activeDrop, setActiveDrop] = useState<{ fromChain: EvmTeleporterChain; toChain: EvmTeleporterChain }>();
 
   return (
     <DndContext
+      collisionDetection={pointerWithin}
       onDragStart={({ active }) => {
         setActivelyDraggedChain(active.data?.current as EvmTeleporterChain);
       }}
       onDragOver={({ over }) => {
         setDropDestinationId(over?.id);
       }}
-      onDragEnd={({ active, over }) => {
+      onDragEnd={() => {
         setActivelyDraggedChain(undefined);
-        if (!over?.id || active.data?.current === over?.data.current) {
-          return;
-        }
-        setActiveDrop({
-          fromChain: active.data?.current as EvmTeleporterChain,
-          toChain: over?.data.current as EvmTeleporterChain,
-        });
       }}
       onDragCancel={() => setActivelyDraggedChain(undefined)}
     >
-      <div className="grid grid-cols-3 w-full divide-x">
+      <div>
+        <BridgeDragOverlay />
+        <div className="grid flex-col gap-4">
+          <Card className="bg-transparent">
+            <CardContent>
+              <div className="grid grid-cols-3 w-full justify-center gap-4">
+                {TELEPORTER_CONFIG.chains.map((chain) => (
+                  <DraggableChain
+                    key={chain.chainId}
+                    chain={chain}
+                  >
+                    <div className="grow">
+                      <DroppableChain chain={chain}>
+                        <ChainCard
+                          chain={chain}
+                          draggable
+                          className="h-full"
+                        />
+                      </DroppableChain>
+                    </div>
+                  </DraggableChain>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="flex w-full justify-center">
+            <CardContent className="w-full">
+              <BridgeForm />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      {/* <div className="grid grid-cols-3 w-full divide-x">
         {TELEPORTER_CONFIG.chains.map((chain) => (
           <DroppableChainColumn
             key={chain.chainId}
@@ -91,7 +119,7 @@ export const TeleporterPage = memo(() => {
             />
           )}
         </DragOverlay>
-      </div>
+      </div> */}
     </DndContext>
   );
 });

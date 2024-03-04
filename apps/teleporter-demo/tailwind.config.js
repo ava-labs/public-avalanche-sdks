@@ -15,7 +15,7 @@ export default {
     },
     extend: {
       spacing: {
-        app: '64rem',
+        app: '36rem',
       },
       colors: {
         border: 'hsl(var(--border))',

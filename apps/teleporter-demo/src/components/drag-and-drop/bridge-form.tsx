@@ -1,212 +1,199 @@
-import type { EvmTeleporterChain } from '@/constants/chains';
-import { Slider } from '@/ui/slider';
-import { memo, useMemo, useState, type Dispatch } from 'react';
-import { useForm } from 'react-hook-form';
+import { TELEPORTER_CONFIG, type EvmTeleporterChain } from '@/constants/chains';
+import {
+  memo,
+  type HTMLAttributes,
+  type ButtonHTMLAttributes,
+  useState,
+  type ReactElement,
+  type HtmlHTMLAttributes,
+} from 'react';
+import { useForm, type ControllerRenderProps } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useErc20Balance } from '@/hooks/use-erc20-balance';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/ui/form';
-import { Input } from '@/ui/input';
+import { Form, FormField, FormItem } from '@/ui/form';
 import { Button } from '@/ui/button';
-import Big from 'big.js';
-import { FromToChain } from './from-to-chain';
-import { useTeleport } from '@/hooks/use-teleport';
-import { AutoAnimate } from '@/ui/auto-animate';
-import Rive from '@rive-app/react-canvas';
-import teleportingAnimation from '@/assets/teleporting.riv?url';
 import { FancyAvatar } from '../fancy-avatar';
-import tlpTokenLogo from '@/assets/tlp-token-logo.png';
-import type { TransactionReceipt } from 'viem';
-import { isNil } from 'lodash-es';
-import { Undo2 } from 'lucide-react';
-import { useAccount, useBalance } from 'wagmi';
-import { TransactionSuccessAlert } from '../transaction-success-alert';
-import { useSwitchChain } from '@/hooks/use-switch-chain';
+import { useDndMonitor, useDraggable } from '@dnd-kit/core';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
+import { Droppable } from './droppable-chain';
+import { ArrowRight, ArrowRightLeft } from 'lucide-react';
+import { ChainCard } from './chain-card';
+import { DraggableChain } from './draggable-chain';
+import { Slot } from '@radix-ui/react-slot';
+import { cn } from '@/utils/cn';
+import { SwapButton } from './swap-button';
 
-export const BridgeForm = memo(
-  ({
-    fromChain,
-    toChain,
-    isTeleporting,
-    setIsTeleporting,
-  }: {
-    fromChain: EvmTeleporterChain;
-    toChain: EvmTeleporterChain;
-    isTeleporting: boolean;
-    setIsTeleporting: Dispatch<boolean>;
-  }) => {
-    /**
-     * ERC-20 Balances
-     */
-    const { formattedErc20Balance: fromChainFormattedErc20Balance, refetch: refetchFromChainErc20Balance } =
-      useErc20Balance({ chain: fromChain });
-    const { refetch: refetchToChainErc20Balance } = useErc20Balance({ chain: toChain });
+enum DroppableId {
+  FromChain = 'fromChainId',
+  ToChain = 'toChainId',
+}
 
-    /**
-     * Gas Balance
-     */
-    const { address } = useAccount();
-    const { refetch: refetchFromChainGasBalance } = useBalance({
-      address,
-      chainId: Number(fromChain.chainId),
-    });
+type FromToChainFieldName = `fromChainId` | `toChainId`;
 
-    const formSchema = z.object({
-      erc20Amount: z.preprocess(
-        Number,
-        z
-          .number()
-          .min(0, {
-            message: `Amount must be greater than zero.`,
-          })
-          .max(Number(fromChainFormattedErc20Balance), {
-            message: `Amount must not exceed the current balance of ${fromChainFormattedErc20Balance} ${fromChain.contracts.teleportedErc20.symbol}`,
-          })
-          .default(0),
-      ),
-    });
+const FIELD_NAME_TO_DROPPABLE_ID: Record<FromToChainFieldName, DroppableId> = {
+  fromChainId: DroppableId.FromChain,
+  toChainId: DroppableId.ToChain,
+};
 
-    const form = useForm<z.infer<typeof formSchema>>({
-      resolver: zodResolver(formSchema),
-      defaultValues: {
-        erc20Amount: Math.min(Number(fromChainFormattedErc20Balance), 1),
-      },
-    });
+const chainIdSchema = z.enum(TELEPORTER_CONFIG.chainIds);
 
-    const erc20Amount = Number(form.watch('erc20Amount'));
-    const { switchChain } = useSwitchChain();
-    const { teleportToken } = useTeleport({
-      fromChain,
-      toChain,
-      amount: useMemo(
-        () => BigInt(new Big(erc20Amount).mul(10 ** fromChain.contracts.teleportedErc20.decimals).toString()),
-        [erc20Amount],
-      ),
-    });
-    const [transactionReceipt, setTransactionReceipt] = useState<TransactionReceipt>();
+export const BridgeForm = memo(() => {
+  const formSchema = z.object({
+    fromChainId: z.enum(TELEPORTER_CONFIG.chainIds),
+    toChainId: z.enum(TELEPORTER_CONFIG.chainIds),
+    erc20Amount: z.preprocess(
+      Number,
+      z
+        .number()
+        .min(0, {
+          message: `Amount must be greater than zero.`,
+        })
+        .default(0),
+    ),
+  });
 
-    const handleBridgeToken = async (_data: z.infer<typeof formSchema>) => {
-      setIsTeleporting(true);
-      await switchChain(fromChain);
-      const transactionReceipt = await teleportToken();
-      refetchFromChainErc20Balance();
-      refetchFromChainGasBalance();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      erc20Amount: 0,
+      fromChainId: TELEPORTER_CONFIG.chains[0].chainId,
+      toChainId: TELEPORTER_CONFIG.chains[1].chainId,
+    },
+  });
 
-      // There currently isn't any way to detect transaction confirmation on the toChain,
-      // so just refetch balances after a short delay.
-      setTimeout(() => {
-        refetchToChainErc20Balance();
-      }, 5000);
+  const handleChangeChain = (fieldName: FromToChainFieldName, chainId: (typeof TELEPORTER_CONFIG.chainIds)[number]) => {
+    form.setValue(fieldName, chainId);
 
-      setTransactionReceipt(transactionReceipt);
-      setIsTeleporting(false);
-    };
-
-    if (isTeleporting || !isNil(transactionReceipt)) {
-      return (
-        <div className="flex flex-col gap-6">
-          <FromToChain
-            fromChain={fromChain}
-            toChain={toChain}
-          />
-          {isTeleporting ? (
-            <div className="relative">
-              <div className="flex gap-3 items-end justify-center py-5">
-                <span className="font-mono text-3xl">{erc20Amount}</span>
-                <div className="flex gap-1 items-center">
-                  <FancyAvatar
-                    src={tlpTokenLogo}
-                    label={'TLP'}
-                    className="w-6 h-6 -my-3"
-                  />
-                  <span className="text-2xl font-bold text-muted-foreground">TLP</span>
-                </div>
-              </div>
-              <Rive
-                className="h-72 w-[calc(100%+10rem)] absolute -bottom-[100px] -left-[5rem]"
-                src={teleportingAnimation}
-              />
-            </div>
-          ) : (
-            <AutoAnimate>
-              {transactionReceipt && (
-                <div className="flex flex-col items-start gap-6">
-                  <TransactionSuccessAlert
-                    explorerBaseUrl={fromChain.explorerUrl}
-                    txHash={transactionReceipt.transactionHash}
-                    actionLabel="Bridge"
-                  />
-                  <Button
-                    onClick={() => setTransactionReceipt(undefined)}
-                    className="w-full"
-                    variant="secondary"
-                    endIcon={<Undo2 />}
-                  >
-                    Reset
-                  </Button>
-                </div>
-              )}
-            </AutoAnimate>
-          )}
-        </div>
-      );
+    const otherFieldName: FromToChainFieldName = fieldName === 'fromChainId' ? 'toChainId' : 'fromChainId';
+    const otherChainId = form.getValues(otherFieldName);
+    if (chainId === otherChainId) {
+      const newChainId = TELEPORTER_CONFIG.chainIds.find((id) => id !== chainId);
+      if (!newChainId) throw new Error('No other chain found');
+      form.setValue(otherFieldName, newChainId);
     }
+  };
 
+  useDndMonitor({
+    onDragOver: ({ over: _ }) => {
+      // setDropDestinationId(over?.id);
+    },
+    onDragEnd: ({ active, over }) => {
+      const zDraggedChainId = chainIdSchema.safeParse(
+        (active.data?.current as EvmTeleporterChain | undefined)?.chainId,
+      );
+      const zDroppableChainId = chainIdSchema.safeParse(
+        (over?.data?.current as EvmTeleporterChain | undefined)?.chainId,
+      );
+
+      // Dragged a chain onto another chain
+      if (zDraggedChainId.success && zDroppableChainId.success && zDraggedChainId.data !== zDroppableChainId.data) {
+        form.setValue('fromChainId', zDraggedChainId.data);
+        form.setValue('toChainId', zDroppableChainId.data);
+        return;
+      }
+
+      // Dragged a chain onto the "fromChainId" field
+      if (zDraggedChainId.success && over?.id === DroppableId.FromChain) {
+        handleChangeChain('fromChainId', zDraggedChainId.data);
+        return;
+      }
+
+      // Dragged a chain onto the "toChainId" field
+      if (zDraggedChainId.success && over?.id === DroppableId.ToChain) {
+        form.setValue('toChainId', zDraggedChainId.data);
+        handleChangeChain('toChainId', zDraggedChainId.data);
+        return;
+      }
+    },
+  });
+
+  const handleBridgeToken = async (data: z.infer<typeof formSchema>) => {
+    console.log('data', data);
+  };
+
+  const renderChainField = ({
+    field,
+  }: {
+    field:
+      | ControllerRenderProps<z.infer<typeof formSchema>, 'fromChainId'>
+      | ControllerRenderProps<z.infer<typeof formSchema>, 'toChainId'>;
+  }) => {
+    const chain = TELEPORTER_CONFIG.chains.find((chain) => chain.chainId === field.value);
+    if (!chain) {
+      throw new Error(`Chain not found for chainId: ${field.value}`);
+    }
     return (
-      <Form {...form}>
-        <form
-          className="flex flex-col gap-6"
-          onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}
+      <FormItem className="h-full">
+        <Select
+          {...field}
+          onValueChange={(value) => handleChangeChain(field.name, chainIdSchema.parse(value))}
         >
-          <FromToChain
-            fromChain={fromChain}
-            toChain={toChain}
-          />
-          <FormField
-            control={form.control}
-            name="erc20Amount"
-            render={({ field }) => (
-              <FormItem className="flex flex-col gap-2">
-                <div className="flex justify-between items-baseline">
-                  <FormLabel className="flex grow">Amount</FormLabel>
-                  <FormControl className="max-w-40">
-                    <div className="flex gap-2 items-center">
-                      <Input
-                        type="number"
-                        step={0.01}
-                        min={0}
-                        max={Number(fromChainFormattedErc20Balance)}
-                        {...field}
-                      />
-                      <div className="flex gap-1 items-center h-full pointer-events-none">
-                        <FancyAvatar
-                          src={tlpTokenLogo}
-                          label={fromChain.shortName}
-                          className="w-4 h-4 -my-3"
-                        />
-                        <span className="text-lg font-bold text-muted-foreground">TLP</span>
-                      </div>
-                    </div>
-                  </FormControl>
-                </div>
-                <FormControl className="col-span-9">
-                  <Slider
-                    max={Number(fromChainFormattedErc20Balance)}
-                    step={0.01}
-                    defaultValue={[field.value]}
-                    onValueChange={(value) => field.onChange(value[0])}
-                    value={[field.value]}
+          <Droppable id={FIELD_NAME_TO_DROPPABLE_ID[field.name]}>
+            <SelectTrigger className="h-full p-0">
+              <ChainCard
+                chain={chain}
+                className="border-none bg-transparent h-full w-full"
+              />
+            </SelectTrigger>
+          </Droppable>
+          <SelectContent>
+            {TELEPORTER_CONFIG.chains.map((chain) => (
+              <SelectItem
+                value={chain.chainId}
+                key={chain.chainId}
+              >
+                <div className="flex items-center space-x-2 flex-nowrap p-1">
+                  <FancyAvatar
+                    src={chain.logoUrl}
+                    label={chain.name}
+                    className="w-6 h-6"
                   />
-                </FormControl>
-                <FormDescription />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button className="w-full">Bridge Tokens!</Button>
-        </form>
-      </Form>
+                  <p>{chain.name}</p>
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </FormItem>
     );
-  },
-);
+  };
+
+  return (
+    <Form {...form}>
+      <form
+        className="flex flex-col gap-6"
+        onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}
+      >
+        <div className="w-full flex gap-2">
+          <div className="grow basis-0">
+            <FormField
+              control={form.control}
+              name={'fromChainId'}
+              render={renderChainField}
+            />
+          </div>
+          <div className="flex items-center">
+            <SwapButton
+              onClick={() => {
+                const prevFromChainId = form.getValues('fromChainId');
+                const prevToChainId = form.getValues('toChainId');
+                form.setValue('fromChainId', prevToChainId);
+                form.setValue('toChainId', prevFromChainId);
+              }}
+            />
+          </div>
+          <div className="grow basis-0">
+            <FormField
+              control={form.control}
+              name={'toChainId'}
+              render={renderChainField}
+            />
+          </div>
+        </div>
+
+        <Button className="w-full">Bridge Tokens!</Button>
+      </form>
+    </Form>
+  );
+});
 BridgeForm.displayName = 'BridgeForm';
