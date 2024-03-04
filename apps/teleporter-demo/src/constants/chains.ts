@@ -3,6 +3,7 @@ import { FAUCET_URL } from './urls';
 import { TELEPORTER_BRIDGE_ABI } from './abis/teleporter-bridge.abi';
 import { MINTABLE_ERC20_ABI } from './abis/mintable-erc-20.abi';
 import { TELEPORTED_ERC20_ABI } from './abis/teleported-erc-20.abi';
+import { mapChainToWagmiChain } from '@/utils/map-chain-to-wagmi-chain';
 
 export const C_CHAIN = {
   chainId: '43113',
@@ -133,9 +134,21 @@ export const ECHO_CHAIN = {
   },
 } as const satisfies EvmChain;
 
+const teleporterChains = [C_CHAIN, DISPATCH_CHAIN, ECHO_CHAIN] as const satisfies readonly EvmChain[];
+// Tuple needed for zod config in BridgeProvider
+const chainIds = [teleporterChains[0].chainId, teleporterChains[1].chainId, teleporterChains[2].chainId] as const;
+// Tuple is needed for wagmi
+const wagmiChains = [
+  mapChainToWagmiChain(teleporterChains[0]),
+  mapChainToWagmiChain(teleporterChains[1]),
+  mapChainToWagmiChain(teleporterChains[2]),
+] as const;
+
 export const TELEPORTER_CONFIG = {
   tlpMintChain: C_CHAIN,
-  chains: [C_CHAIN, DISPATCH_CHAIN, ECHO_CHAIN] as const satisfies readonly EvmChain[],
+  chains: teleporterChains,
+  chainIds,
+  wagmiChains,
 } as const;
 
-export type EvmTeleporterChain = (typeof TELEPORTER_CONFIG.chains)[number];
+export type EvmTeleporterChain = (typeof teleporterChains)[number];

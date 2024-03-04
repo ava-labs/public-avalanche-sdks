@@ -1,7 +1,16 @@
 'use client';
 
 import { cn } from '@/utils/cn';
-import React, { createContext, useState, useContext, useRef, useEffect } from 'react';
+import { Slot } from '@radix-ui/react-slot';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useRef,
+  useEffect,
+  type HTMLAttributes,
+  type PropsWithChildren,
+} from 'react';
 
 const MouseEnterContext = createContext<[boolean, React.Dispatch<React.SetStateAction<boolean>>] | undefined>(
   undefined,
@@ -9,13 +18,12 @@ const MouseEnterContext = createContext<[boolean, React.Dispatch<React.SetStateA
 
 export const ThreeDCardContainer = ({
   children,
-  className,
-  containerClassName,
-}: {
-  children?: React.ReactNode;
-  className?: string;
-  containerClassName?: string;
-}) => {
+  innerProps,
+  outerProps,
+}: PropsWithChildren<{
+  innerProps?: HTMLAttributes<HTMLDivElement>;
+  outerProps?: HTMLAttributes<HTMLDivElement>;
+}>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isMouseEntered, setIsMouseEntered] = useState(false);
 
@@ -40,9 +48,11 @@ export const ThreeDCardContainer = ({
   return (
     <MouseEnterContext.Provider value={[isMouseEntered, setIsMouseEntered]}>
       <div
-        className={cn('flex items-center justify-center', containerClassName)}
+        {...outerProps}
+        className={cn('flex items-center justify-center', outerProps?.className)}
         style={{
-          perspective: '10px',
+          perspective: '80px',
+          ...outerProps?.style,
         }}
       >
         <div
@@ -50,9 +60,14 @@ export const ThreeDCardContainer = ({
           onMouseEnter={handleMouseEnter}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
-          className={cn('flex items-center justify-center relative transition-all duration-200 ease-linear', className)}
+          {...innerProps}
+          className={cn(
+            'flex items-center justify-center relative transition-all duration-200 ease-linear',
+            innerProps?.className,
+          )}
           style={{
             transformStyle: 'preserve-3d',
+            ...innerProps?.style,
           }}
         >
           {children}
@@ -71,7 +86,7 @@ export const ThreeDCardBody = ({ children, className }: { children: React.ReactN
 };
 
 export const ThreeDCardItem = ({
-  as: Tag = 'div',
+  asChild = false,
   children,
   className,
   translateX = 0,
@@ -82,7 +97,7 @@ export const ThreeDCardItem = ({
   rotateZ = 0,
   ...rest
 }: {
-  as?: React.ElementType;
+  asChild?: boolean;
   children: React.ReactNode;
   className?: string;
   translateX?: number | string;
@@ -108,14 +123,15 @@ export const ThreeDCardItem = ({
     }
   };
 
+  const Comp = asChild ? Slot : 'div';
   return (
-    <Tag
+    <Comp
       ref={ref}
       className={cn('w-fit transition duration-200 ease-linear', className)}
       {...rest}
     >
       {children}
-    </Tag>
+    </Comp>
   );
 };
 

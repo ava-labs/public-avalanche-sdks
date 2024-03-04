@@ -12,7 +12,11 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
-        argsIgnorePattern: '^_', // Ignore unused variables whose name starts with `_`
+        // Ignore unused variables whose name starts with `_`,
+        argsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
       },
     ],
     'unicorn/filename-case': [
