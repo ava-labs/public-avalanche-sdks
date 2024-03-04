@@ -6,7 +6,7 @@ import { TELEPORTED_ERC20_ABI } from './abis/teleported-erc-20.abi';
 
 export const C_CHAIN = {
   chainId: '43113',
-  name: 'C-Chain',
+  name: 'Avalanche C-Chain',
   shortName: 'C-Chain',
   subnetId: '11111111111111111111111111111111LpoYY',
   platformChainId: 'yH8D7ThNJkxmtkuv2jgBa4P1Rn3Qpr4pPr7QYNfcdoS6k6HWp',
