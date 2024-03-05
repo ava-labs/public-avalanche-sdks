@@ -53,14 +53,17 @@ export const DraggableChainCard = memo(
         {...attributes}
         className={cn(chain === activelyDraggedChain ? '!opacity-50 grayscale' : '!opacity-100', rest.className)}
       >
-        <ThreeDCardContainer>
+        <ThreeDCardContainer
+          outerProps={{ className: cn('w-full h-full') }}
+          innerProps={{ className: cn('w-full h-full') }}
+        >
           <DroppableChain
             chain={chain}
-            className="relative group"
+            className="relative group w-full"
           >
-            <Card>
+            <Card className="w-full h-full">
               <GripVertical className="absolute top-2 left-2 text-primary-foreground opacity-20 group-hover:opacity-100 transition-opacity duration-300" />
-              <CardContent>
+              <CardContent className="w-full flex justify-center">
                 <ThreeDCardBody>
                   <ThreeDCardItem translateZ={70}>
                     <div className="flex flex-col items-center gap-2 whitespace-break-spaces">
