@@ -28,7 +28,7 @@ export const TeleporterV2Page = memo(() => {
             <CardHeader>
               <CardTitle>Bridge</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <BridgeForm />
             </CardContent>
           </Card>

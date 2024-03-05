@@ -1,4 +1,4 @@
-import { type PropsWithChildren, createContext, memo, useMemo, useCallback, useState } from 'react';
+import { type PropsWithChildren, createContext, memo, useMemo, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { TELEPORTER_CONFIG, type EvmTeleporterChain } from '@/constants/chains';
@@ -17,8 +17,7 @@ const BridgeContext = createContext<
   | {
       fromChain: EvmTeleporterChain;
       toChain: EvmTeleporterChain;
-      setFromChain: (chain: EvmTeleporterChain) => void;
-      setToChain: (chain: EvmTeleporterChain) => void;
+      setChainValue: (fieldName: 'fromChainId' | 'toChainId', newChain: EvmTeleporterChain) => void;
       erc20Amount?: string;
       form: UseFormReturn<z.infer<typeof formSchema>>;
       activeDrag: {
@@ -57,26 +56,24 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
   const fromChain = useMemo(() => getChain(fromChainId), [fromChainId]);
   const toChain = useMemo(() => getChain(toChainId), [toChainId]);
 
-  const setFromChain = useCallback(
-    (newChain: EvmTeleporterChain) => {
-      // Swap toChain if it is the same as the new fromChain
-      if (toChain && newChain.chainId === toChain.chainId) {
-        form.setValue('toChainId', fromChain.chainId);
-      }
-      form.setValue('fromChainId', newChain.chainId);
-    },
-    [form.setValue, toChain, fromChain],
-  );
-  const setToChain = useCallback(
-    (newChain: EvmTeleporterChain) => {
-      // Swap fromChain if it is the same as the new toChain
-      if (fromChain && newChain.chainId === fromChain.chainId) {
-        form.setValue('fromChainId', toChain.chainId);
-      }
-      form.setValue('toChainId', newChain.chainId);
-    },
-    [form.setValue, toChain, fromChain],
-  );
+  const setFromChain = (newChain: EvmTeleporterChain) => {
+    // Swap toChain if it is the same as the new fromChain
+    if (toChain && newChain.chainId === toChain.chainId) {
+      form.setValue('toChainId', fromChain.chainId);
+    }
+    form.setValue('fromChainId', newChain.chainId);
+  };
+  const setToChain = (newChain: EvmTeleporterChain) => {
+    // Swap fromChain if it is the same as the new toChain
+    if (fromChain && newChain.chainId === fromChain.chainId) {
+      form.setValue('fromChainId', toChain.chainId);
+    }
+    form.setValue('toChainId', newChain.chainId);
+  };
+  const setChainValue = (fieldName: 'fromChainId' | 'toChainId', newChain: EvmTeleporterChain) => {
+    fieldName === 'fromChainId' && setFromChain(newChain);
+    fieldName === 'toChainId' && setToChain(newChain);
+  };
 
   /**
    * The active drag state is used to track the chain that is being dragged and the chain that it is being dragged over.
@@ -90,9 +87,8 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
     <BridgeContext.Provider
       value={{
         fromChain,
-        setFromChain,
+        setChainValue,
         toChain,
-        setToChain,
         form,
         erc20Amount: undefined,
         activeDrag: {

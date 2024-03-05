@@ -10,7 +10,7 @@ import { DroppableId } from './bridge-form';
 import { Label } from '@/ui/label';
 
 export const ChainDragOverlay = memo(() => {
-  const { activeDrag, setFromChain, setToChain } = useBridgeContext();
+  const { activeDrag, setChainValue } = useBridgeContext();
 
   useDndMonitor({
     onDragStart: ({ active }) => {
@@ -54,8 +54,8 @@ export const ChainDragOverlay = memo(() => {
     },
     onDragEnd: () => {
       // Set the chains in the bridge form
-      activeDrag.fromChain && setFromChain(activeDrag.fromChain);
-      activeDrag.toChain && setToChain(activeDrag.toChain);
+      activeDrag.fromChain && setChainValue('fromChainId', activeDrag.fromChain);
+      activeDrag.toChain && setChainValue('toChainId', activeDrag.toChain);
 
       // Reset the active drag state
       activeDrag.setActiveDragChain(undefined);

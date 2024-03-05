@@ -8,7 +8,7 @@ import { useBridgeContext } from '../providers/bridge-provider';
 export const SwapButton = ({ className, ...rest }: ButtonProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const { toChain, setFromChain } = useBridgeContext();
+  const { toChain, setChainValue } = useBridgeContext();
 
   return (
     <Button
@@ -17,7 +17,7 @@ export const SwapButton = ({ className, ...rest }: ButtonProps) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => {
-        setFromChain(toChain);
+        setChainValue('fromChainId', toChain);
       }}
       {...rest}
     >
