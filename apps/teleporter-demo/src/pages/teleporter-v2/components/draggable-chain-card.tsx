@@ -28,7 +28,7 @@ const DroppableChain = ({ chain, ...rest }: { chain: EvmTeleporterChain } & HTML
       ref={setNodeRef}
       {...rest}
       className={cn(
-        { 'bg-primary/5 outline-primary outline-dashed outline-4': isOverByDifferentChain },
+        { 'bg-primary/10 outline-primary outline-dashed outline-4': isOverByDifferentChain },
         rest.className,
       )}
     />
@@ -61,8 +61,11 @@ export const DraggableChainCard = memo(
             chain={chain}
             className="relative group w-full"
           >
-            <Card className="w-full h-full">
-              <GripVertical className="absolute top-2 left-2 text-primary-foreground opacity-20 group-hover:opacity-100 transition-opacity duration-300" />
+            <Card
+              className="w-full h-full"
+              variant="outlined"
+            >
+              <GripVertical className="absolute top-2 left-2 text-foreground opacity-20 group-hover:opacity-100 transition-opacity duration-300" />
               <CardContent className="w-full flex justify-center">
                 <ThreeDCardBody>
                   <ThreeDCardItem translateZ={70}>

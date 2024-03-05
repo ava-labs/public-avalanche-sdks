@@ -11,6 +11,7 @@ const formSchema = z.object({
   toChainId: z.enum(TELEPORTER_CONFIG.chainIds),
   erc20Amount: z.number(),
 });
+export type BridgeFormValues = z.infer<typeof formSchema>;
 
 const BridgeContext = createContext<
   | {

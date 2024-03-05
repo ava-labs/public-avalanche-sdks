@@ -7,8 +7,8 @@ import { mapChainToWagmiChain } from '@/utils/map-chain-to-wagmi-chain';
 
 export const C_CHAIN = {
   chainId: '43113',
-  name: 'Avalanche C-Chain',
-  shortName: 'C-Chain',
+  name: 'Avalanche C‑Chain', // Be careful to keep the non-breaking hyphen here
+  shortName: 'C‑Chain', // Be careful to keep the non-breaking hyphen here
   subnetId: '11111111111111111111111111111111LpoYY',
   platformChainId: 'yH8D7ThNJkxmtkuv2jgBa4P1Rn3Qpr4pPr7QYNfcdoS6k6HWp',
   platformChainIdHex: '0x7fc93d85c6d62c5b2ac0b519c87010ea5294012d1e407030d6acd0021cac10d5',
