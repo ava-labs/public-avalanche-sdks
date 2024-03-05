@@ -7,6 +7,7 @@ export const Droppable = memo(
   ({
     id,
     data,
+    className,
     ...rest
   }: HTMLAttributes<HTMLDivElement> &
     Pick<UseDroppableArguments, 'id' | 'data'> & {
@@ -20,9 +21,12 @@ export const Droppable = memo(
     return (
       <Slot
         ref={setNodeRef}
-        className={cn({
-          'bg-primary/10 outline-primary outline-dashed outline-4 border-transparent': isOver,
-        })}
+        className={cn(
+          {
+            'bg-primary/10 outline-primary outline-dashed outline-4 border-transparent': isOver,
+          },
+          className,
+        )}
         {...rest}
       />
     );

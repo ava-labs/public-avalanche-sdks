@@ -1,5 +1,4 @@
 import { TELEPORTER_CONFIG } from '@/constants/chains';
-import { Card, CardContent, CardHeader, CardTitle } from '@/ui/card';
 import { memo } from 'react';
 import { cn } from '@/utils/cn';
 import { DndContext, pointerWithin } from '@dnd-kit/core';
@@ -24,14 +23,7 @@ export const TeleporterV2Page = memo(() => {
               );
             })}
           </div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Bridge</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <BridgeForm />
-            </CardContent>
-          </Card>
+          <BridgeForm />
         </div>
       </DndContext>
     </BridgeProvider>
