@@ -40,7 +40,7 @@ export const BridgeForm = memo(() => {
       throw new Error(`Chain not found for chainId: ${field.value}`);
     }
     return (
-      <FormItem className="col-span-12 grid grid-cols-12 gap-2">
+      <FormItem className="col-span-12 grid grid-cols-12 gap-2 space-y-0">
         <FormLabel className="col-span-6">{field.name === 'fromChainId' ? 'From' : 'To'}</FormLabel>
         <FormControl>
           <Select
@@ -101,10 +101,13 @@ export const BridgeForm = memo(() => {
                   render={renderChainField}
                 />
 
-                <div className="col-span-12 text-sm text-right text-gray-400">
-                  <div>Balance: {formatStringNumber(maxErc20Amount)}</div>
-                </div>
-                <div className="col-span-12 grid grid-cols-12 gap-y-8 gap-x-4">
+                <div className="col-span-12 grid grid-cols-12 gap-x-4">
+                  <Typography
+                    size="xs"
+                    className="col-span-12 text-muted-foreground text-right pb-1"
+                  >
+                    Balance: {formatStringNumber(maxErc20Amount)} {fromChain.contracts.teleportedErc20.symbol}
+                  </Typography>
                   <div className="flex justify-end items-center col-span-3 sm:col-span-6">
                     <div className="flex gap-1 items-center h-full pl-2">
                       <FancyAvatar
