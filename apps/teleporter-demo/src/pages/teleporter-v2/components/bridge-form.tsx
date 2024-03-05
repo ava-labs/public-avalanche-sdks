@@ -2,41 +2,28 @@ import { FancyAvatar } from '@/components/fancy-avatar';
 import { memo, type HTMLAttributes } from 'react';
 import { useBridgeContext } from '../providers/bridge-provider';
 import { Typography } from '@/ui/typography';
-import { useDroppable, useDndMonitor } from '@dnd-kit/core';
+import { useDroppable } from '@dnd-kit/core';
 import type { EvmTeleporterChain } from '@/constants/chains';
 import { cn } from '@/utils/cn';
 import { Card, CardContent } from '@/ui/card';
-import { isEvmTeleporterDndData } from '../utils/type-guards';
 import { SwapButton } from './swap-button';
+
+export enum DroppableId {
+  From = 'from',
+  To = 'to',
+}
+
+const DROPPABLE_ID_MAP = {
+  from: DroppableId.From,
+  to: DroppableId.To,
+};
 
 const DroppableFromToChain = ({
   fromOrTo,
   chain,
   ...rest
 }: { fromOrTo: 'from' | 'to'; chain: EvmTeleporterChain } & HTMLAttributes<HTMLDivElement>) => {
-  const id = `droppable-${fromOrTo}`;
-  const { isOver, setNodeRef } = useDroppable({
-    id,
-  });
-  const { setFromChain, setToChain } = useBridgeContext();
-  useDndMonitor({
-    onDragEnd: ({ active, over }) => {
-      // If one chain is dropped on top of another, set the from and to chain IDs in the form.
-      const activeChain = isEvmTeleporterDndData(active?.data.current) ? active.data.current.chain : undefined;
-      if (!activeChain || !over || over.id !== id) {
-        return;
-      }
-
-      if (fromOrTo === 'from') {
-        setFromChain(activeChain);
-        return;
-      }
-      if (fromOrTo === 'to') {
-        setToChain(activeChain);
-        return;
-      }
-    },
-  });
+  const { isOver, setNodeRef } = useDroppable({ id: DROPPABLE_ID_MAP[fromOrTo] });
 
   return (
     <Card

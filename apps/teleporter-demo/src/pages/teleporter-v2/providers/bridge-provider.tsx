@@ -1,4 +1,4 @@
-import { type PropsWithChildren, createContext, memo, useMemo, useCallback } from 'react';
+import { type PropsWithChildren, createContext, memo, useMemo, useCallback, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { TELEPORTER_CONFIG, type EvmTeleporterChain } from '@/constants/chains';
@@ -20,6 +20,14 @@ const BridgeContext = createContext<
       setToChain: (chain: EvmTeleporterChain) => void;
       erc20Amount?: string;
       form: UseFormReturn<z.infer<typeof formSchema>>;
+      activeDrag: {
+        activeDragChain: EvmTeleporterChain | undefined;
+        setActiveDragChain: (chain: EvmTeleporterChain | undefined) => void;
+        fromChain: EvmTeleporterChain | undefined;
+        setFromChain: (chain: EvmTeleporterChain | undefined) => void;
+        toChain: EvmTeleporterChain | undefined;
+        setToChain: (chain: EvmTeleporterChain | undefined) => void;
+      };
     }
   | undefined
 >(undefined);
@@ -48,25 +56,68 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
 
   const fromChain = useMemo(() => getChain(fromChainId), [fromChainId]);
   const toChain = useMemo(() => getChain(toChainId), [toChainId]);
-  const setFromChain = useCallback(
-    (newChain: EvmTeleporterChain) => {
-      const prevChain = fromChain;
-      form.setValue('fromChainId', newChain.chainId);
-      if (newChain === toChain) {
-        form.setValue('toChainId', prevChain.chainId);
+  const setChain = useCallback(
+    (
+      newChain: EvmTeleporterChain,
+      {
+        prevChain,
+        prevOtherChain,
+        chainSetter,
+        otherChainSetter,
+      }: {
+        prevChain: EvmTeleporterChain;
+        prevOtherChain: EvmTeleporterChain;
+        chainSetter: (chain: EvmTeleporterChain) => void;
+        otherChainSetter: (chain: EvmTeleporterChain) => void;
+      },
+    ) => {
+      chainSetter(newChain);
+      if (prevChain && newChain === prevOtherChain) {
+        otherChainSetter(prevChain);
       }
     },
-    [form.setValue, toChain, fromChain],
+    [toChain, fromChain],
   );
+
   const setToChain = useCallback(
     (newChain: EvmTeleporterChain) => {
-      const prevChain = toChain;
-      form.setValue('toChainId', newChain.chainId);
-      if (newChain === fromChain) {
-        form.setValue('fromChainId', prevChain.chainId);
-      }
+      setChain(newChain, {
+        chainSetter: (chain) => chain && form.setValue('toChainId', chain.chainId),
+        otherChainSetter: (chain) => chain && form.setValue('fromChainId', chain.chainId),
+        prevChain: toChain,
+        prevOtherChain: fromChain,
+      });
     },
-    [form.setValue, toChain, fromChain],
+    [form.setValue, toChain, fromChain, setChain],
+  );
+
+  const setFromChain = useCallback(
+    (newChain: EvmTeleporterChain) => {
+      setChain(newChain, {
+        chainSetter: (chain) => chain && form.setValue('fromChainId', chain.chainId),
+        otherChainSetter: (chain) => chain && form.setValue('toChainId', chain.chainId),
+        prevChain: fromChain,
+        prevOtherChain: toChain,
+      });
+    },
+    [form.setValue, toChain, fromChain, setChain],
+  );
+
+  const [activeDragChain, setActiveDragChain] = useState<EvmTeleporterChain | undefined>();
+  const [activeDragFromChain, setActiveDragFromChain] = useState<EvmTeleporterChain | undefined>();
+  const [activeDragToChain, setActiveDragToChain] = useState<EvmTeleporterChain | undefined>();
+
+  const handleSetActiveDragFromChain = useCallback(
+    (newChain?: EvmTeleporterChain) => {
+      setActiveDragFromChain(newChain);
+    },
+    [form.setValue, toChain, fromChain, setChain],
+  );
+  const handleSetActiveDragToChain = useCallback(
+    (newChain?: EvmTeleporterChain) => {
+      setActiveDragToChain(newChain);
+    },
+    [form.setValue, toChain, fromChain, setChain],
   );
 
   return (
@@ -78,6 +129,14 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
         setToChain,
         form,
         erc20Amount: undefined,
+        activeDrag: {
+          activeDragChain,
+          setActiveDragChain,
+          fromChain: activeDragFromChain,
+          setFromChain: handleSetActiveDragFromChain,
+          toChain: activeDragToChain,
+          setToChain: handleSetActiveDragToChain,
+        },
       }}
     >
       {children}
