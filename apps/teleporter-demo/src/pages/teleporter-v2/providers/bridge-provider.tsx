@@ -53,72 +53,37 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
 
   const fromChainId = form.watch('fromChainId');
   const toChainId = form.watch('toChainId');
-
   const fromChain = useMemo(() => getChain(fromChainId), [fromChainId]);
   const toChain = useMemo(() => getChain(toChainId), [toChainId]);
-  const setChain = useCallback(
-    (
-      newChain: EvmTeleporterChain,
-      {
-        prevChain,
-        prevOtherChain,
-        chainSetter,
-        otherChainSetter,
-      }: {
-        prevChain: EvmTeleporterChain;
-        prevOtherChain: EvmTeleporterChain;
-        chainSetter: (chain: EvmTeleporterChain) => void;
-        otherChainSetter: (chain: EvmTeleporterChain) => void;
-      },
-    ) => {
-      chainSetter(newChain);
-      if (prevChain && newChain === prevOtherChain) {
-        otherChainSetter(prevChain);
-      }
-    },
-    [toChain, fromChain],
-  );
-
-  const setToChain = useCallback(
-    (newChain: EvmTeleporterChain) => {
-      setChain(newChain, {
-        chainSetter: (chain) => chain && form.setValue('toChainId', chain.chainId),
-        otherChainSetter: (chain) => chain && form.setValue('fromChainId', chain.chainId),
-        prevChain: toChain,
-        prevOtherChain: fromChain,
-      });
-    },
-    [form.setValue, toChain, fromChain, setChain],
-  );
 
   const setFromChain = useCallback(
     (newChain: EvmTeleporterChain) => {
-      setChain(newChain, {
-        chainSetter: (chain) => chain && form.setValue('fromChainId', chain.chainId),
-        otherChainSetter: (chain) => chain && form.setValue('toChainId', chain.chainId),
-        prevChain: fromChain,
-        prevOtherChain: toChain,
-      });
+      // Swap toChain if it is the same as the new fromChain
+      if (toChain && newChain.chainId === toChain.chainId) {
+        form.setValue('toChainId', fromChain.chainId);
+      }
+      form.setValue('fromChainId', newChain.chainId);
     },
-    [form.setValue, toChain, fromChain, setChain],
+    [form.setValue, toChain, fromChain],
+  );
+  const setToChain = useCallback(
+    (newChain: EvmTeleporterChain) => {
+      // Swap fromChain if it is the same as the new toChain
+      if (fromChain && newChain.chainId === fromChain.chainId) {
+        form.setValue('fromChainId', toChain.chainId);
+      }
+      form.setValue('toChainId', newChain.chainId);
+    },
+    [form.setValue, toChain, fromChain],
   );
 
+  /**
+   * The active drag state is used to track the chain that is being dragged and the chain that it is being dragged over.
+   */
   const [activeDragChain, setActiveDragChain] = useState<EvmTeleporterChain | undefined>();
+  // The pending from and to chains that will be committed when the drag is dropped.
   const [activeDragFromChain, setActiveDragFromChain] = useState<EvmTeleporterChain | undefined>();
   const [activeDragToChain, setActiveDragToChain] = useState<EvmTeleporterChain | undefined>();
-
-  const handleSetActiveDragFromChain = useCallback(
-    (newChain?: EvmTeleporterChain) => {
-      setActiveDragFromChain(newChain);
-    },
-    [form.setValue, toChain, fromChain, setChain],
-  );
-  const handleSetActiveDragToChain = useCallback(
-    (newChain?: EvmTeleporterChain) => {
-      setActiveDragToChain(newChain);
-    },
-    [form.setValue, toChain, fromChain, setChain],
-  );
 
   return (
     <BridgeContext.Provider
@@ -133,9 +98,9 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
           activeDragChain,
           setActiveDragChain,
           fromChain: activeDragFromChain,
-          setFromChain: handleSetActiveDragFromChain,
+          setFromChain: setActiveDragFromChain,
           toChain: activeDragToChain,
-          setToChain: handleSetActiveDragToChain,
+          setToChain: setActiveDragToChain,
         },
       }}
     >
