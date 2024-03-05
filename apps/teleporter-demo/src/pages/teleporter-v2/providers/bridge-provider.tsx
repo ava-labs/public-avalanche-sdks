@@ -6,6 +6,10 @@ import { useContextStrict } from '@/hooks/use-context-strict';
 import { z } from 'zod';
 import { useForm, type UseFormReturn } from 'react-hook-form';
 import { useErc20Balance } from '@/hooks/use-erc20-balance';
+import { useAccount, useBalance } from 'wagmi';
+import { useTeleport } from '@/hooks/use-teleport';
+import type { TransactionReceipt } from 'viem';
+import Big from 'big.js';
 
 const formSchema = z.object({
   fromChainId: z.enum(TELEPORTER_CONFIG.chainIds),
@@ -21,6 +25,9 @@ const BridgeContext = createContext<
       setChainValue: (fieldName: 'fromChainId' | 'toChainId', newChain: EvmTeleporterChain) => void;
       maxErc20Amount: string;
       form: UseFormReturn<z.infer<typeof formSchema>>;
+      handleBridgeToken: (data: z.infer<typeof formSchema>) => Promise<void>;
+      isTeleporting: boolean;
+      transactionReceipt?: TransactionReceipt;
       activeDrag: {
         activeDragChain: EvmTeleporterChain | undefined;
         setActiveDragChain: (chain: EvmTeleporterChain | undefined) => void;
@@ -82,8 +89,21 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
     fieldName === 'toChainId' && setToChain(newChain);
   };
 
-  const { formattedErc20Balance } = useErc20Balance({ chain: fromChain });
+  /**
+   * ERC-20 Balances
+   */
+  const { formattedErc20Balance, refetch: refetchFromChainErc20Balance } = useErc20Balance({ chain: fromChain });
   useEffect(() => setMaxErc20Amount(formattedErc20Balance ?? '0'), [formattedErc20Balance]);
+  const { refetch: refetchToChainErc20Balance } = useErc20Balance({ chain: toChain });
+
+  /**
+   * Gas Balance
+   */
+  const { address } = useAccount();
+  const { refetch: refetchFromChainGasBalance } = useBalance({
+    address,
+    chainId: Number(fromChain.chainId),
+  });
 
   /**
    * The active drag state is used to track the chain that is being dragged and the chain that it is being dragged over.
@@ -93,6 +113,36 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
   const [activeDragFromChain, setActiveDragFromChain] = useState<EvmTeleporterChain | undefined>();
   const [activeDragToChain, setActiveDragToChain] = useState<EvmTeleporterChain | undefined>();
 
+  /**
+   * Handle Bridging ERC-20 Tokens
+   */
+  const [isTeleporting, setIsTeleporting] = useState(false);
+  const erc20Amount = Number(form.watch('erc20Amount'));
+  const { teleportToken } = useTeleport({
+    fromChain,
+    toChain,
+    amount: useMemo(
+      () => BigInt(new Big(erc20Amount).mul(10 ** fromChain.contracts.teleportedErc20.decimals).toString()),
+      [erc20Amount],
+    ),
+  });
+  const [transactionReceipt, setTransactionReceipt] = useState<TransactionReceipt>();
+  const handleBridgeToken = async (_data: z.infer<typeof formSchema>) => {
+    setIsTeleporting(true);
+    const transactionReceipt = await teleportToken();
+    refetchFromChainErc20Balance();
+    refetchFromChainGasBalance();
+
+    // There currently isn't any way to detect transaction confirmation on the toChain,
+    // so just refetch balances after a short delay.
+    setTimeout(() => {
+      refetchToChainErc20Balance();
+    }, 5000);
+
+    setTransactionReceipt(transactionReceipt);
+    setIsTeleporting(false);
+  };
+
   return (
     <BridgeContext.Provider
       value={{
@@ -101,6 +151,9 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
         toChain,
         form,
         maxErc20Amount,
+        isTeleporting,
+        handleBridgeToken,
+        transactionReceipt,
         activeDrag: {
           activeDragChain,
           setActiveDragChain,

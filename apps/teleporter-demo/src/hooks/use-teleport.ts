@@ -37,64 +37,67 @@ export const useTeleport = ({
   });
 
   const { writeContractAsync } = useWriteContract({});
-  const { waitForTransactionReceipt } = useWaitForTransactionReceiptAsync();
+  const { transactionReceipt, waitForTransactionReceipt } = useWaitForTransactionReceiptAsync();
+
+  const teleportToken = async () => {
+    try {
+      /**
+       * Validate inputs.
+       */
+      if (!address) {
+        throw new Error('Missing address.');
+      }
+      if (!amount) {
+        throw new Error('Missing amount.');
+      }
+
+      /**
+       * Get approval if allowance is insuffient.
+       */
+      const { data: currentAllowance } = await fetchAllowance();
+      if (isNil(currentAllowance)) {
+        throw new Error('Unable to detect current allowance.');
+      }
+
+      const hasSufficientAllowance = amount < currentAllowance;
+      if (!hasSufficientAllowance) {
+        await approve();
+        await fetchAllowance();
+      }
+
+      /**
+       * Teleport tokens.
+       */
+      setTimeout(refetchTxs, 3000); // Wait since glacier is behind the RPC by a few seconds
+      const hash = await writeContractAsync({
+        address: fromChain.contracts.bridge.address,
+        functionName: 'bridgeTokens',
+        abi: TELEPORTER_BRIDGE_ABI,
+        args: [
+          toChain.platformChainIdHex,
+          toChain.contracts.bridge.address,
+          fromChain.contracts.teleportedErc20.address,
+          address,
+          amount,
+          BigInt(0),
+          BigInt(0),
+        ],
+        chainId: Number(fromChain.chainId),
+      });
+      console.info('Bridge pending.', hash);
+      const transactionReceipt = await waitForTransactionReceipt({ hash });
+      console.info('Bridge successful.', hash, transactionReceipt);
+      return transactionReceipt;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      console.error(e?.message ?? e);
+
+      return undefined;
+    }
+  };
 
   return {
-    teleportToken: async () => {
-      try {
-        /**
-         * Validate inputs.
-         */
-        if (!address) {
-          throw new Error('Missing address.');
-        }
-        if (!amount) {
-          throw new Error('Missing amount.');
-        }
-
-        /**
-         * Get approval if allowance is insuffient.
-         */
-        const { data: currentAllowance } = await fetchAllowance();
-        if (isNil(currentAllowance)) {
-          throw new Error('Unable to detect current allowance.');
-        }
-
-        const hasSufficientAllowance = amount < currentAllowance;
-        if (!hasSufficientAllowance) {
-          await approve();
-          await fetchAllowance();
-        }
-
-        /**
-         * Teleport tokens.
-         */
-        setTimeout(refetchTxs, 3000); // Wait since glacier is behind the RPC by a few seconds
-        const hash = await writeContractAsync({
-          address: fromChain.contracts.bridge.address,
-          functionName: 'bridgeTokens',
-          abi: TELEPORTER_BRIDGE_ABI,
-          args: [
-            toChain.platformChainIdHex,
-            toChain.contracts.bridge.address,
-            fromChain.contracts.teleportedErc20.address,
-            address,
-            amount,
-            BigInt(0),
-            BigInt(0),
-          ],
-          chainId: Number(fromChain.chainId),
-        });
-        console.info('Bridge pending.', hash);
-        await waitForTransactionReceipt({ hash });
-        console.info('Bridge successful.', hash);
-        return hash;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (e: any) {
-        console.error(e?.message ?? e);
-
-        return undefined;
-      }
-    },
+    transactionReceipt,
+    teleportToken,
   };
 };

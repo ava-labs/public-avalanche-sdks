@@ -13,6 +13,7 @@ import tlpTokenLogo from '@/assets/tlp-token-logo.png';
 import { Button } from '@/ui/button';
 import { Card, CardContent } from '@/ui/card';
 import { formatStringNumber } from '@/utils/format-string';
+import { FlashingUpdate } from '@/components/flashing-update';
 
 export enum DroppableId {
   From = 'from',
@@ -25,7 +26,7 @@ const FIELD_NAME_TO_DROPPABLE_ID_MAP = {
 } as const;
 
 export const BridgeForm = memo(() => {
-  const { setChainValue, fromChain, maxErc20Amount } = useBridgeContext();
+  const { setChainValue, fromChain, maxErc20Amount, handleBridgeToken } = useBridgeContext();
   const { form } = useBridgeContext();
 
   const renderChainField = ({
@@ -90,8 +91,8 @@ export const BridgeForm = memo(() => {
 
   return (
     <Form {...form}>
-      <form>
-        <Droppable id={FIELD_NAME_TO_DROPPABLE_ID_MAP['fromChainId']}>
+      <form onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}>
+        <Droppable id={DroppableId.From}>
           <Card className="border-0 bg-neutral-900 rounded-b-none">
             <CardContent>
               <div className="grid grid-cols-12 gap-y-4 gap-x-4">
@@ -106,7 +107,9 @@ export const BridgeForm = memo(() => {
                     size="xs"
                     className="col-span-12 text-muted-foreground text-right pb-1"
                   >
-                    Balance: {formatStringNumber(maxErc20Amount)} {fromChain.contracts.teleportedErc20.symbol}
+                    Balance:
+                    <FlashingUpdate>{formatStringNumber(maxErc20Amount)}</FlashingUpdate>
+                    {fromChain.contracts.teleportedErc20.symbol}
                   </Typography>
                   <div className="flex justify-end items-center col-span-3 sm:col-span-6">
                     <div className="flex gap-1 items-center h-full pl-2">
@@ -183,9 +186,9 @@ export const BridgeForm = memo(() => {
             </CardContent>
           </Card>
         </Droppable>
-        <Droppable id={FIELD_NAME_TO_DROPPABLE_ID_MAP['toChainId']}>
+        <Droppable id={DroppableId.To}>
           <Card className="border-0 bg-neutral-800 rounded-t-none">
-            <CardContent>
+            <CardContent className="flex flex-col gap-4">
               <div className="grid grid-cols-12 gap-y-4 gap-x-4">
                 <FormField
                   control={form.control}
@@ -193,6 +196,12 @@ export const BridgeForm = memo(() => {
                   render={renderChainField}
                 />
               </div>
+              <Button
+                type="submit"
+                className="w-full"
+              >
+                Bridge
+              </Button>
             </CardContent>
           </Card>
         </Droppable>

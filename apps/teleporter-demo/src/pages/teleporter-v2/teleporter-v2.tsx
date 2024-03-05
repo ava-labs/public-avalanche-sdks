@@ -19,6 +19,7 @@ export const TeleporterV2Page = memo(() => {
                 <DraggableChainCard
                   chain={chain}
                   className={cn('cursor-grab basis-0 grow')}
+                  key={chain.chainId}
                 />
               );
             })}
