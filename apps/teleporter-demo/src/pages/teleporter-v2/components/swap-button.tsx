@@ -21,15 +21,7 @@ export const SwapButton = ({ className, ...rest }: ButtonProps) => {
       }}
       {...rest}
     >
-      {isHovered ? (
-        <AutoAnimate config={{ duration: 150 }}>
-          <ArrowLeftRight />
-        </AutoAnimate>
-      ) : (
-        <AutoAnimate config={{ duration: 150 }}>
-          <ArrowRight />
-        </AutoAnimate>
-      )}
+      <AutoAnimate config={{ duration: 150 }}>{isHovered ? <ArrowLeftRight /> : <ArrowRight />}</AutoAnimate>
     </Button>
   );
 };

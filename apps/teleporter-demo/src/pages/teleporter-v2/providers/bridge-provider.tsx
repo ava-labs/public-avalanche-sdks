@@ -1,10 +1,11 @@
-import { type PropsWithChildren, createContext, memo, useMemo, useState } from 'react';
+import { type PropsWithChildren, createContext, memo, useMemo, useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { TELEPORTER_CONFIG, type EvmTeleporterChain } from '@/constants/chains';
 import { useContextStrict } from '@/hooks/use-context-strict';
 import { z } from 'zod';
 import { useForm, type UseFormReturn } from 'react-hook-form';
+import { useErc20Balance } from '@/hooks/use-erc20-balance';
 
 const formSchema = z.object({
   fromChainId: z.enum(TELEPORTER_CONFIG.chainIds),
@@ -18,7 +19,7 @@ const BridgeContext = createContext<
       fromChain: EvmTeleporterChain;
       toChain: EvmTeleporterChain;
       setChainValue: (fieldName: 'fromChainId' | 'toChainId', newChain: EvmTeleporterChain) => void;
-      erc20Amount?: string;
+      maxErc20Amount: string;
       form: UseFormReturn<z.infer<typeof formSchema>>;
       activeDrag: {
         activeDragChain: EvmTeleporterChain | undefined;
@@ -42,8 +43,14 @@ const getChain = (chainId: (typeof TELEPORTER_CONFIG.chains)[number]['chainId'])
 };
 
 export const BridgeProvider = memo(function AuthProvider({ children }: PropsWithChildren) {
+  const [maxErc20Amount, setMaxErc20Amount] = useState<string>('0');
+  // Modify with min/max for erc20Amount
+  const extendedFormSchema = formSchema.extend({
+    erc20Amount: z.number().min(0).max(Number(maxErc20Amount)),
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(extendedFormSchema),
     defaultValues: {
       erc20Amount: 1,
       fromChainId: TELEPORTER_CONFIG.chains[0].chainId,
@@ -75,6 +82,9 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
     fieldName === 'toChainId' && setToChain(newChain);
   };
 
+  const { formattedErc20Balance } = useErc20Balance({ chain: fromChain });
+  useEffect(() => setMaxErc20Amount(formattedErc20Balance ?? '0'), [formattedErc20Balance]);
+
   /**
    * The active drag state is used to track the chain that is being dragged and the chain that it is being dragged over.
    */
@@ -90,7 +100,7 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
         setChainValue,
         toChain,
         form,
-        erc20Amount: undefined,
+        maxErc20Amount,
         activeDrag: {
           activeDragChain,
           setActiveDragChain,
