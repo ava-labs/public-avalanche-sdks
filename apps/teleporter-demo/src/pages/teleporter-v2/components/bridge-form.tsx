@@ -53,16 +53,18 @@ export const BridgeForm = memo(() => {
             }}
           >
             <Droppable id={FIELD_NAME_TO_DROPPABLE_ID_MAP[field.name]}>
-              <SelectTrigger className="h-full col-span-6">
-                <div className="flex items-center gap-2">
-                  <FancyAvatar
-                    src={chain.logoUrl}
-                    label={chain.name}
-                    className="w-6 h-6"
-                  />
-                  <Typography size="md">{chain.shortName}</Typography>
-                </div>
-              </SelectTrigger>
+              <FlashingUpdate flashKeys={[chain]}>
+                <SelectTrigger className="h-full col-span-6">
+                  <div className="flex items-center gap-2">
+                    <FancyAvatar
+                      src={chain.logoUrl}
+                      label={chain.name}
+                      className="w-6 h-6"
+                    />
+                    <Typography size="md">{chain.shortName}</Typography>
+                  </div>
+                </SelectTrigger>
+              </FlashingUpdate>
             </Droppable>
             <SelectContent>
               {TELEPORTER_CONFIG.chains.map((chain) => (

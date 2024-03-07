@@ -1,11 +1,17 @@
-import { memo, useEffect, useState, type HtmlHTMLAttributes } from 'react';
+import { memo, useEffect, useState, type ComponentProps } from 'react';
 import { cn } from '@/utils/cn';
+import { Slot } from '@radix-ui/react-slot';
 
 type FlashingUpdateProps = {
-  shouldFlash?: boolean;
-} & HtmlHTMLAttributes<HTMLSpanElement>;
+  flashKeys?: unknown[];
+} & ComponentProps<typeof Slot>;
 
-export const FlashingUpdate = memo(function FlashingUpdate({ className, children, ...rest }: FlashingUpdateProps) {
+export const FlashingUpdate = memo(function FlashingUpdate({
+  className,
+  flashKeys,
+  children,
+  ...rest
+}: FlashingUpdateProps) {
   const [flashing, setFlashing] = useState<boolean>(false);
 
   useEffect(() => {
@@ -15,14 +21,14 @@ export const FlashingUpdate = memo(function FlashingUpdate({ className, children
         setFlashing(false);
       }, 1000);
     }
-  }, [children]);
+  }, flashKeys);
 
   return (
-    <span
-      className={cn(flashing ? 'animate-pulse-flashing' : '', 'rounded-md px-1', className)}
+    <Slot
+      className={cn({ 'animate-pulse-flashing': flashing }, className)}
       {...rest}
     >
       {children}
-    </span>
+    </Slot>
   );
 });
