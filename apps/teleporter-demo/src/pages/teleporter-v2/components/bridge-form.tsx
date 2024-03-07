@@ -43,7 +43,7 @@ export const BridgeForm = memo(() => {
     }
     return (
       <FormItem className="col-span-12 grid grid-cols-12 gap-2 space-y-0">
-        <FormLabel className="col-span-6">{field.name === 'fromChainId' ? 'From' : 'To'}</FormLabel>
+        <FormLabel className="col-span-12 sm:col-span-6">{field.name === 'fromChainId' ? 'From' : 'To'}</FormLabel>
         <FormControl>
           <Select
             {...field}
@@ -55,7 +55,7 @@ export const BridgeForm = memo(() => {
           >
             <Droppable id={FIELD_NAME_TO_DROPPABLE_ID_MAP[field.name]}>
               <FlashingUpdate flashKeys={[chain]}>
-                <SelectTrigger className="h-full col-span-6">
+                <SelectTrigger className="h-full col-span-12 sm:col-span-6">
                   <div className="flex items-center gap-2">
                     <FancyAvatar
                       src={chain.logoUrl}
@@ -94,10 +94,7 @@ export const BridgeForm = memo(() => {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}
-        className="relative"
-      >
+      <form onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}>
         <Droppable id={DroppableId.From}>
           <Card className="border-0 bg-neutral-900 rounded-b-none">
             <CardContent className="p-7">
@@ -111,13 +108,11 @@ export const BridgeForm = memo(() => {
                 <div className="col-span-12 grid grid-cols-12 gap-x-4">
                   <Typography
                     size="xs"
-                    className="col-span-12 text-muted-foreground text-right pb-1"
+                    className="col-span-12 text-muted-foreground text-right pb-1 flex items-baseline justify-end"
                   >
                     Balance:
-                    <FlashingUpdate flashKeys={[maxErc20Amount]}>
-                      <span className="font-mono rounded-md px-1 py-0.5 -my-0.5">
-                        {formatStringNumber(maxErc20Amount)}
-                      </span>
+                    <FlashingUpdate flashKeys={[maxErc20Amount, fromChain]}>
+                      <span className="font-mono rounded-md px-1 py-0.5">{formatStringNumber(maxErc20Amount)}</span>
                     </FlashingUpdate>
                     {fromChain.contracts.teleportedErc20.symbol}
                   </Typography>
@@ -197,7 +192,12 @@ export const BridgeForm = memo(() => {
             </CardContent>
           </Card>
         </Droppable>
-        <SwapButton className="absolute right-32 -translate-y-1/2" />
+        <div className="w-full grid grid-cols-12">
+          <div className="col-span-6 sm:col-span-12" />
+          <div className="relative col-span-6 sm:col-span-12">
+            <SwapButton className="absolute max-sm:left-0 sm:right-28 -translate-y-1/2 -translate-x-1/2" />
+          </div>
+        </div>
         <Droppable id={DroppableId.To}>
           <Card className="border-0 bg-neutral-800 rounded-t-none">
             <CardContent className="flex flex-col gap-4 p-7">
