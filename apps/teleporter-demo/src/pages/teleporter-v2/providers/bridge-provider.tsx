@@ -7,9 +7,10 @@ import { z } from 'zod';
 import { useForm, type UseFormReturn } from 'react-hook-form';
 import { useErc20Balance } from '@/hooks/use-erc20-balance';
 import { useAccount, useBalance } from 'wagmi';
-import { useTeleport } from '@/hooks/use-teleport';
+import { useTeleport, type TeleporterStatus } from '@/hooks/use-teleport';
 import type { TransactionReceipt } from 'viem';
 import Big from 'big.js';
+import { useSwitchChain } from '@/hooks/use-switch-chain';
 
 const formSchema = z.object({
   fromChainId: z.enum(TELEPORTER_CONFIG.chainIds),
@@ -26,8 +27,9 @@ const BridgeContext = createContext<
       maxErc20Amount: string;
       form: UseFormReturn<z.infer<typeof formSchema>>;
       handleBridgeToken: (data: z.infer<typeof formSchema>) => Promise<void>;
-      isTeleporting: boolean;
       transactionReceipt?: TransactionReceipt;
+      teleporterStatus: TeleporterStatus;
+      reset: () => void;
       activeDrag: {
         activeDragChain: EvmTeleporterChain | undefined;
         setActiveDragChain: (chain: EvmTeleporterChain | undefined) => void;
@@ -53,7 +55,7 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
   const [maxErc20Amount, setMaxErc20Amount] = useState<string>('0');
   // Modify with min/max for erc20Amount
   const extendedFormSchema = formSchema.extend({
-    erc20Amount: z.number().min(0).max(Number(maxErc20Amount)),
+    erc20Amount: z.number().max(Number(maxErc20Amount)).positive(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -116,20 +118,21 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
   /**
    * Handle Bridging ERC-20 Tokens
    */
-  const [isTeleporting, setIsTeleporting] = useState(false);
   const erc20Amount = Number(form.watch('erc20Amount'));
-  const { teleportToken } = useTeleport({
+  const { switchChainAsync } = useSwitchChain();
+  const { teleportToken, transactionReceipt, teleporterStatus, resetTeleportStatus } = useTeleport({
     fromChain,
     toChain,
     amount: useMemo(
-      () => BigInt(new Big(erc20Amount).mul(10 ** fromChain.contracts.teleportedErc20.decimals).toString()),
+      () => BigInt(new Big(erc20Amount).mul(10 ** fromChain.contracts.teleportedErc20.decimals).toFixed(0)),
       [erc20Amount],
     ),
   });
-  const [transactionReceipt, setTransactionReceipt] = useState<TransactionReceipt>();
   const handleBridgeToken = async (_data: z.infer<typeof formSchema>) => {
-    setIsTeleporting(true);
-    const transactionReceipt = await teleportToken();
+    await switchChainAsync({
+      chainId: Number(fromChain.chainId),
+    });
+    await teleportToken();
     refetchFromChainErc20Balance();
     refetchFromChainGasBalance();
 
@@ -138,9 +141,11 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
     setTimeout(() => {
       refetchToChainErc20Balance();
     }, 5000);
+  };
 
-    setTransactionReceipt(transactionReceipt);
-    setIsTeleporting(false);
+  const reset = () => {
+    form.reset();
+    resetTeleportStatus();
   };
 
   return (
@@ -151,7 +156,8 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
         toChain,
         form,
         maxErc20Amount,
-        isTeleporting,
+        teleporterStatus,
+        reset,
         handleBridgeToken,
         transactionReceipt,
         activeDrag: {

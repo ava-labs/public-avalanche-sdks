@@ -16,6 +16,9 @@ import { formatStringNumber } from '@/utils/format-string';
 import { FlashingUpdate } from '@/components/flashing-update';
 import { SwapButton } from './swap-button';
 import { TeleportingCard } from './teleporting-card';
+import { isNil } from 'lodash-es';
+import { cn } from '@/utils/cn';
+import { toast } from '@/ui/hooks/use-toast';
 
 export enum DroppableId {
   From = 'from',
@@ -28,7 +31,7 @@ const FIELD_NAME_TO_DROPPABLE_ID_MAP = {
 } as const;
 
 export const BridgeForm = memo(() => {
-  const { setChainValue, fromChain, maxErc20Amount, handleBridgeToken, isTeleporting } = useBridgeContext();
+  const { setChainValue, fromChain, maxErc20Amount, handleBridgeToken, teleporterStatus, reset } = useBridgeContext();
   const { form } = useBridgeContext();
 
   const renderChainField = ({
@@ -96,7 +99,17 @@ export const BridgeForm = memo(() => {
   return (
     <Form {...form}>
       <div className="relative">
-        <form onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}>
+        <form
+          onSubmit={form.handleSubmit(handleBridgeToken, (errors) => {
+            console.error(errors);
+            const message = Object.values(errors)[0]?.message;
+            toast({
+              title: 'Bridge Failed',
+              description: message ?? 'An unknown error occurred',
+              variant: 'destructive',
+            });
+          })}
+        >
           <Droppable id={DroppableId.From}>
             <Card className="border-0 bg-neutral-900 rounded-b-none">
               <CardContent className="p-7 max-sm:px-3">
@@ -213,18 +226,44 @@ export const BridgeForm = memo(() => {
                 <Button
                   type="submit"
                   className="w-full"
+                  disabled={form.formState.isSubmitting}
                 >
                   Bridge
                 </Button>
+                {!isNil(form.formState.errors.root?.message) && (
+                  <p className={cn('text-[0.8rem] font-medium text-destructive')}>
+                    {form.formState.errors.root?.message}
+                  </p>
+                )}
               </CardContent>
             </Card>
           </Droppable>
           {/* Use this to debug handling allowances */}
           {/* <DebugResetAllowanceButton chain={fromChain} /> */}
         </form>
-        {isTeleporting && (
+        {(teleporterStatus === 'approving' || teleporterStatus === 'teleporting') && (
           <div className="absolute w-full h-full top-0 left-0 animate-in fade-in-0 duration-300">
             <TeleportingCard />
+          </div>
+        )}
+        {teleporterStatus === 'complete' && (
+          <div className="absolute w-full h-full top-0 left-0 animate-in fade-in-0 duration-300">
+            <Card className="relative w-full h-full flex justify-center items-center bg-card/90 backdrop-blur-md">
+              <CardContent className="flex flex-col items-center gap-4">
+                <Typography
+                  size="lg"
+                  className="text-center"
+                >
+                  Your tokens have been teleported!
+                </Typography>
+                <Button
+                  className="w-full"
+                  onClick={reset}
+                >
+                  Teleport More
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         )}
       </div>

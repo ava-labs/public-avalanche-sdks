@@ -5,6 +5,9 @@ import { isNil } from 'lodash-es';
 import { useLatestTeleporterTransactions } from './use-transactions';
 import type { EvmTeleporterChain } from '@/constants/chains';
 import { useWaitForTransactionReceiptAsync } from './use-wait-for-transaction-receipt-async';
+import { useState } from 'react';
+
+export type TeleporterStatus = 'idle' | 'approving' | 'teleporting' | 'complete';
 
 export const useTeleport = ({
   fromChain,
@@ -18,6 +21,12 @@ export const useTeleport = ({
   const { address } = useAccount();
 
   const { mutate: refetchTxs } = useLatestTeleporterTransactions();
+
+  const [teleporterStatus, setTeleporterStatus] = useState<TeleporterStatus>('idle');
+
+  const resetTeleportStatus = () => {
+    setTeleporterStatus('idle');
+  };
 
   const { refetch: fetchAllowance } = useReadContract({
     address: fromChain?.contracts.teleportedErc20.address,
@@ -51,11 +60,13 @@ export const useTeleport = ({
         throw new Error('Missing amount.');
       }
 
+      setTeleporterStatus('approving');
       /**
        * Get approval if allowance is insuffient.
        */
       const { data: currentAllowance } = await fetchAllowance();
       if (isNil(currentAllowance)) {
+        resetTeleportStatus();
         throw new Error('Unable to detect current allowance.');
       }
 
@@ -64,6 +75,8 @@ export const useTeleport = ({
         await approve();
         await fetchAllowance();
       }
+
+      setTeleporterStatus('teleporting');
 
       /**
        * Teleport tokens.
@@ -87,10 +100,12 @@ export const useTeleport = ({
       console.info('Bridge pending.', hash);
       const transactionReceipt = await waitForTransactionReceipt({ hash });
       console.info('Bridge successful.', hash, transactionReceipt);
+      setTeleporterStatus('complete');
       return transactionReceipt;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       console.error(e?.message ?? e);
+      setTeleporterStatus('idle');
 
       return undefined;
     }
@@ -99,5 +114,7 @@ export const useTeleport = ({
   return {
     transactionReceipt,
     teleportToken,
+    teleporterStatus,
+    resetTeleportStatus,
   };
 };
