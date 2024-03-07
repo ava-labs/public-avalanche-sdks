@@ -11,7 +11,6 @@ import { useTeleport, type TeleporterStatus } from '@/hooks/use-teleport';
 import type { TransactionReceipt } from 'viem';
 import Big from 'big.js';
 import { useSwitchChain } from '@/hooks/use-switch-chain';
-import { useWeb3Modal, useWeb3ModalState } from '@web3modal/wagmi/react';
 
 const formSchema = z.object({
   fromChainId: z.enum(TELEPORTER_CONFIG.chainIds),
@@ -120,7 +119,7 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
    * Handle Bridging ERC-20 Tokens
    */
   const erc20Amount = Number(form.watch('erc20Amount'));
-  const { switchChain, switchChainAsync } = useSwitchChain();
+  const { switchChainAsync } = useSwitchChain();
   const { teleportToken, transactionReceipt, teleporterStatus, resetTeleportStatus } = useTeleport({
     fromChain,
     toChain,
@@ -133,7 +132,7 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
   const handleBridgeToken = async (_data: z.infer<typeof formSchema>) => {
     console.log('switching chain');
 
-    await switchChain(fromChain);
+    await switchChainAsync(fromChain);
     // await switchChainAsync({
     //   chainId: Number(fromChain.chainId),
     // });

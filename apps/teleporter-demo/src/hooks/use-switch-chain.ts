@@ -12,7 +12,7 @@ export const useSwitchChain = () => {
   const [dismissToast, setDismissToast] = useState<() => unknown>();
   const { data: walletClient } = useWalletClient();
 
-  const { switchChainAsync } = useWagmiSwitchChain({
+  const { switchChainAsync: wagmiSwitchChainAsync, ...rest } = useWagmiSwitchChain({
     mutation: {
       onSuccess: ({ name }) => {
         dismissToast?.();
@@ -52,8 +52,7 @@ export const useSwitchChain = () => {
   });
 
   return {
-    switchChainAsync,
-    switchChain: async (chain: EvmTeleporterChain) => {
+    switchChainAsync: async (chain: EvmTeleporterChain) => {
       if (!walletClient) {
         throw new Error('Wallet client not found');
       }
@@ -62,11 +61,12 @@ export const useSwitchChain = () => {
         return;
       }
 
-      const chainSwitchRes = await switchChainAsync({
+      const chainSwitchRes = await wagmiSwitchChainAsync({
         chainId: Number(chain.chainId),
       });
 
       return chainSwitchRes;
     },
+    ...rest,
   };
 };
