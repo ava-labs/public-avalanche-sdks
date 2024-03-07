@@ -15,6 +15,7 @@ import { Card, CardContent } from '@/ui/card';
 import { formatStringNumber } from '@/utils/format-string';
 import { FlashingUpdate } from '@/components/flashing-update';
 import { SwapButton } from './swap-button';
+import { TeleportingCard } from './teleporting-card';
 
 export enum DroppableId {
   From = 'from',
@@ -27,7 +28,7 @@ const FIELD_NAME_TO_DROPPABLE_ID_MAP = {
 } as const;
 
 export const BridgeForm = memo(() => {
-  const { setChainValue, fromChain, maxErc20Amount, handleBridgeToken } = useBridgeContext();
+  const { setChainValue, fromChain, maxErc20Amount, handleBridgeToken, isTeleporting } = useBridgeContext();
   const { form } = useBridgeContext();
 
   const renderChainField = ({
@@ -94,132 +95,139 @@ export const BridgeForm = memo(() => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}>
-        <Droppable id={DroppableId.From}>
-          <Card className="border-0 bg-neutral-900 rounded-b-none">
-            <CardContent className="p-7 max-sm:px-3">
-              <div className="grid grid-cols-12 gap-y-4 gap-x-4">
-                <FormField
-                  control={form.control}
-                  name={'fromChainId'}
-                  render={renderChainField}
-                />
+      <div className="relative">
+        <form onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}>
+          <Droppable id={DroppableId.From}>
+            <Card className="border-0 bg-neutral-900 rounded-b-none">
+              <CardContent className="p-7 max-sm:px-3">
+                <div className="grid grid-cols-12 gap-y-4 gap-x-4">
+                  <FormField
+                    control={form.control}
+                    name={'fromChainId'}
+                    render={renderChainField}
+                  />
 
-                <div className="col-span-12 grid grid-cols-12 gap-x-4">
-                  <Typography
-                    size="xs"
-                    className="col-span-12 text-muted-foreground text-right pb-1 flex items-baseline justify-end"
-                  >
-                    Balance:
-                    <FlashingUpdate flashKeys={[maxErc20Amount, fromChain]}>
-                      <span className="font-mono rounded-md px-1 py-0.5">{formatStringNumber(maxErc20Amount)}</span>
-                    </FlashingUpdate>
-                    {fromChain.contracts.teleportedErc20.symbol}
-                  </Typography>
+                  <div className="col-span-12 grid grid-cols-12 gap-x-4">
+                    <Typography
+                      size="xs"
+                      className="col-span-12 text-muted-foreground text-right pb-1 flex items-baseline justify-end"
+                    >
+                      Balance:
+                      <FlashingUpdate flashKeys={[maxErc20Amount, fromChain]}>
+                        <span className="font-mono rounded-md px-1 py-0.5">{formatStringNumber(maxErc20Amount)}</span>
+                      </FlashingUpdate>
+                      {fromChain.contracts.teleportedErc20.symbol}
+                    </Typography>
 
-                  <div className="flex justify-end items-center max-sm:hidden col-span-6">
-                    <div className="flex gap-1 items-center h-full pl-2">
-                      <FancyAvatar
-                        src={tlpTokenLogo}
-                        label={fromChain.shortName}
-                        className="w-6 h-6 -my-3 text-muted-foreground"
-                      />
-                      <Typography size="lg">{fromChain.contracts.teleportedErc20.symbol}</Typography>
+                    <div className="flex justify-end items-center max-sm:hidden col-span-6">
+                      <div className="flex gap-1 items-center h-full pl-2">
+                        <FancyAvatar
+                          src={tlpTokenLogo}
+                          label={fromChain.shortName}
+                          className="w-6 h-6 -my-3 text-muted-foreground"
+                        />
+                        <Typography size="lg">{fromChain.contracts.teleportedErc20.symbol}</Typography>
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-span-12 sm:col-span-6">
-                    <FormField
-                      control={form.control}
-                      name={'erc20Amount'}
-                      render={({ field }) => (
-                        <FormItem>
-                          <div className="relative">
-                            <FormControl>
-                              <div className="flex h-16">
-                                <Button
-                                  className="h-full w-24 text-sm rounded-md rounded-r-none rounded-b-none border-r-0"
-                                  variant="outline"
-                                  disabled={Number(maxErc20Amount) < 1}
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    field.onChange(1);
-                                  }}
-                                >
-                                  1
-                                </Button>
-                                <Input
-                                  type="number"
+                    <div className="col-span-12 sm:col-span-6">
+                      <FormField
+                        control={form.control}
+                        name={'erc20Amount'}
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className="relative">
+                              <FormControl>
+                                <div className="flex h-16">
+                                  <Button
+                                    className="h-full w-24 text-sm rounded-md rounded-r-none rounded-b-none border-r-0"
+                                    variant="outline"
+                                    disabled={Number(maxErc20Amount) < 1}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      field.onChange(1);
+                                    }}
+                                  >
+                                    1
+                                  </Button>
+                                  <Input
+                                    type="number"
+                                    step={0.01}
+                                    {...field}
+                                    min={0}
+                                    max={Number(maxErc20Amount)}
+                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                    className="font-mono text-center col-span-5 px-4 rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                  />
+
+                                  <Button
+                                    className="h-full w-24 text-sm  rounded-md rounded-l-none rounded-b-none border-l-0"
+                                    variant="outline"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      field.onChange(Number(maxErc20Amount));
+                                    }}
+                                  >
+                                    Max
+                                  </Button>
+                                </div>
+                              </FormControl>
+                              <FormControl>
+                                <Slider
                                   step={0.01}
-                                  {...field}
+                                  defaultValue={[field.value]}
+                                  onValueChange={(value) => field.onChange(value[0])}
+                                  value={[field.value]}
                                   min={0}
                                   max={Number(maxErc20Amount)}
-                                  onChange={(e) => field.onChange(Number(e.target.value))}
-                                  className="font-mono text-center col-span-5 px-4 rounded-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                  className="absolute bottom-0 translate-y-full"
                                 />
-
-                                <Button
-                                  className="h-full w-24 text-sm  rounded-md rounded-l-none rounded-b-none border-l-0"
-                                  variant="outline"
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    field.onChange(Number(maxErc20Amount));
-                                  }}
-                                >
-                                  Max
-                                </Button>
-                              </div>
-                            </FormControl>
-                            <FormControl>
-                              <Slider
-                                step={0.01}
-                                defaultValue={[field.value]}
-                                onValueChange={(value) => field.onChange(value[0])}
-                                value={[field.value]}
-                                min={0}
-                                max={Number(maxErc20Amount)}
-                                className="absolute bottom-0 translate-y-full"
-                              />
-                            </FormControl>
-                          </div>
-                          <FormMessage />
-                          <FormDescription />
-                        </FormItem>
-                      )}
-                    />
+                              </FormControl>
+                            </div>
+                            <FormMessage />
+                            <FormDescription />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </Droppable>
-        <div className="w-full grid grid-cols-12">
-          <div className="col-span-6 sm:col-span-12" />
-          <div className="relative col-span-6 sm:col-span-12">
-            <SwapButton className="absolute max-sm:left-0 sm:right-28 -translate-y-1/2 -translate-x-1/2" />
+              </CardContent>
+            </Card>
+          </Droppable>
+          <div className="w-full grid grid-cols-12">
+            <div className="col-span-6 sm:col-span-12" />
+            <div className="relative col-span-6 sm:col-span-12">
+              <SwapButton className="absolute max-sm:left-0 sm:right-28 -translate-y-1/2 -translate-x-1/2" />
+            </div>
           </div>
-        </div>
-        <Droppable id={DroppableId.To}>
-          <Card className="border-0 bg-neutral-800 rounded-t-none">
-            <CardContent className="flex flex-col gap-4 p-7 max-sm:px-3">
-              <div className="grid grid-cols-12 gap-y-4 gap-x-4">
-                <FormField
-                  control={form.control}
-                  name={'toChainId'}
-                  render={renderChainField}
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full"
-              >
-                Bridge
-              </Button>
-            </CardContent>
-          </Card>
-        </Droppable>
-        {/* Use this to debug handling allowances */}
-        {/* <DebugResetAllowanceButton chain={fromChain} /> */}
-      </form>
+          <Droppable id={DroppableId.To}>
+            <Card className="border-0 bg-neutral-800 rounded-t-none">
+              <CardContent className="flex flex-col gap-4 p-7 max-sm:px-3">
+                <div className="grid grid-cols-12 gap-y-4 gap-x-4">
+                  <FormField
+                    control={form.control}
+                    name={'toChainId'}
+                    render={renderChainField}
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full"
+                >
+                  Bridge
+                </Button>
+              </CardContent>
+            </Card>
+          </Droppable>
+          {/* Use this to debug handling allowances */}
+          {/* <DebugResetAllowanceButton chain={fromChain} /> */}
+        </form>
+        {isTeleporting && (
+          <div className="absolute w-full h-full top-0 left-0 animate-in fade-in-0 duration-300">
+            <TeleportingCard />
+          </div>
+        )}
+      </div>
     </Form>
   );
 });
