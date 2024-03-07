@@ -70,14 +70,14 @@ export const DraggableChainCard = memo(
               innerProps={{ className: cn('w-full h-full flex flex-col items-center gap-2') }}
             >
               <ThreeDCardItem
-                translateZ={100}
+                translateZ={40}
                 className="absolute top-2 left-2"
               >
                 <GripVertical className="text-foreground opacity-20 group-hover:opacity-100 transition-opacity duration-300" />
               </ThreeDCardItem>
               <ThreeDCardBody className="flex flex-col gap-2 items-center grow pt-6 px-10">
                 <ThreeDCardItem
-                  translateZ={40}
+                  translateZ={100}
                   className="flex justify-center w-full"
                 >
                   <FancyAvatar
