@@ -94,6 +94,7 @@ const COLLAPSED_TRANSACTIONS_COUNT = 2;
 export const ActivityFeed = () => {
   const { address } = useAccount();
   const { data: transactions, isLoading } = useLatestTeleporterTransactions();
+  const [expanded, setExpanded] = useState<boolean>(false);
 
   const [firstChunkTransactions, secondChunkTransactions] = useMemo(() => {
     if (!transactions) {
@@ -109,7 +110,6 @@ export const ActivityFeed = () => {
     return null;
   }
 
-  const [expanded, setExpanded] = useState<boolean>(false);
   return (
     <div className="w-full flex flex-col gap-4 mt-48">
       <Typography

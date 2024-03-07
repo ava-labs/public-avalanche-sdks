@@ -20,6 +20,13 @@ import { isNil } from 'lodash-es';
 import { cn } from '@/utils/cn';
 import { toast } from '@/ui/hooks/use-toast';
 import { TransactionSuccessAlert } from './transaction-success-alert';
+import { Alert, AlertDescription, AlertTitle } from '@/ui/alert';
+import { AutoAnimate } from '@/ui/auto-animate';
+import { useAccount, useBalance } from 'wagmi';
+import { ExternalLink } from 'lucide-react';
+import { FAUCET_URL } from '@/constants';
+import { useMintTlp } from '@/hooks/use-mint-tlp';
+import { LoadingSpinner } from '@/ui/loading-spinner';
 
 export enum DroppableId {
   From = 'from',
@@ -35,6 +42,19 @@ export const BridgeForm = memo(() => {
   const { setChainValue, fromChain, maxErc20Amount, handleBridgeToken, teleporterStatus, transactionReceipt } =
     useBridgeContext();
   const { form } = useBridgeContext();
+  const { isMinting, mintToken } = useMintTlp();
+
+  const { address } = useAccount();
+  const { data: gasBalance } = useBalance({
+    address,
+    chainId: Number(fromChain.chainId),
+  });
+
+  // If a user is out of gas for the selected chain, send them to the faucet.
+  const isFaucetMode = !isNil(gasBalance) && Number(gasBalance?.value) === 0;
+
+  // If the user is out of TLP and has C_Chain selected, we should show the mint button instead of the bridge button
+  const isMintMode = Number(maxErc20Amount) === 0 && fromChain.chainId === TELEPORTER_CONFIG.tlpMintChain.chainId;
 
   const renderChainField = ({
     field,
@@ -228,7 +248,8 @@ export const BridgeForm = memo(() => {
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={form.formState.isSubmitting}
+                  disabled={form.formState.isSubmitting || isMintMode}
+                  variant={isMintMode ? 'secondary' : 'default'}
                 >
                   Bridge
                 </Button>
@@ -237,6 +258,58 @@ export const BridgeForm = memo(() => {
                     {form.formState.errors.root?.message}
                   </p>
                 )}
+              </CardContent>
+              <CardContent className={cn('pt-0', { 'py-0': !(isFaucetMode || isMintMode) })}>
+                <AutoAnimate>
+                  {isFaucetMode ? (
+                    <Alert variant="info">
+                      <AlertTitle>
+                        <Typography size="md">Out of gas!</Typography>
+                      </AlertTitle>
+                      <AlertDescription className="flex flex-col gap-4">
+                        <Typography size="xs">Get gas for on {fromChain.name} at the Core Faucet!</Typography>
+                        <Button
+                          type="submit"
+                          className="w-full"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <a
+                            href={FAUCET_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex gap-2 items-center"
+                          >
+                            Go to Faucet
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </Button>
+                      </AlertDescription>
+                    </Alert>
+                  ) : isMintMode ? (
+                    <Alert variant="info">
+                      <AlertTitle>
+                        <Typography size="md">Out of TLP!</Typography>
+                      </AlertTitle>
+                      <AlertDescription className="flex flex-col gap-4">
+                        <Typography size="xs">
+                          You must first mint TLP on the C-Chain before you can use Teleporter!
+                        </Typography>
+                        <Button
+                          type="submit"
+                          className="w-full"
+                          onClick={(e) => {
+                            mintToken();
+                            e.preventDefault();
+                          }}
+                          startIcon={isMinting && <LoadingSpinner />}
+                          disabled={isMinting}
+                        >
+                          {isMinting ? 'Minting TLP...' : 'Mint TLP'}
+                        </Button>
+                      </AlertDescription>
+                    </Alert>
+                  ) : null}
+                </AutoAnimate>
               </CardContent>
             </Card>
           </Droppable>
