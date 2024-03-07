@@ -97,7 +97,7 @@ export const BridgeForm = memo(() => {
       <form onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}>
         <Droppable id={DroppableId.From}>
           <Card className="border-0 bg-neutral-900 rounded-b-none">
-            <CardContent className="p-7">
+            <CardContent className="p-7 max-sm:px-3">
               <div className="grid grid-cols-12 gap-y-4 gap-x-4">
                 <FormField
                   control={form.control}
@@ -117,7 +117,7 @@ export const BridgeForm = memo(() => {
                     {fromChain.contracts.teleportedErc20.symbol}
                   </Typography>
 
-                  <div className="flex justify-end items-center col-span-3 sm:col-span-6">
+                  <div className="flex justify-end items-center max-sm:hidden col-span-6">
                     <div className="flex gap-1 items-center h-full pl-2">
                       <FancyAvatar
                         src={tlpTokenLogo}
@@ -127,7 +127,7 @@ export const BridgeForm = memo(() => {
                       <Typography size="lg">{fromChain.contracts.teleportedErc20.symbol}</Typography>
                     </div>
                   </div>
-                  <div className="col-span-9 sm:col-span-6">
+                  <div className="col-span-12 sm:col-span-6">
                     <FormField
                       control={form.control}
                       name={'erc20Amount'}
@@ -200,7 +200,7 @@ export const BridgeForm = memo(() => {
         </div>
         <Droppable id={DroppableId.To}>
           <Card className="border-0 bg-neutral-800 rounded-t-none">
-            <CardContent className="flex flex-col gap-4 p-7">
+            <CardContent className="flex flex-col gap-4 p-7 max-sm:px-3">
               <div className="grid grid-cols-12 gap-y-4 gap-x-4">
                 <FormField
                   control={form.control}
