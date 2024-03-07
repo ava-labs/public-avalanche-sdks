@@ -3,7 +3,7 @@ import { cn } from '@/utils/cn';
 import { Slot } from '@radix-ui/react-slot';
 
 type FlashingUpdateProps = {
-  flashKeys?: unknown[];
+  flashKeys: unknown[];
 } & ComponentProps<typeof Slot>;
 
 export const FlashingUpdate = memo(function FlashingUpdate({

@@ -114,9 +114,14 @@ export const BridgeForm = memo(() => {
                     className="col-span-12 text-muted-foreground text-right pb-1"
                   >
                     Balance:
-                    <FlashingUpdate>{formatStringNumber(maxErc20Amount)}</FlashingUpdate>
+                    <FlashingUpdate flashKeys={[maxErc20Amount]}>
+                      <span className="font-mono rounded-md px-1 py-0.5 -my-0.5">
+                        {formatStringNumber(maxErc20Amount)}
+                      </span>
+                    </FlashingUpdate>
                     {fromChain.contracts.teleportedErc20.symbol}
                   </Typography>
+
                   <div className="flex justify-end items-center col-span-3 sm:col-span-6">
                     <div className="flex gap-1 items-center h-full pl-2">
                       <FancyAvatar
