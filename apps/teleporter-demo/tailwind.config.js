@@ -78,6 +78,14 @@ export default {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: 0 },
         },
+        'collapsible-down': {
+          from: { height: 0 },
+          to: { height: 'var(--radix-collapsible-content-height)' },
+        },
+        'collapsible-up': {
+          from: { height: 'var(--radix-collapsible-content-height)' },
+          to: { height: 0 },
+        },
         'pulse-flashing': {
           '0%': { 'background-color': 'rgba(255, 255, 255, 0.2)' },
           '100%': { 'background-color': 'unset' },
@@ -86,6 +94,8 @@ export default {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'collapsible-up': 'collapsible-up 0.2s ease-out',
+        'collapsible-down': 'collapsible-down 0.2s ease-out',
         'pulse-flashing': 'pulse-flashing 1s forwards',
       },
     },

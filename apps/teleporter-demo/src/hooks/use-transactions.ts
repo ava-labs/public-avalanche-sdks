@@ -8,7 +8,7 @@ import useSWR from 'swr';
 import { type Address } from 'viem';
 import { useAccount } from 'wagmi';
 
-type Erc20TransferWithChain = Erc20Transfer & { chain: EvmTeleporterChain };
+export type Erc20TransferWithChain = Erc20Transfer & { chain: EvmTeleporterChain };
 
 const TRANSACTION_COUNT = 10;
 
