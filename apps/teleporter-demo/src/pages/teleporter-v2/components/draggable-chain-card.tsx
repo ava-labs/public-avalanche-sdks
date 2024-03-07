@@ -9,6 +9,9 @@ import { memo, type HTMLAttributes } from 'react';
 import { isEvmTeleporterDndData } from '../utils/type-guards';
 import { useActivelyDraggedChain } from '../hooks/use-actively-dragged-chain';
 import { cn } from '@/utils/cn';
+import { useAccount, useBalance } from 'wagmi';
+import { Skeleton } from '@/ui/skeleton';
+import { formatEther } from 'viem';
 
 const DroppableChain = ({ chain, ...rest }: { chain: EvmTeleporterChain } & HTMLAttributes<HTMLDivElement>) => {
   const { isOver, active, setNodeRef } = useDroppable({
@@ -42,6 +45,11 @@ export const DraggableChainCard = memo(
         chain,
       },
     });
+    const { address } = useAccount();
+    const { data: gasBalance, isLoading: isLoadingGasBalance } = useBalance({
+      address,
+      chainId: Number(chain.chainId),
+    });
     const activelyDraggedChain = useActivelyDraggedChain();
 
     return (
@@ -59,7 +67,7 @@ export const DraggableChainCard = memo(
           <div className="rounded-lg h-full">
             <ThreeDCardContainer
               outerProps={{ className: cn('group w-full h-full rounded-lg bg-transparent border') }}
-              innerProps={{ className: cn('w-full h-full p-6') }}
+              innerProps={{ className: cn('w-full h-full flex flex-col items-center gap-2') }}
             >
               <ThreeDCardItem
                 translateZ={100}
@@ -67,8 +75,7 @@ export const DraggableChainCard = memo(
               >
                 <GripVertical className="text-foreground opacity-20 group-hover:opacity-100 transition-opacity duration-300" />
               </ThreeDCardItem>
-
-              <ThreeDCardBody className="flex flex-col gap-2 items-center">
+              <ThreeDCardBody className="flex flex-col gap-2 items-center grow pt-6 px-10">
                 <ThreeDCardItem
                   translateZ={40}
                   className="flex justify-center w-full"
@@ -90,6 +97,21 @@ export const DraggableChainCard = memo(
                   </Typography>
                 </ThreeDCardItem>
               </ThreeDCardBody>
+              <ThreeDCardItem
+                translateZ={40}
+                className="flex w-full justify-end pb-2 px-2"
+              >
+                {isLoadingGasBalance ? (
+                  <Skeleton className="h-5 w-24" />
+                ) : (
+                  <Typography
+                    size="xs"
+                    className="text-muted-foreground"
+                  >
+                    Gas: {gasBalance ? Number(formatEther(gasBalance.value)).toFixed(2) : 0} {chain.networkToken.symbol}
+                  </Typography>
+                )}
+              </ThreeDCardItem>
             </ThreeDCardContainer>
           </div>
         </DroppableChain>
