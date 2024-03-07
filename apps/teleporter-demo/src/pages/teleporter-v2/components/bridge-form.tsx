@@ -19,6 +19,7 @@ import { TeleportingCard } from './teleporting-card';
 import { isNil } from 'lodash-es';
 import { cn } from '@/utils/cn';
 import { toast } from '@/ui/hooks/use-toast';
+import { TransactionSuccessAlert } from './transaction-success-alert';
 
 export enum DroppableId {
   From = 'from',
@@ -31,7 +32,8 @@ const FIELD_NAME_TO_DROPPABLE_ID_MAP = {
 } as const;
 
 export const BridgeForm = memo(() => {
-  const { setChainValue, fromChain, maxErc20Amount, handleBridgeToken, teleporterStatus, reset } = useBridgeContext();
+  const { setChainValue, fromChain, maxErc20Amount, handleBridgeToken, teleporterStatus, transactionReceipt } =
+    useBridgeContext();
   const { form } = useBridgeContext();
 
   const renderChainField = ({
@@ -246,23 +248,10 @@ export const BridgeForm = memo(() => {
             <TeleportingCard />
           </div>
         )}
-        {teleporterStatus === 'complete' && (
+        {teleporterStatus === 'complete' && transactionReceipt && (
           <div className="absolute w-full h-full top-0 left-0 animate-in fade-in-0 duration-300">
-            <Card className="relative w-full h-full flex justify-center items-center bg-card/90 backdrop-blur-md">
-              <CardContent className="flex flex-col items-center gap-4">
-                <Typography
-                  size="lg"
-                  className="text-center"
-                >
-                  Your tokens have been teleported!
-                </Typography>
-                <Button
-                  className="w-full"
-                  onClick={reset}
-                >
-                  Teleport More
-                </Button>
-              </CardContent>
+            <Card className="relative w-full h-full flex bg-card/90 backdrop-blur-md">
+              <TransactionSuccessAlert />
             </Card>
           </div>
         )}

@@ -1,14 +1,18 @@
-import { useSwitchChain as useWagmiSwitchChain } from 'wagmi';
+import { useSwitchChain as useWagmiSwitchChain, useWalletClient } from 'wagmi';
+import { useConnectedChain } from './use-connected-chain';
 import { toast } from '@/ui/hooks/use-toast';
 import { useState } from 'react';
+import type { EvmTeleporterChain } from '@/constants/chains';
 
 const USER_REJECTS_APPROVAL_POPUP_CODE = 4001;
 // const CHAIN_NOT_ADDED_CODE = 4902;
 
 export const useSwitchChain = () => {
+  const { connectedChain } = useConnectedChain();
   const [dismissToast, setDismissToast] = useState<() => unknown>();
+  const { data: walletClient } = useWalletClient();
 
-  return useWagmiSwitchChain({
+  const { switchChainAsync } = useWagmiSwitchChain({
     mutation: {
       onSuccess: ({ name }) => {
         dismissToast?.();
@@ -46,4 +50,23 @@ export const useSwitchChain = () => {
       },
     },
   });
+
+  return {
+    switchChainAsync,
+    switchChain: async (chain: EvmTeleporterChain) => {
+      if (!walletClient) {
+        throw new Error('Wallet client not found');
+      }
+      // If we're already connected to the chain, don't switch.
+      if (connectedChain?.chainId === chain.chainId) {
+        return;
+      }
+
+      const chainSwitchRes = await switchChainAsync({
+        chainId: Number(chain.chainId),
+      });
+
+      return chainSwitchRes;
+    },
+  };
 };
