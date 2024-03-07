@@ -1,7 +1,6 @@
 import { FancyAvatar } from '@/components/fancy-avatar';
 import type { EvmTeleporterChain } from '@/constants/chains';
 import { ThreeDCardContainer, ThreeDCardBody, ThreeDCardItem } from '@/ui/3d-card';
-import { Card, CardContent } from '@/ui/card';
 import { Typography } from '@/ui/typography';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { Slot } from '@radix-ui/react-slot';
@@ -53,40 +52,47 @@ export const DraggableChainCard = memo(
         {...attributes}
         className={cn(chain === activelyDraggedChain ? '!opacity-50 grayscale' : '!opacity-100', rest.className)}
       >
-        <ThreeDCardContainer
-          outerProps={{ className: cn('w-full h-full') }}
-          innerProps={{ className: cn('w-full h-full') }}
+        <DroppableChain
+          chain={chain}
+          className="relative group w-full"
         >
-          <DroppableChain
-            chain={chain}
-            className="relative group w-full"
-          >
-            <Card
-              className="w-full h-full"
-              variant="outlined"
+          <div className="rounded-lg h-full">
+            <ThreeDCardContainer
+              outerProps={{ className: cn('group w-full h-full rounded-lg bg-transparent border') }}
+              innerProps={{ className: cn('w-full h-full p-6') }}
             >
-              <GripVertical className="absolute top-2 left-2 text-foreground opacity-20 group-hover:opacity-100 transition-opacity duration-300" />
-              <CardContent className="w-full flex justify-center">
-                <ThreeDCardBody>
-                  <ThreeDCardItem translateZ={70}>
-                    <div className="flex flex-col items-center gap-2 whitespace-break-spaces">
-                      <FancyAvatar
-                        src={chain.logoUrl}
-                        label={chain.shortName}
-                      />
-                      <Typography
-                        size="md"
-                        className="text-center"
-                      >
-                        {chain.name}
-                      </Typography>
-                    </div>
-                  </ThreeDCardItem>
-                </ThreeDCardBody>
-              </CardContent>
-            </Card>
-          </DroppableChain>
-        </ThreeDCardContainer>
+              <ThreeDCardItem
+                translateZ={100}
+                className="absolute top-2 left-2"
+              >
+                <GripVertical className="text-foreground opacity-20 group-hover:opacity-100 transition-opacity duration-300" />
+              </ThreeDCardItem>
+
+              <ThreeDCardBody className="flex flex-col gap-2 items-center">
+                <ThreeDCardItem
+                  translateZ={40}
+                  className="flex justify-center w-full"
+                >
+                  <FancyAvatar
+                    src={chain.logoUrl}
+                    label={chain.shortName}
+                  />
+                </ThreeDCardItem>
+                <ThreeDCardItem
+                  translateZ={100}
+                  className="w-full flex justify-center"
+                >
+                  <Typography
+                    size="md"
+                    className="text-center"
+                  >
+                    {chain.name}
+                  </Typography>
+                </ThreeDCardItem>
+              </ThreeDCardBody>
+            </ThreeDCardContainer>
+          </div>
+        </DroppableChain>
       </div>
     );
   },
