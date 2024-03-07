@@ -14,6 +14,7 @@ import { Button } from '@/ui/button';
 import { Card, CardContent } from '@/ui/card';
 import { formatStringNumber } from '@/utils/format-string';
 import { FlashingUpdate } from '@/components/flashing-update';
+import { SwapButton } from './swap-button';
 
 export enum DroppableId {
   From = 'from',
@@ -93,10 +94,13 @@ export const BridgeForm = memo(() => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}>
+      <form
+        onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}
+        className="relative"
+      >
         <Droppable id={DroppableId.From}>
           <Card className="border-0 bg-neutral-900 rounded-b-none">
-            <CardContent>
+            <CardContent className="p-7">
               <div className="grid grid-cols-12 gap-y-4 gap-x-4">
                 <FormField
                   control={form.control}
@@ -188,9 +192,10 @@ export const BridgeForm = memo(() => {
             </CardContent>
           </Card>
         </Droppable>
+        <SwapButton className="absolute right-32 -translate-y-1/2" />
         <Droppable id={DroppableId.To}>
           <Card className="border-0 bg-neutral-800 rounded-t-none">
-            <CardContent className="flex flex-col gap-4">
+            <CardContent className="flex flex-col gap-4 p-7">
               <div className="grid grid-cols-12 gap-y-4 gap-x-4">
                 <FormField
                   control={form.control}

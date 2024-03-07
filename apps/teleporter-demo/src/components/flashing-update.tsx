@@ -15,12 +15,12 @@ export const FlashingUpdate = memo(function FlashingUpdate({
   const [flashing, setFlashing] = useState<boolean>(false);
 
   useEffect(() => {
-    if (children) {
-      setFlashing(true);
-      setTimeout(() => {
-        setFlashing(false);
-      }, 1000);
-    }
+    setFlashing(true);
+    const timeout = setTimeout(() => {
+      setFlashing(false);
+    }, 1000);
+
+    return () => clearTimeout(timeout);
   }, flashKeys);
 
   return (
