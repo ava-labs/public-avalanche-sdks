@@ -6,6 +6,8 @@ import { truncateAddress } from '@/utils/truncate-address';
 import { ExternalLink, X } from 'lucide-react';
 import { Typography } from '@/ui/typography';
 import { useBridgeContext } from '../providers/bridge-provider';
+import { Badge } from '@/ui/badge';
+import { ResetIcon } from '@radix-ui/react-icons';
 
 export const TransactionSuccessAlert = () => {
   const { fromChain, transactionReceipt, reset } = useBridgeContext();
@@ -15,26 +17,38 @@ export const TransactionSuccessAlert = () => {
   }
 
   return (
-    <div className="w-full flex flex-col items-center justify-center gap-2 relative">
-      <Rive
-        className="h-24 w-24 -m-4 inline-flex"
-        src={successCheck}
-      />
-      <Typography
-        size="lg"
-        className="tracking-wide"
+    <div className="w-full flex flex-col items-center justify-center gap-2 py-4 relative">
+      <div className="flex flex-col items-center justify-center gap-2 grow">
+        <Rive
+          className="h-24 w-24 -m-4 inline-flex"
+          src={successCheck}
+        />
+        <Typography
+          size="lg"
+          className="tracking-wide"
+        >
+          Bridge Success!
+        </Typography>
+        <Badge variant="outline">
+          <a
+            className={cn(buttonVariants({ variant: 'link' }), 'h-6 px-0 font-mono')}
+            href={`${fromChain.explorerUrl}/tx/${transactionReceipt.transactionHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {truncateAddress(transactionReceipt.transactionHash, 20)}
+            <ExternalLink className="inline" />
+          </a>
+        </Badge>
+      </div>
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={reset}
       >
-        Bridge Success!
-      </Typography>
-      <a
-        className={cn(buttonVariants({ variant: 'link' }), 'h-6 px-0 font-mono')}
-        href={`${fromChain.explorerUrl}/tx/${transactionReceipt.transactionHash}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {truncateAddress(transactionReceipt.transactionHash, 9)}
-        <ExternalLink className="h-4 w-4 ml-1 inline" />
-      </a>
+        <ResetIcon />
+        Back to Bridge
+      </Button>
       <Button
         variant="ghost"
         size="icon"
