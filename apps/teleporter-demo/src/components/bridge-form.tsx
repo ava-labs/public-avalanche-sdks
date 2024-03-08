@@ -284,13 +284,14 @@ export const BridgeForm = memo(() => {
                   ) : (
                     <Button
                       type="submit"
-                      className="w-full"
+                      className="w-full animate-background-rotate inline-block bg-white from-primary via-white/30 to-primary bg-[length:_300%_300%] p-0.5 [animation-duration:_5s] bg-gradient-to-r"
                       disabled={
                         form.formState.isSubmitting || isMintMode || isLoadingGasBalance || isLoadingErc20Balance
                       }
-                      variant={isMintMode ? 'secondary' : 'default'}
                     >
-                      Bridge
+                      <span className="inline-flex rounded-full w-full h-full bg-white hover:bg-white/55 transition-colors duration-500 items-center justify-center">
+                        Bridge Tokens
+                      </span>
                     </Button>
                   )}
                 </AutoAnimate>
