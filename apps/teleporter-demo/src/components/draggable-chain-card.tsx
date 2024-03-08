@@ -70,7 +70,7 @@ export const DraggableChainCard = memo(
           chain={chain}
           className="relative group w-full"
         >
-          <div className="rounded-lg h-full border">
+          <div className="rounded-lg h-full border hover:outline-4 hover:outline hover:outline-border">
             <ThreeDCardContainer
               outerProps={{ className: cn('group w-full h-full rounded-lg bg-transparent') }}
               innerProps={{ className: cn('w-full h-full flex flex-col items-center gap-2') }}
