@@ -9,11 +9,11 @@ import { useBridgeContext } from '../providers/bridge-provider';
 import { Badge } from '@/ui/badge';
 import { ResetIcon } from '@radix-ui/react-icons';
 
-export const TransactionSuccessAlert = () => {
+export const TransactionSuccessOverlay = () => {
   const { fromChain, transactionReceipt, reset } = useBridgeContext();
 
   if (!transactionReceipt) {
-    throw new Error('TransactionSuccessAlert must be rendered after a successful transaction');
+    throw new Error('TransactionSuccessOverlay must be rendered after a successful transaction');
   }
 
   return (

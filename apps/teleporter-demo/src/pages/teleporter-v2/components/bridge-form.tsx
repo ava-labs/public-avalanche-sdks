@@ -19,7 +19,7 @@ import { TeleportingCard } from './teleporting-card';
 import { isNil } from 'lodash-es';
 import { cn } from '@/utils/cn';
 import { toast } from '@/ui/hooks/use-toast';
-import { TransactionSuccessAlert } from './transaction-success-alert';
+import { TransactionSuccessOverlay } from './transaction-success-overlay';
 import { AutoAnimate } from '@/ui/auto-animate';
 import { useAccount, useBalance } from 'wagmi';
 import { ExternalLink } from 'lucide-react';
@@ -310,7 +310,7 @@ export const BridgeForm = memo(() => {
         {teleporterStatus === 'complete' && transactionReceipt && (
           <div className="absolute w-full h-full top-0 left-0 animate-in fade-in-0 duration-300">
             <Card className="relative w-full h-full flex bg-card/90 backdrop-blur-md">
-              <TransactionSuccessAlert />
+              <TransactionSuccessOverlay />
             </Card>
           </div>
         )}
