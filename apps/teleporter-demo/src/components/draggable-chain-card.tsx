@@ -14,7 +14,7 @@ import { Skeleton } from '@/ui/skeleton';
 import { formatEther } from 'viem';
 
 const DroppableChain = ({ chain, ...rest }: { chain: EvmTeleporterChain } & HTMLAttributes<HTMLDivElement>) => {
-  const { isOver, active, setNodeRef } = useDroppable({
+  const { isOver, over, active, setNodeRef } = useDroppable({
     id: `droppable-${chain.chainId}`,
     data: {
       chain,
@@ -30,7 +30,13 @@ const DroppableChain = ({ chain, ...rest }: { chain: EvmTeleporterChain } & HTML
       ref={setNodeRef}
       {...rest}
       className={cn(
-        { 'bg-primary/10 outline-primary outline-dashed outline-4': isOverByDifferentChain },
+        {
+          'outline-accent outline-dashed outline-4 border-transparent':
+            !!over && activeChain?.chainId !== chain.chainId,
+        },
+        {
+          'bg-primary/10 outline-primary outline-dashed outline-4 border-transparent': isOverByDifferentChain,
+        },
         rest.className,
       )}
     />
@@ -64,9 +70,9 @@ export const DraggableChainCard = memo(
           chain={chain}
           className="relative group w-full"
         >
-          <div className="rounded-lg h-full">
+          <div className="rounded-lg h-full border">
             <ThreeDCardContainer
-              outerProps={{ className: cn('group w-full h-full rounded-lg bg-transparent border') }}
+              outerProps={{ className: cn('group w-full h-full rounded-lg bg-transparent') }}
               innerProps={{ className: cn('w-full h-full flex flex-col items-center gap-2') }}
             >
               <ThreeDCardItem
