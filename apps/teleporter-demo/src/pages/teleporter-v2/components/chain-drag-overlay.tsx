@@ -75,7 +75,7 @@ export const ChainDragOverlay = memo(() => {
     <DragOverlay modifiers={[snapCenterToCursor]}>
       <div className="inline-flex relative">
         <GripVertical className="cursor-grabbing" />
-        <Card className="absolute left-8 shadow-black shadow-md">
+        <Card className="absolute left-8 shadow-black shadow-md border bg-card/20 backdrop-blur-md">
           <CardContent className="flex items-end gap-2 py-3 px-6">
             {!isNil(activeDrag.activeDragChain) && isNil(activeDrag.fromChain) && isNil(activeDrag.toChain) && (
               <FancyAvatar
