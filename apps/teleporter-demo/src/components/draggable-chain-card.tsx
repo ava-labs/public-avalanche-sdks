@@ -14,7 +14,7 @@ import { Skeleton } from '@/ui/skeleton';
 import { formatEther } from 'viem';
 
 const DroppableChain = ({ chain, ...rest }: { chain: EvmTeleporterChain } & HTMLAttributes<HTMLDivElement>) => {
-  const { isOver, over, active, setNodeRef } = useDroppable({
+  const { isOver, active, setNodeRef } = useDroppable({
     id: `droppable-${chain.chainId}`,
     data: {
       chain,
@@ -32,7 +32,7 @@ const DroppableChain = ({ chain, ...rest }: { chain: EvmTeleporterChain } & HTML
       className={cn(
         {
           'outline-accent outline-dashed outline-4 border-transparent':
-            !!over && activeChain?.chainId !== chain.chainId,
+            !!active && activeChain?.chainId !== chain.chainId,
         },
         {
           'bg-primary/10 outline-primary outline-dashed outline-4 border-transparent': isOverByDifferentChain,

@@ -14,7 +14,7 @@ export const Droppable = memo(
       id: string;
       children: ReactElement; // Use ReactElement instead of ReactNode since we need a child that can accept a ref
     }) => {
-    const { isOver, over, setNodeRef } = useDroppable({
+    const { isOver, active, setNodeRef } = useDroppable({
       id,
       data,
     });
@@ -22,7 +22,7 @@ export const Droppable = memo(
       <Slot
         ref={setNodeRef}
         className={cn(
-          { 'outline-accent outline-dashed outline-4 border-transparent': !!over },
+          { 'outline-accent outline-dashed outline-4 border-transparent': !!active },
           {
             'bg-primary/10 outline-primary outline-dashed outline-4 border-transparent': isOver,
           },
