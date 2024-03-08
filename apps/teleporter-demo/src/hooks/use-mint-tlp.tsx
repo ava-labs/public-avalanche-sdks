@@ -5,6 +5,12 @@ import { useWaitForTransactionReceiptAsync } from './use-wait-for-transaction-re
 import { useErc20Balance } from './use-erc20-balance';
 import { useState } from 'react';
 import { useSwitchChain } from './use-switch-chain';
+import { Badge } from '@/ui/badge';
+import { cn } from '@/utils/cn';
+import { buttonVariants } from '@/ui/button';
+import { truncateAddress } from '@/utils/truncate-address';
+import { ExternalLink } from 'lucide-react';
+import { ToastDescription } from '@/ui/toast';
 
 export const useMintTlp = () => {
   const { data } = useSimulateContract({
@@ -42,12 +48,28 @@ export const useMintTlp = () => {
         await waitForTransactionReceipt({ hash });
         console.info('Mint successful.', hash);
         toast({
-          title: 'Success',
-          description: `Successfully minted token.`,
+          title: 'Mint Success!',
+          description: (
+            <div className="flex items-baseline gap-2">
+              <ToastDescription>View transaction:</ToastDescription>
+              <Badge variant="outline">
+                <a
+                  className={cn(buttonVariants({ variant: 'link' }), 'h-6 px-0 font-mono')}
+                  href={`${TELEPORTER_CONFIG.tlpMintChain.explorerUrl}/tx/${hash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {truncateAddress(hash, 20)}
+                  <ExternalLink className="inline" />
+                </a>
+              </Badge>
+            </div>
+          ),
         });
         refetchGasBalance();
         refetchTlpBalance();
         setIsMinting(false);
+
         return hash;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
