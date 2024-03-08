@@ -11,7 +11,7 @@ import { Label } from '@/ui/label';
 import { Card, CardContent } from '@/ui/card';
 
 export const ChainDragOverlay = memo(() => {
-  const { fromChain, toChain, activeDrag, setChainValue } = useBridgeContext();
+  const { fromChain, toChain, form, activeDrag, setChainValue } = useBridgeContext();
 
   useDndMonitor({
     onDragStart: ({ active }) => {
@@ -56,9 +56,17 @@ export const ChainDragOverlay = memo(() => {
       return;
     },
     onDragEnd: () => {
-      // Set the chains in the bridge form
-      activeDrag.fromChain && setChainValue('fromChainId', activeDrag.fromChain);
-      activeDrag.toChain && setChainValue('toChainId', activeDrag.toChain);
+      if (activeDrag.fromChain && activeDrag.toChain) {
+        // Dragging over another chain, just set the form values manually
+        activeDrag.fromChain && form.setValue('fromChainId', activeDrag.fromChain.chainId);
+        activeDrag.toChain && form.setValue('toChainId', activeDrag.toChain.chainId);
+      } else {
+        // Dragging over a "fromChain" or "toChain" form field, there is a risk of
+        // The from and to chains being the same, use `setChainValue` since it
+        // is equipped to handle this case.
+        activeDrag.fromChain && setChainValue('fromChainId', activeDrag.fromChain);
+        activeDrag.toChain && setChainValue('toChainId', activeDrag.toChain);
+      }
 
       // Reset the active drag state
       activeDrag.setActiveDragChain(undefined);
