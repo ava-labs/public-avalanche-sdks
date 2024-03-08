@@ -266,7 +266,7 @@ export const BridgeForm = memo(() => {
                   ) : isMintMode ? (
                     <SecondaryActionAlert
                       title="Out of TLP!"
-                      description="You must first mint TLP on the C-Chain before you can use Teleporter!"
+                      description="You must first mint TLP on the C-Chain before you can use Teleporter."
                     >
                       <Button
                         type="submit"
