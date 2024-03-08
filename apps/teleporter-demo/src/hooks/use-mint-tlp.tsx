@@ -18,6 +18,7 @@ export const useMintTlp = () => {
     functionName: 'mint',
     abi: TELEPORTER_CONFIG.tlpMintChain.contracts.mintableErc20.abi,
     args: [BigInt('1000000000000000000')], // Mint amount.  1 TLP
+    chainId: Number(TELEPORTER_CONFIG.tlpMintChain.chainId),
   });
   const { writeContractAsync } = useWriteContract();
   const { waitForTransactionReceipt } = useWaitForTransactionReceiptAsync();
