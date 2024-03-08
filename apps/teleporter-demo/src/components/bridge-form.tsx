@@ -290,7 +290,7 @@ export const BridgeForm = memo(() => {
                       }
                     >
                       <span className="inline-flex rounded-full w-full h-full bg-white hover:bg-white/55 transition-colors duration-500 items-center justify-center">
-                        Bridge Tokens
+                        Teleport
                       </span>
                     </Button>
                   )}
