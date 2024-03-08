@@ -15,12 +15,14 @@ export const ChainDragOverlay = memo(() => {
 
   useDndMonitor({
     onDragStart: ({ active }) => {
-      const activeChain = isEvmTeleporterDndData(active.data?.current) ? active.data.current.chain : undefined;
+      const activeChain =
+        active && isEvmTeleporterDndData(active.data?.current) ? active.data.current.chain : undefined;
       activeChain && activeDrag.setActiveDragChain(activeChain);
     },
     onDragOver: ({ active, over }) => {
-      const draggedChain = isEvmTeleporterDndData(active?.data.current) ? active.data.current.chain : undefined;
-      const overChain = isEvmTeleporterDndData(over?.data.current) ? over.data.current.chain : undefined;
+      const draggedChain =
+        active && isEvmTeleporterDndData(active?.data.current) ? active.data.current.chain : undefined;
+      const overChain = over && isEvmTeleporterDndData(over?.data.current) ? over.data.current.chain : undefined;
 
       // Not dragging a chain, so do nothing.
       if (!draggedChain) {

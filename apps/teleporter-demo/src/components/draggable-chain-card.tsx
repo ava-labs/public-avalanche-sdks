@@ -21,7 +21,7 @@ const DroppableChain = ({ chain, ...rest }: { chain: EvmTeleporterChain } & HTML
     },
   });
 
-  const activeChain = isEvmTeleporterDndData(active?.data.current) ? active.data.current.chain : undefined;
+  const activeChain = active && isEvmTeleporterDndData(active?.data.current) ? active.data.current.chain : undefined;
   // Whether a chain other than this on is being dragged over this one.
   const isOverByDifferentChain = isOver && activeChain?.chainId !== chain.chainId;
 
