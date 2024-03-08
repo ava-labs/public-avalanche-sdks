@@ -8,6 +8,7 @@ import { isEvmTeleporterDndData } from '../utils/type-guards';
 import { ArrowRight, GripVertical } from 'lucide-react';
 import { DroppableId } from './bridge-form';
 import { Label } from '@/ui/label';
+import { Card, CardContent } from '@/ui/card';
 
 export const ChainDragOverlay = memo(() => {
   const { activeDrag, setChainValue } = useBridgeContext();
@@ -74,40 +75,41 @@ export const ChainDragOverlay = memo(() => {
     <DragOverlay modifiers={[snapCenterToCursor]}>
       <div className="inline-flex relative">
         <GripVertical className="cursor-grabbing" />
-        <div className="absolute left-8 flex items-end gap-2">
-          {!isNil(activeDrag.activeDragChain) && isNil(activeDrag.fromChain) && isNil(activeDrag.toChain) && (
-            <FancyAvatar
-              src={activeDrag.activeDragChain.logoUrl}
-              label={activeDrag.activeDragChain.shortName}
-              className="shadow-black shadow-md"
-            />
-          )}
-          {!isNil(activeDrag.fromChain) && (
-            <div className="inline-flex flex-col gap-1">
-              <Label>From</Label>
+        <Card className="absolute left-8 shadow-black shadow-md">
+          <CardContent className="flex items-end gap-2 py-3 px-6">
+            {!isNil(activeDrag.activeDragChain) && isNil(activeDrag.fromChain) && isNil(activeDrag.toChain) && (
               <FancyAvatar
-                src={activeDrag.fromChain.logoUrl}
-                label={activeDrag.fromChain.shortName}
-                className="shadow-black shadow-md"
+                src={activeDrag.activeDragChain.logoUrl}
+                label={activeDrag.activeDragChain.shortName}
               />
-            </div>
-          )}
-          {!isNil(activeDrag.fromChain) && !isNil(activeDrag.toChain) && (
-            <div className="h-10 flex items-center">
-              <ArrowRight />
-            </div>
-          )}
-          {!isNil(activeDrag.toChain) && (
-            <div className="inline-flex flex-col gap-1">
-              <Label>To</Label>
-              <FancyAvatar
-                src={activeDrag.toChain.logoUrl}
-                label={activeDrag.toChain.shortName}
-                className="shadow-black shadow-md"
-              />
-            </div>
-          )}
-        </div>
+            )}
+            {!isNil(activeDrag.fromChain) && (
+              <div className="inline-flex flex-col gap-1">
+                <Label>From</Label>
+                <FancyAvatar
+                  src={activeDrag.fromChain.logoUrl}
+                  label={activeDrag.fromChain.shortName}
+                  color={activeDrag.fromChain.primaryColor}
+                />
+              </div>
+            )}
+            {!isNil(activeDrag.fromChain) && !isNil(activeDrag.toChain) && (
+              <div className="h-10 flex items-center">
+                <ArrowRight />
+              </div>
+            )}
+            {!isNil(activeDrag.toChain) && (
+              <div className="inline-flex flex-col gap-1">
+                <Label>To</Label>
+                <FancyAvatar
+                  src={activeDrag.toChain.logoUrl}
+                  label={activeDrag.toChain.shortName}
+                  color={activeDrag.toChain.primaryColor}
+                />
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </DragOverlay>
   );

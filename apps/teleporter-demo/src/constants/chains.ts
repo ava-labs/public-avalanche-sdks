@@ -76,7 +76,7 @@ export const DISPATCH_CHAIN = {
   isTestnet: true,
   logoUrl:
     'https://images.ctfassets.net/gcj8jwzm6086/60XrKdf99PqQKrHiuYdwTE/908622f5204311dbb11be9c6008ead44/Dispatch_Subnet_Logo.png',
-  primaryColor: '#A05195',
+  primaryColor: '#8426be',
   contracts: {
     teleportedErc20: {
       universalId: '779672-0x80989a8F005c3445898DBD9892D3Abb96d08Cf2B',
@@ -115,7 +115,7 @@ export const ECHO_CHAIN = {
   isTestnet: true,
   logoUrl:
     'https://images.ctfassets.net/gcj8jwzm6086/7kyTY75fdtnO6mh7f0osix/4c92c93dd688082bfbb43d5d910cbfeb/Echo_Subnet_Logo.png',
-  primaryColor: '#FF7C43',
+  primaryColor: '#309AAA',
   contracts: {
     teleportedErc20: {
       universalId: '173750-0x80989a8F005c3445898DBD9892D3Abb96d08Cf2B',

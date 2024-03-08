@@ -83,6 +83,7 @@ export const DraggableChainCard = memo(
                   <FancyAvatar
                     src={chain.logoUrl}
                     label={chain.shortName}
+                    color={chain.primaryColor}
                   />
                 </ThreeDCardItem>
                 <ThreeDCardItem

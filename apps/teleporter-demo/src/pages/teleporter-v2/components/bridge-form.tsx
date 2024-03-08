@@ -92,7 +92,8 @@ export const BridgeForm = memo(() => {
                     <FancyAvatar
                       src={chain.logoUrl}
                       label={chain.name}
-                      className="w-6 h-6"
+                      className="w-6 h-6 border-[1.5px]"
+                      color={chain.primaryColor}
                     />
                     <Typography size="md">{chain.shortName}</Typography>
                   </div>
@@ -109,7 +110,8 @@ export const BridgeForm = memo(() => {
                     <FancyAvatar
                       src={chain.logoUrl}
                       label={chain.name}
-                      className="w-6 h-6"
+                      className="w-6 h-6 border-[1.5px]"
+                      color={chain.primaryColor}
                     />
                     <p>{chain.name}</p>
                   </div>
