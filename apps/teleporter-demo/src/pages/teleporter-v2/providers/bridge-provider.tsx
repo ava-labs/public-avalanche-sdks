@@ -101,7 +101,7 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
   // Set the maxBalanceAmount changes (usually from switching chains) and the current form's erc20Amount exceeds the new maxBalanceAmount, then set the form's erc20Amount to the new maxBalanceAmount.,
   // then reset the form's erc20Amount to the new maxBalanceAmount.
   useEffect(() => {
-    form.getValues('erc20Amount') > Number(maxErc20Amount) && form.setValue('erc20Amount', Number(maxErc20Amount));
+    form.setValue('erc20Amount', form.getValues('erc20Amount') > Number(maxErc20Amount) ? Number(maxErc20Amount) : 1);
   }, [maxErc20Amount]);
 
   /**
