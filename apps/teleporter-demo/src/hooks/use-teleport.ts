@@ -103,11 +103,9 @@ export const useTeleport = ({
       setTeleporterStatus('complete');
       return transactionReceipt;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      console.error(e?.message ?? e);
+    } catch (error: any) {
       setTeleporterStatus('idle');
-
-      return undefined;
+      throw error;
     }
   };
 

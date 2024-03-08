@@ -8,9 +8,10 @@ import { useForm, type UseFormReturn } from 'react-hook-form';
 import { useErc20Balance } from '@/hooks/use-erc20-balance';
 import { useAccount, useBalance } from 'wagmi';
 import { useTeleport, type TeleporterStatus } from '@/hooks/use-teleport';
-import type { TransactionReceipt } from 'viem';
+import { type TransactionReceipt, BaseError as ViemBaseError } from 'viem';
 import Big from 'big.js';
 import { useSwitchChain } from '@/hooks/use-switch-chain';
+import { toast } from '@/ui/hooks/use-toast';
 
 const formSchema = z.object({
   fromChainId: z.enum(TELEPORTER_CONFIG.chainIds),
@@ -141,21 +142,24 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
   });
 
   const handleBridgeToken = async (_data: z.infer<typeof formSchema>) => {
-    console.log('switching chain');
+    try {
+      await switchChainAsync(fromChain);
+      await teleportToken();
+      refetchFromChainErc20Balance();
+      refetchFromChainGasBalance();
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Bridge Failed',
+        description:
+          error instanceof ViemBaseError
+            ? error.shortMessage
+            : (error as Error)?.message ?? 'An unknown error occurred',
+        variant: 'destructive',
+      });
+    }
 
-    await switchChainAsync(fromChain);
-    // await switchChainAsync({
-    //   chainId: Number(fromChain.chainId),
-    // });
-    console.log('switched chain');
-    console.log('teleporting');
-
-    await teleportToken();
-    console.log('teleported');
-    refetchFromChainErc20Balance();
-    refetchFromChainGasBalance();
-
-    // There currently isn't any way to detect transaction confirmation on the toChain,
+    // There currently isn't any way to detect transaction confirmation on the destination chain,
     // so just refetch balances after a short delay.
     setTimeout(() => {
       refetchToChainErc20Balance();

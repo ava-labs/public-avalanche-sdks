@@ -18,7 +18,6 @@ import { SwapButton } from './swap-button';
 import { TeleportingCard } from './teleporting-card';
 import { isNil } from 'lodash-es';
 import { cn } from '@/utils/cn';
-import { toast } from '@/ui/hooks/use-toast';
 import { TransactionSuccessOverlay } from './transaction-success-overlay';
 import { AutoAnimate } from '@/ui/auto-animate';
 import { useAccount, useBalance } from 'wagmi';
@@ -129,17 +128,7 @@ export const BridgeForm = memo(() => {
   return (
     <Form {...form}>
       <div className="relative">
-        <form
-          onSubmit={form.handleSubmit(handleBridgeToken, (errors) => {
-            console.error(errors);
-            const message = Object.values(errors)[0]?.message;
-            toast({
-              title: 'Bridge Failed',
-              description: message ?? 'An unknown error occurred',
-              variant: 'destructive',
-            });
-          })}
-        >
+        <form onSubmit={form.handleSubmit(handleBridgeToken, (errors) => console.error(errors))}>
           <Droppable id={DroppableId.From}>
             <Card className="border-0 bg-neutral-900 rounded-b-none">
               <CardContent className="p-7 max-sm:px-3">

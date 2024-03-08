@@ -43,6 +43,7 @@ export const TeleportingCard = memo(() => {
             src={fromChain.logoUrl}
             label={fromChain.name}
             className="h-14 w-14 relative"
+            color={fromChain.primaryColor}
           />
           <Typography className="pt-2 text-center">{fromChain.name}</Typography>
         </div>
@@ -52,6 +53,7 @@ export const TeleportingCard = memo(() => {
             src={toChain.logoUrl}
             label={toChain.name}
             className="h-14 w-14 relative"
+            color={toChain.primaryColor}
           />
           <Typography className="pt-2 text-center">{toChain.name}</Typography>
         </div>
