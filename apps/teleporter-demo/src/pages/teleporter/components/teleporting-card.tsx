@@ -31,7 +31,10 @@ export const TeleportingCard = memo(() => {
       </div>
       {/** translate to offset due to asymmetrical rive animation */}
       <div className="absolute w-full h-full flex items-center justify-center -translate-y-2">
-        <Rive src={teleportingAnimation} />
+        <Rive
+          src={teleportingAnimation}
+          style={{ height: '312px' }}
+        />
       </div>
       <div className="absolute w-full h-full flex items-center justify-between px-6">
         <div className="flex flex-col items-center w-32">
