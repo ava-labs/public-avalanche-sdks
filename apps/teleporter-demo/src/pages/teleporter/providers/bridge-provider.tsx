@@ -56,7 +56,13 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
   const [maxErc20Amount, setMaxErc20Amount] = useState<string>('0');
   // Modify with min/max for erc20Amount
   const extendedFormSchema = formSchema.extend({
-    erc20Amount: z.number().max(Number(maxErc20Amount)).positive(),
+    erc20Amount: z
+      .number()
+      .max(Number(maxErc20Amount))
+      .refine((_val) => Number(maxErc20Amount) > 0, {
+        message: 'Insufficient balance', // run this before `.positive` so that this message is prioritized (this is why we use "pipe" below)
+      })
+      .pipe(z.number().positive()),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
