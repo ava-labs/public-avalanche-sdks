@@ -61,7 +61,7 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(extendedFormSchema),
     defaultValues: {
-      erc20Amount: 1,
+      erc20Amount: Math.min(1, Number(maxErc20Amount)),
       fromChainId: TELEPORTER_CONFIG.chains[0].chainId,
       toChainId: TELEPORTER_CONFIG.chains[1].chainId,
     },
@@ -101,7 +101,12 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
   // Set the maxBalanceAmount changes (usually from switching chains) and the current form's erc20Amount exceeds the new maxBalanceAmount, then set the form's erc20Amount to the new maxBalanceAmount.,
   // then reset the form's erc20Amount to the new maxBalanceAmount.
   useEffect(() => {
-    form.setValue('erc20Amount', form.getValues('erc20Amount') > Number(maxErc20Amount) ? Number(maxErc20Amount) : 1);
+    form.setValue(
+      'erc20Amount',
+      form.getValues('erc20Amount') > Number(maxErc20Amount)
+        ? Number(maxErc20Amount)
+        : Math.min(1, Number(maxErc20Amount)),
+    );
   }, [maxErc20Amount]);
 
   /**

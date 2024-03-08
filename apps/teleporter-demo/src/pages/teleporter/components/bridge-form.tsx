@@ -266,6 +266,9 @@ export const BridgeForm = memo(() => {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex gap-2 items-center"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
                         >
                           Go to Faucet
                           <ExternalLink className="w-4 h-4" />
@@ -277,14 +280,19 @@ export const BridgeForm = memo(() => {
                       title="Out of TLP!"
                       description="You must first mint TLP on the C-Chain before you can use Teleporter!"
                       buttonContent={isMinting ? 'Minting TLP...' : 'Mint TLP'}
-                      onClick={mintToken}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        mintToken();
+                      }}
                       isLoading={isMinting}
                     />
                   ) : (
                     <Button
                       type="submit"
                       className="w-full"
-                      disabled={form.formState.isSubmitting || isMintMode}
+                      disabled={
+                        form.formState.isSubmitting || isMintMode || isLoadingGasBalance || isLoadingErc20Balance
+                      }
                       variant={isMintMode ? 'secondary' : 'default'}
                     >
                       Bridge

@@ -30,10 +30,7 @@ export const SecondaryActionAlert = memo(
             className="w-full"
             startIcon={isLoading && <LoadingSpinner />}
             disabled={isLoading}
-            onClick={(e) => {
-              e.preventDefault();
-              onClick?.(e);
-            }}
+            onClick={onClick}
           >
             {buttonContent}
           </Button>
