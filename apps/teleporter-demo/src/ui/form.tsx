@@ -12,6 +12,7 @@ import {
 
 import { cn } from '@/utils/cn';
 import { Label } from '@/ui/label';
+import { AutoAnimate } from './auto-animate';
 
 const Form = FormProvider;
 
@@ -139,19 +140,19 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
     const { error, formMessageId } = useFormField();
     const body = error ? String(error?.message) : children;
 
-    if (!body) {
-      return null;
-    }
-
     return (
-      <p
-        ref={ref}
-        id={formMessageId}
-        className={cn('text-[0.8rem] font-medium text-destructive', className)}
-        {...props}
-      >
-        {body}
-      </p>
+      <AutoAnimate>
+        {body ? (
+          <p
+            ref={ref}
+            id={formMessageId}
+            className={cn('text-[0.8rem] font-medium text-destructive', className)}
+            {...props}
+          >
+            {body}
+          </p>
+        ) : null}
+      </AutoAnimate>
     );
   },
 );

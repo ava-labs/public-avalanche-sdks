@@ -1,5 +1,5 @@
 import { memo, type PropsWithChildren } from 'react';
-import { TopNavigation } from './top-navigation';
+import { TopNavigation } from './top-navigation/top-navigation';
 import { useSpring, animated } from 'react-spring';
 import { cn } from '@/utils/cn';
 import { Footer } from './footer';
