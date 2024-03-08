@@ -24,23 +24,22 @@ const CHAINS_LABEL = `${CHAIN_NAMES[0]}, ${CHAIN_NAMES[1]}, and ${CHAIN_NAMES[2]
 export const WhatsTeleporterSheet = () => {
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <div className="flex justify-center mt-2">
+      <div className="flex justify-center mt-2">
+        <SheetTrigger asChild>
           <Button
             size="sm"
-            variant="link"
-            className="rounded-full"
+            variant="ghost-primary"
           >
             <InfoIcon className="mr-2 w-4 h-4" /> What's Teleporter?
           </Button>
-        </div>
-      </SheetTrigger>
+        </SheetTrigger>
+      </div>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>What's Teleporter?</SheetTitle>
           <SheetDescription>
             <a
-              className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'text-primary-foreground')}
+              className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'text-foreground')}
               href="https://github.com/ava-labs/teleporter"
               target="_blank"
               rel="noopener noreferrer"
@@ -48,7 +47,7 @@ export const WhatsTeleporterSheet = () => {
               <GitHubLogoIcon className="w-6 h-6" />
             </a>
             <a
-              className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'text-primary-foreground')}
+              className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'text-foreground')}
               href="https://github.com/ava-labs/public-avalanche-sdks/tree/main/apps/teleporter-demo"
               target="_blank"
               rel="noopener noreferrer"
@@ -104,12 +103,6 @@ export const WhatsTeleporterSheet = () => {
               </Link>{' '}
               to kick off your first teleport and watch your TLP tokens transfer between the three subnets. It's as easy
               as that!
-            </p>
-            <p className="mt-4">
-              Teleporter and the Warp precompile are currently in experimental/testing phases. There are continued
-              efforts to both harden them and gather feedback from testnet deployments. In the coming months, the plan
-              is to begin rolling each out to both existing subnets and the mainnet C-Chain, so stay tuned for even more
-              updates to come!
             </p>
             <p className="mt-4">
               For now, you can check out the Teleporter repos at the links up top, and read more at{' '}
