@@ -11,7 +11,7 @@ import { Label } from '@/ui/label';
 import { Card, CardContent } from '@/ui/card';
 
 export const ChainDragOverlay = memo(() => {
-  const { activeDrag, setChainValue } = useBridgeContext();
+  const { fromChain, toChain, activeDrag, setChainValue } = useBridgeContext();
 
   useDndMonitor({
     onDragStart: ({ active }) => {
@@ -74,7 +74,56 @@ export const ChainDragOverlay = memo(() => {
   });
 
   return (
-    <DragOverlay modifiers={[snapCenterToCursor]}>
+    <DragOverlay
+      modifiers={[snapCenterToCursor]}
+      dropAnimation={{
+        /**
+         * Animate the drag overlay to the destination droppable container.
+         */
+        keyframes: ({ active, droppableContainers, transform }) => {
+          // The dragged chain will end up in the "fromChain" form field
+          const dropDestinationIsFromChain =
+            active &&
+            isEvmTeleporterDndData(active?.data.current) &&
+            active.data.current.chain.chainId === fromChain?.chainId;
+          // The dragged chain will end up in the "toChain" form field
+          const dropDestinationIsToChain =
+            active &&
+            isEvmTeleporterDndData(active?.data.current) &&
+            active.data.current.chain.chainId === toChain?.chainId;
+
+          // Get the actual drop destination node
+          const dropDestination = dropDestinationIsFromChain
+            ? droppableContainers.get(DroppableId.From)
+            : dropDestinationIsToChain
+            ? droppableContainers.get(DroppableId.To)
+            : undefined;
+
+          // Use the node rect to calculate the destination coordinates
+          const dropDestinationRect = dropDestination?.rect.current;
+          const activeRect = active.rect;
+          const finalCoords = dropDestinationRect
+            ? {
+                // Use Right and Top because the chain fields are on the top-right of the cards
+                x: dropDestinationRect.right - activeRect.right,
+                y: dropDestinationRect.top - activeRect.top,
+              }
+            : transform.final;
+
+          // Now that the coordinates have been calculated, trigger the animation
+          return [
+            {
+              transform: `translate(${transform.initial.x}px, ${transform.initial.y}px)`,
+              opacity: '100%',
+            },
+            {
+              transform: `translate(${finalCoords.x}px, ${finalCoords.y}px)`,
+              opacity: '0%',
+            },
+          ];
+        },
+      }}
+    >
       <div className="inline-flex relative">
         <GripVertical className="cursor-grabbing" />
         <Card className="absolute left-8 shadow-black shadow-md border bg-card/20 backdrop-blur-md">
