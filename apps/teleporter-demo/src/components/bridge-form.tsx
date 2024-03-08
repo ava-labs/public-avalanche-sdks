@@ -302,8 +302,6 @@ export const BridgeForm = memo(() => {
               </CardContent>
             </Card>
           </Droppable>
-          {/* Use this to debug handling allowances */}
-          {/* <DebugResetAllowanceButton chain={fromChain} /> */}
         </form>
         {(teleporterStatus === 'approving' || teleporterStatus === 'teleporting') && (
           <div className="absolute w-full h-full top-0 left-0 animate-in fade-in-0 duration-300">
@@ -318,6 +316,8 @@ export const BridgeForm = memo(() => {
           </div>
         )}
       </div>
+      {/* Use this to debug handling allowances */}
+      {/* <DebugResetAllowanceButton chain={fromChain} /> */}
     </Form>
   );
 });
