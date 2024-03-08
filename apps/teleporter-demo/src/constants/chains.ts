@@ -47,8 +47,8 @@ export const C_CHAIN = {
       abi: TELEPORTED_ERC20_ABI,
     },
     bridge: {
-      universalId: '43113-0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
-      address: '0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
+      universalId: '43113-0x5c1dF7FfBC8809166f1c154b54FfB1B7019c3D78',
+      address: '0x5c1dF7FfBC8809166f1c154b54FfB1B7019c3D78',
       name: 'Teleporter ERC20 Bridge',
       abi: TELEPORTER_BRIDGE_ABI,
     },
@@ -86,8 +86,8 @@ export const DISPATCH_CHAIN = {
       abi: TELEPORTED_ERC20_ABI,
     },
     bridge: {
-      universalId: '779672-0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
-      address: '0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
+      universalId: '779672-0x5c1dF7FfBC8809166f1c154b54FfB1B7019c3D78',
+      address: '0x5c1dF7FfBC8809166f1c154b54FfB1B7019c3D78',
       name: 'Teleporter ERC20 Bridge',
       abi: TELEPORTER_BRIDGE_ABI,
     },
@@ -125,8 +125,8 @@ export const ECHO_CHAIN = {
       abi: TELEPORTED_ERC20_ABI,
     },
     bridge: {
-      universalId: '173750-0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
-      address: '0x4abb50eb8496b572a3873f0Ea562BfAf6f09f9CD',
+      universalId: '173750-0x5c1dF7FfBC8809166f1c154b54FfB1B7019c3D78',
+      address: '0x5c1dF7FfBC8809166f1c154b54FfB1B7019c3D78',
       name: 'Teleporter ERC20 Bridge',
       abi: TELEPORTER_BRIDGE_ABI,
     },
