@@ -1,4 +1,4 @@
-import { TeleporterV2Page } from '@/pages/teleporter/teleporter';
+import { TeleporterV2Page } from '@/pages/teleporter';
 import { createLazyFileRoute } from '@tanstack/react-router';
 
 export const Route = createLazyFileRoute('/')({
