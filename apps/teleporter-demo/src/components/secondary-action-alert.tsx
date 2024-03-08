@@ -1,23 +1,16 @@
-import { memo, type MouseEventHandler, type ReactNode } from 'react';
-import { Button } from '@/ui/button';
+import { memo, type PropsWithChildren } from 'react';
 import { Typography } from '@/ui/typography';
 import { Alert, AlertDescription, AlertTitle } from '@/ui/alert';
-import { LoadingSpinner } from '@/ui/loading-spinner';
 
 export const SecondaryActionAlert = memo(
   ({
     title,
     description,
-    buttonContent,
-    onClick,
-    isLoading = false,
-  }: {
+    children,
+  }: PropsWithChildren<{
     title: string;
     description: string;
-    buttonContent: ReactNode;
-    onClick?: MouseEventHandler<HTMLButtonElement>;
-    isLoading?: boolean;
-  }) => {
+  }>) => {
     return (
       <Alert variant="info">
         <AlertTitle>
@@ -25,15 +18,7 @@ export const SecondaryActionAlert = memo(
         </AlertTitle>
         <AlertDescription className="flex flex-col gap-4">
           <Typography size="xs">{description}</Typography>
-          <Button
-            type="submit"
-            className="w-full"
-            startIcon={isLoading && <LoadingSpinner />}
-            disabled={isLoading}
-            onClick={onClick}
-          >
-            {buttonContent}
-          </Button>
+          {children}
         </AlertDescription>
       </Alert>
     );

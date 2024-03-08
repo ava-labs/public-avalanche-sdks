@@ -4,6 +4,7 @@ import { useWriteContract, useSimulateContract, useAccount, useBalance } from 'w
 import { useWaitForTransactionReceiptAsync } from './use-wait-for-transaction-receipt-async';
 import { useErc20Balance } from './use-erc20-balance';
 import { useState } from 'react';
+import { useSwitchChain } from './use-switch-chain';
 
 export const useMintTlp = () => {
   const { data } = useSimulateContract({
@@ -22,6 +23,7 @@ export const useMintTlp = () => {
   const { refetch: refetchTlpBalance } = useErc20Balance({
     chain: TELEPORTER_CONFIG.tlpMintChain,
   });
+  const { switchChainAsync } = useSwitchChain();
 
   const [isMinting, setIsMinting] = useState(false);
 
@@ -30,6 +32,7 @@ export const useMintTlp = () => {
     mintToken: async () => {
       setIsMinting(true);
       try {
+        await switchChainAsync(TELEPORTER_CONFIG.tlpMintChain);
         if (!data?.request) {
           throw new Error('Unable to simulate mint request.');
         }

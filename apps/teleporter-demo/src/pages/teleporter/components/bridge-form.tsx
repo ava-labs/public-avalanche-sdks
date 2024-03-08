@@ -10,7 +10,7 @@ import { Droppable } from './droppable';
 import { Slider } from '@/ui/slider';
 import { Input } from '@/ui/input';
 import tlpTokenLogo from '@/assets/tlp-token-logo.png';
-import { Button } from '@/ui/button';
+import { Button, buttonVariants } from '@/ui/button';
 import { Card, CardContent } from '@/ui/card';
 import { formatStringNumber } from '@/utils/format-string';
 import { FlashingUpdate } from '@/components/flashing-update';
@@ -23,11 +23,11 @@ import { TransactionSuccessOverlay } from './transaction-success-overlay';
 import { AutoAnimate } from '@/ui/auto-animate';
 import { useAccount, useBalance } from 'wagmi';
 import { ExternalLink } from 'lucide-react';
-import { FAUCET_URL } from '@/constants';
 import { useMintTlp } from '@/hooks/use-mint-tlp';
 import { ConnectWalletAlert } from '@/components/connect-wallet-alert';
 import { SecondaryActionAlert } from '@/components/secondary-action-alert';
 import { useErc20Balance } from '@/hooks/use-erc20-balance';
+import { LoadingSpinner } from '@/ui/loading-spinner';
 
 export enum DroppableId {
   From = 'from',
@@ -43,7 +43,7 @@ export const BridgeForm = memo(() => {
   const { setChainValue, fromChain, maxErc20Amount, handleBridgeToken, teleporterStatus, transactionReceipt } =
     useBridgeContext();
   const { form } = useBridgeContext();
-  const { isMinting, mintToken } = useMintTlp();
+  const { mintToken, isMinting } = useMintTlp();
   const { formattedErc20Balance, isLoading: isLoadingErc20Balance } = useErc20Balance({ chain: fromChain });
 
   const { address, isConnected } = useAccount();
@@ -260,32 +260,38 @@ export const BridgeForm = memo(() => {
                     <SecondaryActionAlert
                       title="Out of gas!"
                       description={`Get gas for ${fromChain.name} at the Core Faucet!`}
-                      buttonContent={
-                        <a
-                          href={FAUCET_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex gap-2 items-center"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                          }}
-                        >
-                          Go to Faucet
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      }
-                    />
+                    >
+                      <a
+                        href={fromChain.faucetUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={cn(buttonVariants({ variant: 'default' }), 'inline-flex gap-2 items-center')}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >
+                        Go to Faucet
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </SecondaryActionAlert>
                   ) : isMintMode ? (
                     <SecondaryActionAlert
                       title="Out of TLP!"
                       description="You must first mint TLP on the C-Chain before you can use Teleporter!"
-                      buttonContent={isMinting ? 'Minting TLP...' : 'Mint TLP'}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        mintToken();
-                      }}
-                      isLoading={isMinting}
-                    />
+                    >
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        startIcon={isMinting && <LoadingSpinner />}
+                        disabled={isMinting}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          mintToken();
+                        }}
+                      >
+                        {isMinting ? 'Minting TLP...' : 'Mint TLP'}
+                      </Button>
+                    </SecondaryActionAlert>
                   ) : (
                     <Button
                       type="submit"
