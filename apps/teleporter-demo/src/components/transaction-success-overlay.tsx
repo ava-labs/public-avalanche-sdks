@@ -27,7 +27,7 @@ export const TransactionSuccessOverlay = () => {
           size="lg"
           className="tracking-wide"
         >
-          Bridge Success!
+          Assets successfully moved!
         </Typography>
         <Badge variant="outline">
           <a
@@ -47,7 +47,7 @@ export const TransactionSuccessOverlay = () => {
         onClick={reset}
       >
         <ResetIcon />
-        Back to Bridge
+        Back to Teleporter
       </Button>
       <Button
         variant="ghost"

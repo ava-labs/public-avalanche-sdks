@@ -23,7 +23,7 @@ export const ConnectWalletAlert = memo(() => {
           size="sm"
           className="text-center"
         >
-          Must connect wallet to Bridge.
+          Must connect wallet to Teleport.
         </Typography>
         <Button
           className={cn('w-full')}

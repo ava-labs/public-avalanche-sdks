@@ -156,7 +156,7 @@ export const BridgeProvider = memo(function AuthProvider({ children }: PropsWith
     } catch (error) {
       console.error(error);
       toast({
-        title: 'Bridge Failed',
+        title: 'Teleport Failed',
         description:
           error instanceof ViemBaseError
             ? error.shortMessage
