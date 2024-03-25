@@ -1,7 +1,7 @@
 {
   "name": "@core/teleporter-demo",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "build": "tsc && vite build",
