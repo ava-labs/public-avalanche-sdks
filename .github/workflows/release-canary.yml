@@ -8,8 +8,13 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions: {}
+
 jobs:
   release:
+    permissions:
+      contents: read
+      id-token: write
     name: Release
     runs-on: ubuntu-latest
     env:
@@ -17,6 +22,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+        with:
+          persist-credentials: false
 
       - name: Create .npmrc
         run: |
@@ -54,9 +61,10 @@ jobs:
       - name: Publish Canary to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          STEPS_GET_CANARY_SUBJECT_OUTPUTS_CANARY_SUBJECT: ${{ steps.get-canary-subject.outputs.canary-subject }}
         run: |
-          pnpm changeset version --snapshot ${{ steps.get-canary-subject.outputs.canary-subject }}
-          pnpm changeset publish --tag ${{ steps.get-canary-subject.outputs.canary-subject }}
+          pnpm changeset version --snapshot ${STEPS_GET_CANARY_SUBJECT_OUTPUTS_CANARY_SUBJECT}
+          pnpm changeset publish --tag ${STEPS_GET_CANARY_SUBJECT_OUTPUTS_CANARY_SUBJECT}
 
       - name: Deploy OhMyWarp
         run: |
