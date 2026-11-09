@@ -7,13 +7,21 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions: {}
+
 jobs:
   release:
+    permissions:
+      contents: write
+      id-token: write
+      pull-requests: write
     name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
+        with:
+          persist-credentials: true  # kept: job runs git commands that use the checkout token
 
       - name: Setup pnpm 7
         uses: pnpm/action-setup@v2
